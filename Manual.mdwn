@@ -1,0 +1,53 @@
+Manual de referencia de (Nombre del lenguaje)
+==========
+
+> (Nombre del lenguaje) es un lenguaje fuertemente tipeado, no orientado a objetos, que
+ busca estimular la programación mediante lenguaje natural.
+
+> (Nombre del lenguaje) está diseñado para parecerse a la programación por pseudocódigo.
+
+***
+
+Notas:
+-----------
+> **Todas** las funciones deben terminar con ";", incluso los bloques de instrucciones.
+
+> Los bloques tendrán una sección para declarar variables, luego una para declarar funciones,
+y por último una sección con las instrucciones del bloque.
+
+
+
+Lista de palabras reservadas:
+-----------
+*   Si
+*   entonces
+*   O
+*   no
+*   si
+*   Mientras
+*   Para
+*   tal
+*   que
+*   con
+*   cambio
+
+
+Mecanismos soportados:
+-----------
+*   **Funciones (sin anidamiento)** .
+*   **Arreglos unidimensionales con índice arbitrario** :
+
+
+
+Tipos de datos:
+-----------
+*   
+*
+*
+*
+*
+
+Sintaxis:
+-----------
+
+
