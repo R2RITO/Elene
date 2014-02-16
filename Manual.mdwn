@@ -12,25 +12,42 @@ Notas:
 -----------
 > **Todas** las funciones deben terminar con ";", incluso los bloques de instrucciones.
 
-> Los bloques tendrán una sección para declarar variables, luego una para declarar funciones,
-y por último una sección con las instrucciones del bloque.
-
-
-
 Lista de palabras reservadas:
 -----------
-*   Si
-*   entonces
-*   O
-*   no
-*   si
-*   Mientras
-*   Para
-*   tal
-*   que
-*   con
-*   cambio
-
+>
+`   entonces
+    O  
+    no          
+    si
+    mientras
+    hacer
+    para
+    tal
+    que
+    con
+    cambio
+    leer
+    imprimir
+    la     
+    funcion
+    recibe
+    y
+    retorna
+    sea
+    estructura
+    contiene
+    union
+    vacio
+    guacara
+    entero
+    caracter
+    flotante
+    booleano
+    string
+    retornar
+    con
+    valor
+`
 
 Mecanismos soportados:
 -----------
@@ -41,11 +58,13 @@ Mecanismos soportados:
 
 Tipos de datos:
 -----------
-*   
-*
-*
-*
-*
+* Entero
+* Booleano
+* Vacío
+* Caracter
+* Cadena de caracteres
+* Flotante
+
 
 Sintaxis:
 -----------
@@ -53,3 +72,9 @@ Sintaxis:
 > Los nombres de variable deben comenzar por letra mayúscula, y las palabras
   reservadas comienzan por minúscula.
 
+> Cada programa solo tendrá un bloque principal de instrucciones, el cual
+  seguirá la siguiente sintaxis: `Guacara { Instrucciones }`
+  Las instrucciones pueden ser declaraciones de variables, definiciones
+  de funciones, o instrucciones arbitrarias.
+
+> Se deben implementar las funciones antes de utilizarlas.
