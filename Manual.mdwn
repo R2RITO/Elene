@@ -1,10 +1,10 @@
-Manual de referencia de (Nombre del lenguaje)
+Manual de referencia de Elene 
 ==========
 
-> (Nombre del lenguaje) es un lenguaje fuertemente tipeado, no orientado a objetos, que
+> Elene es un lenguaje fuertemente tipeado, no orientado a objetos, que
  busca estimular la programación mediante lenguaje natural.
 
-> (Nombre del lenguaje) está diseñado para parecerse a la programación por pseudocódigo.
+> Elene está diseñado para parecerse a la programación por pseudocódigo.
 
 ***
 
@@ -50,4 +50,6 @@ Tipos de datos:
 Sintaxis:
 -----------
 
+> Los nombres de variable deben comenzar por letra mayúscula, y las palabras
+  reservadas comienzan por minúscula.
 
