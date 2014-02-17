@@ -12,6 +12,10 @@ Notas:
 -----------
 > **Todas** las funciones deben terminar con ";", incluso los bloques de instrucciones.
 
+> Tener cuidado con las funciones que retornan vacío al ser llamadas para
+  retornar, por ejemplo en `retornar Concatenar(Quicksort(Menores), Pivot,
+  Quicksort(Mayores));` , hay que verificar que la función retorne algo.
+
 Lista de palabras reservadas:
 -----------
 >
@@ -47,6 +51,8 @@ Lista de palabras reservadas:
     retornar
     con
     valor
+    verdadero
+    falso
 `
 
 Mecanismos soportados:
@@ -65,6 +71,21 @@ Tipos de datos:
 * Cadena de caracteres
 * Flotante
 
+Operadores
+-----------
+**Operadores Aritméticos:**
+* +
+* -
+* \*
+* /
+
+**Operadores Booleanos:**
+* <=
+* >=
+* ==
+
+** **
+
 
 Sintaxis:
 -----------
@@ -77,4 +98,9 @@ Sintaxis:
   Las instrucciones pueden ser declaraciones de variables, definiciones
   de funciones, o instrucciones arbitrarias.
 
+> Los arreglos deben declararse junto a sus límites. Se incluyen ambos
+  extremos, de modo que un arreglo A[3..7] tendrá 5 elementos.
+
 > Se deben implementar las funciones antes de utilizarlas.
+
+> Un bloque se delimita utilizando llaves `{ }`.
