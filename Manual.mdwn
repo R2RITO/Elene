@@ -20,7 +20,7 @@ Lista de palabras reservadas:
 -----------
 >
 `   entonces
-    O  
+    o  
     no          
     si
     mientras
@@ -53,6 +53,12 @@ Lista de palabras reservadas:
     valor
     verdadero
     falso
+    es
+    a
+    mayor
+    menor
+    igual
+    distinto
 `
 
 Mecanismos soportados:
@@ -82,7 +88,11 @@ Operadores
 **Operadores Booleanos:**
 * <=
 * >=
+* y
+* o
 * ==
+* !=
+* no
 
 ** **
 
