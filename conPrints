@@ -1,38 +1,7 @@
-%{
-#include <math.h>
-#include <unistd.h>
- // #include "y.tab.h"
- // Arturo #10-10774 Guacara dice que no es necesario
-
-%}
-
-DIGIT [0-9]
-ID    [A-Z][a-zA-Z0-9]*
-
-%option   yylineno
-
-%x comment
-%x string
-%%
-        int line_num = 1;
-
-"/*"         BEGIN(comment);
-
-<comment>[^*\n]*        /* eat anything that's not a '*' */
-<comment>"*"+[^*/\n]*   /* eat up '*'s not followed by '/'s */
-<comment>\n             ++line_num;
-<comment>"*"+"/"        BEGIN(INITIAL);
-
-
-\"(\\.|[^\\"])*\"    { printf("%d STRING\n", &yylineno);   }
-
-
-[ \t\n] // Ignorar Espacios, Tabuladores y Saltos de Linea
-
 "+"                  { printf("PLUS");       }
 "-"                  { printf("MINUS");      }
 "*"                  { printf("TIMES");      }
-"/"                  { printf("SLASH");      }
+"/"                  { printf("SLASH";      }
 "("                  { printf("LPAREN");     }
 ")"                  { printf("RPAREN");     }
 ";"                  { printf("SEMICOLON");  }
@@ -79,16 +48,9 @@ ID    [A-Z][a-zA-Z0-9]*
 "igual"              { printf("IGUAL");      }
 "distinto"           { printf("DISTINTO");   }
 "de"                 { printf("DE");         }
-"tipo"               { printf("TIPO");       }
+"tipo"               { pritnf("TIPO");       }
 
 ID                   { printf("ID");         }
 
-{DIGIT}+              { printf("ENTERO")  ; }
-{DIGIT}+("."{DIGIT}+) { printf("FLOTANTE"); }
-
-%%
-
-
-main() {
-    yylex();
-}
+{DIGIT}+              { sscanf(yytext, "%d" , &yylval); printf("ENTERO")  ; }
+{DIGIT}+("."{DIGIT}+) { sscanf(yytext, "%lf", &yylval); printf("FLOTANTE"); }
