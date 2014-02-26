@@ -9,10 +9,9 @@
 DIGIT [0-9]
 ID    [A-Z][a-zA-Z0-9]*
 
-%option   yylineno
+%option lex-compat
 
 %x comment
-%x string
 %%
         int line_num = 1;
 
@@ -39,6 +38,10 @@ ID    [A-Z][a-zA-Z0-9]*
 ","                  { printf("COMMA");      }
 "."                  { printf("PERIOD");     }
 "="                  { printf("BECOMES");    }
+"{"                  { printf("LBRACKET");   }
+"}"                  { printf("RBRACKET");   }
+"["                  { printf("LCORCHET");   }
+"]"                  { printf("RCORCHET");   }
 "entonces"           { printf("ENTONCES");   }
 "o"                  { printf("O");          }
 "no"                 { printf("NO");         }
@@ -80,6 +83,9 @@ ID    [A-Z][a-zA-Z0-9]*
 "distinto"           { printf("DISTINTO");   }
 "de"                 { printf("DE");         }
 "tipo"               { printf("TIPO");       }
+"funciones"          { printf("FUNCIONES");  }
+"variables"          { printf("VARIABLES");  }
+"globales"           { printf("GLOBALES");   }
 
 ID                   { printf("ID");         }
 
