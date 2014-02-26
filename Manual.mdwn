@@ -10,7 +10,9 @@ Manual de referencia de Elene
 
 Notas:
 -----------
-> **Todas** las funciones deben terminar con ";", incluso los bloques de instrucciones.
+> YA NO --> **Todas** las funciones deben terminar con ";", incluso los bloques de instrucciones.
+
+> La última instrucción de un bloque no lleva ";", tampoco los bloques en sí.
 
 > Tener cuidado con las funciones que retornan vacío al ser llamadas para
   retornar, por ejemplo en `retornar Concatenar(Quicksort(Menores), Pivot,
@@ -76,6 +78,7 @@ Tipos de datos:
 * Caracter
 * Cadena de caracteres
 * Flotante
+* Arreglo
 
 Operadores
 -----------
@@ -96,6 +99,21 @@ Operadores
 
 ** **
 
+Preguntas para consulta
+-----------
+
+* Poner declaraciones de funciones en cualquier sitio complica mucho? (asi como las de variables)
+* Afecta usar por ejemplo el token "no" para negacion booleana y para oraciones en tokes
+* Llaves y paréntesis y esas cosas, deberían ir como tokens? 
+* Funciones locales?? Definidas en algún alcance arbitrario.
+* Bloques vacíos? Sin instrucciones o completamente vacíos.
+* Los arreglos son tipos primitivos? 
+* Como es lo de los arreglos? En la gramática se declara con el tipo "arreglo de entero"? 
+  o se declara "arreglo" y lo demás otra cosa. Y los límites? Cómo interactúan con el nombre?
+* Bloques anidados (arbitrariamente) tienen alguna complicación (parecida a la de variables declaradas
+  en cualquier sitio). Es decir hacer que un bloque sea una instrucción.
+
+
 
 Sintaxis:
 -----------
@@ -103,10 +121,24 @@ Sintaxis:
 > Los nombres de variable deben comenzar por letra mayúscula, y las palabras
   reservadas comienzan por minúscula.
 
-> Cada programa solo tendrá un bloque principal de instrucciones, el cual
+> YA ESTO NO VA, IGNORAR
+  Cada programa solo tendrá un bloque principal de instrucciones, el cual
   seguirá la siguiente sintaxis: `Guacara { Instrucciones }`
   Las instrucciones pueden ser declaraciones de variables, definiciones
   de funciones, o instrucciones arbitrarias.
+
+> Un programa en Elene tendrá un bloque de declaraciones de variables
+  (posiblemente uno de funciones) y un bloque de instrucciones.
+
+> Existirá una función principal llamada "Guacara" que debe ir obligatoriamente,
+  de modo que la sintaxis sería algo como:
+  Declaración de Variables Globales
+  Declaración de Funciones
+  Función principal.
+
+> AUN SIN DECIDIR Las funciones pueden tener bloques vacíos, o con solamente instrucciones
+
+> Para la sección de declaración de variables, si se especifica debe tener al menos una. 
 
 > Los arreglos deben declararse junto a sus límites. Se incluyen ambos
   extremos, de modo que un arreglo A[3..7] tendrá 5 elementos.
