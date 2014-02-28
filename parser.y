@@ -10,7 +10,7 @@ void yyerror (char const *);
 %}
 
 /*
-    Gramatica :)
+QqQ    Gramatica :)
 
 
 inicio : varglobal
@@ -31,7 +31,8 @@ tipo : BOOLEANO
      | CARACTER
      | STRING
      | VACIO
-     // FALTA ARREGLO
+     | ARREGLO DE tipo DE expr A expr
+     | LPAREN tipo RPAREN 
 
 
 funciones : programa
@@ -40,14 +41,14 @@ funciones : programa
 listaFunciones : decFuncion
                | decFuncion listaFunciones
 
-decFuncion : SEA LA FUNCION ID QUE RECIBE listArg Y RETORNA retorno HACER bloque 
-           | SEA LA FUNCION ID QUE RETORNA retorno HACER bloque
+decFuncion : SEA LA FUNCION ID QUE RECIBE listArg Y RETORNA tipo HACER bloque 
+           | SEA LA FUNCION ID QUE RETORNA tipo HACER bloque
            | SEA LA FUNCION ID QUE RECIBE listArg HACER bloque
 
-listArg : // FALTA
-
-
-retorno : // FALTA
+listArg : tipo ID
+        | tipo POR REFERENCIA ID
+        | tipo POR REFERENCIA ID COMMA listArg
+        | tipo ID COMMA listArg
 
 programa  : GUACARA bloque
 
@@ -85,6 +86,35 @@ instruccion : PARA asignacion TAL QUE expr CON CAMBIO expr HACER bloque
 
 
 
+
+ EXPRESIONES
+
+termino : ID
+        | NUMENTERO 
+        | NUMFLOTANTE
+        | VERDADERO
+        | FALSO
+
+expr : exprBooleana
+     | exprAritmetica
+     | termino
+
+
+exprBooleana : expr MENOR QUE expr
+             | expr MAYOR QUE expr
+             | expr MENOR O IGUAL QUE expr
+             | expr MAYOR O IGUAL QUE expr
+             | expr IGUAL A expr
+             | expr DISTINTO A expr
+             | NO exprBooleana 
+
+
+exprAritmetica : expr PLUS expr
+               | expr MINUS expr
+               | expr TIMES expr
+               | expr SLASH expr
+               | MINUS expr %prec NEG
+               | LPAREN expr RPAREN
 
 input :
       | input line
@@ -169,6 +199,9 @@ exp   : NUM                { $$ = $1;         }
 %token DISTINTO
 %token DE
 %token TIPO
+
+%token NUMENTERO
+%token NUMFLOTANTE
 
 %token FUNCIONES
 %token VARIABLES

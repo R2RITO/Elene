@@ -86,11 +86,12 @@ ID    [A-Z][a-zA-Z0-9]*
 "funciones"          { printf("FUNCIONES");  }
 "variables"          { printf("VARIABLES");  }
 "globales"           { printf("GLOBALES");   }
+"arreglo"            { printf("ARREGLO");    }
 
 ID                   { printf("ID");         }
 
-{DIGIT}+              { printf("ENTERO")  ; }
-{DIGIT}+("."{DIGIT}+) { printf("FLOTANTE"); }
+{DIGIT}+              { printf("NUMENTERO")  ; }
+{DIGIT}+("."{DIGIT}+) { printf("NUMFLOTANTE"); }
 
 %%
 
