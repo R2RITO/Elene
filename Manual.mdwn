@@ -8,6 +8,13 @@ Manual de referencia de Elene
 
 ***
 
+Cosas Importantes que faltan:
+-----------
+> Uniones y estructuras
+> Pasaje por valor y referencia
+> Arreglos
+> Opcionales
+
 Notas:
 -----------
 > YA NO --> **Todas** las funciones deben terminar con ";", incluso los bloques de instrucciones.
@@ -61,6 +68,11 @@ Lista de palabras reservadas:
     menor
     igual
     distinto
+    de
+    tipo
+    funciones
+    variables
+    globales
 `
 
 Mecanismos soportados:
@@ -89,12 +101,14 @@ Operadores
 * /
 
 **Operadores Booleanos:**
-* <=
-* >=
+* mayor que
+* menor que
+* mayor o igual que
+* menor o igual que
 * y
 * o
-* ==
-* !=
+* igual
+* distinto
 * no
 
 ** **
@@ -112,6 +126,11 @@ Preguntas para consulta
   o se declara "arreglo" y lo demás otra cosa. Y los límites? Cómo interactúan con el nombre?
 * Bloques anidados (arbitrariamente) tienen alguna complicación (parecida a la de variables declaradas
   en cualquier sitio). Es decir hacer que un bloque sea una instrucción.
+* Las expresiones booleanas (en la gramática) se deben separar? Por ejemplo
+  hacer una regla que diga exprBooleanaComparativa que contenga mayor que
+  y menor que, por ejemplo terminoAritmetico MAYOR QUE terminoAritmetico
+  y otra que sea para las expresiones booleanas? terminoBooleano Y terminoBooleano.
+
 
 
 
