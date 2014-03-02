@@ -9,6 +9,10 @@
 "."                  { return PERIOD;     }
 "="                  { return BECOMES;    }
 "entonces"           { return ENTONCES;   }
+"{"                  { return LBRACKET;   }
+"}"                  { return RBRACKET;   }
+"["                  { return LCORCHET;   }
+"]"                  { return RCORCHET;   }
 "o"                  { return O;          }
 "no"                 { return NO;         }
 "si"                 { return SI;         }
@@ -49,9 +53,12 @@
 "distinto"           { return DISTINTO;   }
 "de"                 { return DE;         }
 "tipo"               { return TIPO;       }
+"funciones"          { return FUNCIONES;  }
+"variables"          { return VARIABLES;  }
+"globales"           { return GLOBALES;   }
+"arreglo"            { return ARREGLO;    }
 
+{ID}                 { return ID;         }
 
-ID                   { return ID;         }
-
-{DIGIT}+              { sscanf(yytext, "%d" , &yylval); return ENTERO  ; }
-{DIGIT}+("."{DIGIT}+) { sscanf(yytext, "%lf", &yylval); return FLOTANTE; }
+{DIGIT}+              { sscanf(yytext, "%d" , &yylval); return NUMENTERO  ; }
+{DIGIT}+("."{DIGIT}+) { sscanf(yytext, "%lf", &yylval); return NUMFLOTANTE; }

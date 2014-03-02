@@ -9,21 +9,22 @@ void yyerror (char const *);
 
 %}
 
-/*
-QqQ    Gramatica :)
-
+%% 
 
 inicio : varglobal
 
 
 varglobal : funciones 
           | VARIABLES GLOBALES LBRACKET listaVariables RBRACKET funciones
+          ;
 
 listaVariables : decVariable
                | decVariable SEMICOLON listaVariables
+               ;
 
 decVariables   : SEA ID DE TIPO tipo
                | SEA ID DE TIPO tipo CON VALOR expr
+               ;
 
 tipo : BOOLEANO
      | ENTERO
@@ -33,72 +34,74 @@ tipo : BOOLEANO
      | VACIO
      | ARREGLO DE tipo DE expr A expr
      | LPAREN tipo RPAREN 
-
+     ;
 
 funciones : programa
           | FUNCIONES LBRACKET listaFunciones RBRACKET programa
-
+          ;
+    
 listaFunciones : decFuncion
                | decFuncion listaFunciones
+               ;
 
 decFuncion : SEA LA FUNCION ID QUE RECIBE listArg Y RETORNA tipo HACER bloque 
            | SEA LA FUNCION ID QUE RETORNA tipo HACER bloque
            | SEA LA FUNCION ID QUE RECIBE listArg HACER bloque
+           ;
 
 listArg : tipo ID
         | tipo POR REFERENCIA ID
         | tipo POR REFERENCIA ID COMMA listArg
         | tipo ID COMMA listArg
+        ;
 
 programa  : GUACARA bloque
-
+          ;
 
 bloque : LBRACKET variables RBRACKET
+       ;
 
 variables : listaInstruccion
           | VARIABLES LBRACKET listaVariables RBRACKET listaInstruccion
+          ;
 
 listaInstruccion : instruccion
                  | instruccion SEMICOLON listaInstruccion 
-
-
-instruccion : READ ID
-
-instruccion : IMPRIMIR ID
-
-instruccion : SI expr ENTONCES bloque
-            | SI expr ENTONCES bloque elseif
+                 ;
 
 elseif      : else
             | O SI expr ENTONCES bloque
             | O SI expr ENTONCES bloque elseif
+            ;
 
 else        : SI NO ENTONCES bloque
-
+            ;
 asignacion  : ID BECOMES expr
+            ;
 
-instruccion : asignacion 
+instruccion : READ ID
+            | IMPRIMIR ID
+            | SI expr ENTONCES bloque
+            | SI expr ENTONCES bloque elseif
+            | asignacion 
+            | MIENTRAS expr HACER bloque
+            | PARA asignacion TAL QUE expr CON CAMBIO expr HACER bloque 
+            ;
 
-instruccion : MIENTRAS expr HACER bloque
-
-instruccion : PARA asignacion TAL QUE expr CON CAMBIO expr HACER bloque 
 
 
-
-
-
- EXPRESIONES
 
 termino : ID
         | NUMENTERO 
         | NUMFLOTANTE
         | VERDADERO
         | FALSO
+        ;
 
 expr : exprBooleana
      | exprAritmetica
      | termino
-
+     ;
 
 exprBooleana : expr MENOR QUE expr
              | expr MAYOR QUE expr
@@ -107,7 +110,7 @@ exprBooleana : expr MENOR QUE expr
              | expr IGUAL A expr
              | expr DISTINTO A expr
              | NO exprBooleana 
-
+             ;
 
 exprAritmetica : expr PLUS expr
                | expr MINUS expr
@@ -115,29 +118,8 @@ exprAritmetica : expr PLUS expr
                | expr SLASH expr
                | MINUS expr %prec NEG
                | LPAREN expr RPAREN
-
-input :
-      | input line
-      ;
-     
-line  :     '\n'
-      | exp '\n'  { printf ("\t%.10g\n", $1); }
-      ;
-     
-exp   : NUM                { $$ = $1;         }
-      | exp '+' exp        { $$ = $1 + $3;    }
-      | exp '-' exp        { $$ = $1 - $3;    }
-      | exp '*' exp        { $$ = $1 * $3;    }
-      | exp '/' exp        { $$ = $1 / $3;    }
-      | '-' exp  %prec NEG { $$ = -$2;        }
-      | exp '^' exp        { $$ = pow ($1, $3); }
-      | '(' exp ')'        { $$ = $2;         }
-      ;
-
-
-
-
-
+               ;
+%%
 
 */
 

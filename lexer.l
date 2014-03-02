@@ -1,7 +1,7 @@
 %{
 #include <math.h>
 #include <unistd.h>
- // #include "y.tab.h"
+#include "y.tab.h"
  // Arturo #10-10774 Guacara dice que no es necesario
 
 %}
@@ -28,74 +28,71 @@ ID    [A-Z][a-zA-Z0-9]*
 
 [ \t\n] // Ignorar Espacios, Tabuladores y Saltos de Linea
 
-"+"                  { printf("PLUS");       }
-"-"                  { printf("MINUS");      }
-"*"                  { printf("TIMES");      }
-"/"                  { printf("SLASH");      }
-"("                  { printf("LPAREN");     }
-")"                  { printf("RPAREN");     }
-";"                  { printf("SEMICOLON");  }
-","                  { printf("COMMA");      }
-"."                  { printf("PERIOD");     }
-"="                  { printf("BECOMES");    }
-"{"                  { printf("LBRACKET");   }
-"}"                  { printf("RBRACKET");   }
-"["                  { printf("LCORCHET");   }
-"]"                  { printf("RCORCHET");   }
-"entonces"           { printf("ENTONCES");   }
-"o"                  { printf("O");          }
-"no"                 { printf("NO");         }
-"si"                 { printf("SI");         }
-"mientras"           { printf("MIENTRAS");   }
-"hacer"              { printf("HACER");      }
-"para"               { printf("PARA");       }
-"tal"                { printf("TAL");        }
-"que"                { printf("QUE");        }
-"con"                { printf("CON");        }
-"cambio"             { printf("CAMBIO");     }
-"leer"               { printf("LEER");       }
-"imprimir"           { printf("IMPRIMIR");   }
-"la"                 { printf("LA");         }
-"funcion"            { printf("FUNCION");    }
-"recibe"             { printf("RECIBE");     }
-"y"                  { printf("Y");          }
-"retorna"            { printf("RETORNA");    }
-"sea"                { printf("SEA");        }
-"estructura"         { printf("ESTRUCTURA"); }
-"contiene"           { printf("CONTIENE");   }
-"union"              { printf("UNION");      }
-"vacio"              { printf("VACIO");      }
-"guacara"            { printf("GUACARA");    }
-"entero"             { printf("ENTERO");     }
-"caracter"           { printf("CARACTER");   }
-"flotante"           { printf("FLOTANTE");   }
-"booleano"           { printf("BOOLEANO");   }
-"string"             { printf("STRING");     }
-"retornar"           { printf("RETORNAR");   }
-"valor"              { printf("VALOR");      }
-"verdadero"          { printf("VERDADERO");  }
-"falso"              { printf("FALSO");      }
-"es"                 { printf("ES");         }
-"a"                  { printf("A");          }
-"mayor"              { printf("MAYOR");      }
-"menor"              { printf("MENOR");      }
-"igual"              { printf("IGUAL");      }
-"distinto"           { printf("DISTINTO");   }
-"de"                 { printf("DE");         }
-"tipo"               { printf("TIPO");       }
-"funciones"          { printf("FUNCIONES");  }
-"variables"          { printf("VARIABLES");  }
-"globales"           { printf("GLOBALES");   }
-"arreglo"            { printf("ARREGLO");    }
+"+"                  { return PLUS;       }
+"-"                  { return MINUS;      }
+"*"                  { return TIMES;      }
+"/"                  { return SLASH;      }
+"("                  { return LPAREN;     }
+")"                  { return RPAREN;     }
+";"                  { return SEMICOLON;  }
+","                  { return COMMA;      }
+"."                  { return PERIOD;     }
+"="                  { return BECOMES;    }
+"entonces"           { return ENTONCES;   }
+"{"                  { return LBRACKET;   }
+"}"                  { return RBRACKET;   }
+"["                  { return LCORCHET;   }
+"]"                  { return RCORCHET;   }
+"o"                  { return O;          }
+"no"                 { return NO;         }
+"si"                 { return SI;         }
+"mientras"           { return MIENTRAS;   }
+"hacer"              { return HACER;      }
+"para"               { return PARA;       }
+"tal"                { return TAL;        }
+"que"                { return QUE;        }
+"con"                { return CON;        }
+"cambio"             { return CAMBIO;     }
+"leer"               { return LEER;       }
+"imprimir"           { return IMPRIMIR;   }
+"la"                 { return LA;         }
+"funcion"            { return FUNCION;    }
+"recibe"             { return RECIBE;     }
+"y"                  { return Y;          }
+"retorna"            { return RETORNA;    }
+"sea"                { return SEA;        }
+"estructura"         { return ESTRUCTURA; }
+"contiene"           { return CONTIENE;   }
+"union"              { return UNION;      }
+"vacio"              { return VACIO;      }
+"guacara"            { return GUACARA;    }
+"entero"             { return ENTERO;     }
+"caracter"           { return CARACTER;   }
+"flotante"           { return FLOTANTE;   }
+"booleano"           { return BOOLEANO;   }
+"string"             { return STRING;     }
+"retornar"           { return RETORNAR;   }
+"valor"              { return VALOR;      }
+"verdadero"          { return VERDADERO;  }
+"falso"              { return FALSO;      }
+"es"                 { return ES;         }
+"a"                  { return A;          }
+"mayor"              { return MAYOR;      }
+"menor"              { return MENOR;      }
+"igual"              { return IGUAL;      }
+"distinto"           { return DISTINTO;   }
+"de"                 { return DE;         }
+"tipo"               { return TIPO;       }
+"funciones"          { return FUNCIONES;  }
+"variables"          { return VARIABLES;  }
+"globales"           { return GLOBALES;   }
+"arreglo"            { return ARREGLO;    }
 
-ID                   { printf("ID");         }
+{ID}                 { return ID;         }
 
-{DIGIT}+              { printf("NUMENTERO")  ; }
-{DIGIT}+("."{DIGIT}+) { printf("NUMFLOTANTE"); }
+{DIGIT}+              { sscanf(yytext, "%d" , &yylval); return NUMENTERO  ; }
+{DIGIT}+("."{DIGIT}+) { sscanf(yytext, "%lf", &yylval); return NUMFLOTANTE; }
 
 %%
 
-
-main() {
-    yylex();
-}
+yywrap() { }
