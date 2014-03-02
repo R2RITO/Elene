@@ -3,34 +3,43 @@
 #include <unistd.h>
 #include "y.tab.h"
  // Arturo #10-10774 Guacara dice que no es necesario
-
+    
+    void count();
+    int column = 0;
 %}
 
 DIGIT [0-9]
 ID    [A-Z][a-zA-Z0-9]*
+CARACTER [a-zA-Z0-9]
 
-%option lex-compat
-
+%option yylineno
 %x comment
+
 %%
-        int line_num = 1;
+
 
 "/*"         BEGIN(comment);
 
 <comment>[^*\n]*        /* eat anything that's not a '*' */
 <comment>"*"+[^*/\n]*   /* eat up '*'s not followed by '/'s */
-<comment>\n             ++line_num;
+<comment>\n             ;
 <comment>"*"+"/"        BEGIN(INITIAL);
 
 
-\"(\\.|[^\\"])*\"    { printf("%d STRING\n", &yylineno);   }
+\"(\\.|[^\\"])*\"    { count(); printf("%d %d STRING\n", yylineno, column); return STRING;  }
 
 
-[ \t\n] // Ignorar Espacios, Tabuladores y Saltos de Linea
 
-"+"                  { return PLUS;       }
-"-"                  { return MINUS;      }
-"*"                  { return TIMES;      }
+
+[ \t] // Ignorar Espacios, Tabuladores y Saltos de Linea
+[\n]                 { }
+
+
+"'"+{CARACTER}+"'"   { count(); return CONSTCARACTER; }
+
+"+"                  { count(); return PLUS;       }
+"-"                  { count(); return MINUS;      }
+"*"                  { count(); return TIMES;      }
 "/"                  { return SLASH;      }
 "("                  { return LPAREN;     }
 ")"                  { return RPAREN;     }
@@ -94,5 +103,21 @@ ID    [A-Z][a-zA-Z0-9]*
 {DIGIT}+("."{DIGIT}+) { sscanf(yytext, "%lf", &yylval); return NUMFLOTANTE; }
 
 %%
+
+
+void count()
+{
+    int i;
+
+    for (i = 0; yytext[i] != '\0'; i++)
+        if (yytext[i] == '\n')
+            column = 0;
+        else if (yytext[i] == '\t')
+            column += 8 - (column % 8);
+        else
+            column++;
+
+    ECHO;
+}
 
 yywrap() { }

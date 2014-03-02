@@ -77,9 +77,9 @@ void yyerror (char const *);
 %token ID
 %token LA
 %token POR
-%token READ
 %token REFERENCIA
 
+%token CONSTCARACTER
 
 %left O
 %left Y
@@ -159,13 +159,13 @@ else        : SI NO ENTONCES bloque
 asignacion  : ID BECOMES expr
             ;
 
-instruccion : READ ID
-            | IMPRIMIR ID
+instruccion : LEER ID
+            | IMPRIMIR expr
             | SI expr ENTONCES bloque
             | SI expr ENTONCES bloque elseif
             | asignacion 
             | MIENTRAS expr HACER bloque
-            | PARA asignacion TAL QUE expr CON CAMBIO expr HACER bloque 
+            | PARA asignacion TAL QUE expr CON CAMBIO asignacion HACER bloque 
             ;
 
 
@@ -197,8 +197,9 @@ terminal : VERDADERO   { $$ = 1; }
          | FALSO       { $$ = 0; }
          | NUMENTERO   { $$ = $1; }
          | NUMFLOTANTE { $$ = $1; }
-         | CARACTER    { $$ = $1; }
+         | CONSTCARACTER    { $$ = $1; }
          | ID          { $$ = $1; }
+         | STRING      { $$ = $1; } /* Hay q revisar esto */
          ;
 
 
