@@ -1,14 +1,27 @@
 %{
 
-#define YYSTYPE double
+/*#define YYSTYPE double*/
 #include <math.h>
 #include <stdio.h>
 
 int yylex (void);
 void yyerror (char const *);
 
+#define YYERROR_VERBOSE 1
+
+#define YYLTYPE YYLTYPE
+typedef struct YYLTYPE {
+    int first_line;
+    int first_column;
+    int last_line;
+    int last_column;
+    char *filename;
+} YYLTYPE;
+
 %}
-     
+    
+%locations
+ 
 /* Bison declarations.  */
 %token PLUS
 %token MINUS
@@ -88,6 +101,9 @@ void yyerror (char const *);
 %left PLUS MINUS
 %left TIMES SLASH
 %left NEG
+
+
+%start inicio
      
 %% /* The grammar follows.  */
 
@@ -156,7 +172,7 @@ elseif      : else
 
 else        : SI NO ENTONCES bloque
             ;
-asignacion  : ID BECOMES expr
+asignacion  : ID BECOMES expr { printf("%d\n", $3); }
             ;
 
 instruccion : LEER ID
@@ -241,7 +257,7 @@ terminal : VERDADERO
 
 void yyerror (char const *s)
 {
-  fprintf (stderr, "%s\n", s);
+  fprintf (stderr, "Linea %d, Columna %d: %s\n", yylloc.first_line, yylloc.first_column, s);
 }
 
 void main (int argc,char **argv)

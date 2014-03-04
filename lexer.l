@@ -6,6 +6,10 @@
     
     void count();
     int column = 0;
+
+#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno; \
+yylloc.first_column = column; yylloc.last_column = column+yyleng-1;
+
 %}
 
 DIGIT [0-9]
@@ -13,6 +17,7 @@ ID    [A-Z][a-zA-Z0-9]*
 CARACTER [a-zA-Z0-9]
 
 %option yylineno
+
 %x comment
 
 %%
@@ -26,13 +31,13 @@ CARACTER [a-zA-Z0-9]
 <comment>"*"+"/"        BEGIN(INITIAL);
 
 
-\"(\\.|[^\\"])*\"    { count(); printf("%d %d STRING\n", yylineno, column); return STRING;  }
+\"(\\.|[^\\"])*\"    { printf("%d %d %s\n", yylineno, column, yytext); count(); return STRING;  }
 
 
 
 
-[ \t] // Ignorar Espacios, Tabuladores y Saltos de Linea
-[\n]                 { }
+[ \t]                { count(); }// Ignorar Espacios, Tabuladores y Saltos de Linea
+[\n]                 { count(); }
 
 
 "'"+{CARACTER}+"'"   { count(); return CONSTCARACTER; }
@@ -40,67 +45,68 @@ CARACTER [a-zA-Z0-9]
 "+"                  { count(); return PLUS;       }
 "-"                  { count(); return MINUS;      }
 "*"                  { count(); return TIMES;      }
-"/"                  { return SLASH;      }
-"("                  { return LPAREN;     }
-")"                  { return RPAREN;     }
-";"                  { return SEMICOLON;  }
-","                  { return COMMA;      }
-"."                  { return PERIOD;     }
-"="                  { return BECOMES;    }
-"entonces"           { return ENTONCES;   }
-"{"                  { return LBRACKET;   }
-"}"                  { return RBRACKET;   }
-"["                  { return LCORCHET;   }
-"]"                  { return RCORCHET;   }
-"o"                  { return O;          }
-"no"                 { return NO;         }
-"si"                 { return SI;         }
-"mientras"           { return MIENTRAS;   }
-"hacer"              { return HACER;      }
-"para"               { return PARA;       }
-"tal"                { return TAL;        }
-"que"                { return QUE;        }
-"con"                { return CON;        }
-"cambio"             { return CAMBIO;     }
-"leer"               { return LEER;       }
-"imprimir"           { return IMPRIMIR;   }
-"la"                 { return LA;         }
-"funcion"            { return FUNCION;    }
-"recibe"             { return RECIBE;     }
-"y"                  { return Y;          }
-"retorna"            { return RETORNA;    }
-"sea"                { return SEA;        }
-"estructura"         { return ESTRUCTURA; }
-"contiene"           { return CONTIENE;   }
-"union"              { return UNION;      }
-"vacio"              { return VACIO;      }
-"guacara"            { return GUACARA;    }
-"entero"             { return ENTERO;     }
-"caracter"           { return CARACTER;   }
-"flotante"           { return FLOTANTE;   }
-"booleano"           { return BOOLEANO;   }
-"string"             { return STRING;     }
-"retornar"           { return RETORNAR;   }
-"valor"              { return VALOR;      }
-"verdadero"          { return VERDADERO;  }
-"falso"              { return FALSO;      }
-"es"                 { return ES;         }
-"a"                  { return A;          }
-"mayor"              { return MAYOR;      }
-"menor"              { return MENOR;      }
-"igual"              { return IGUAL;      }
-"distinto"           { return DISTINTO;   }
-"de"                 { return DE;         }
-"tipo"               { return TIPO;       }
-"funciones"          { return FUNCIONES;  }
-"variables"          { return VARIABLES;  }
-"globales"           { return GLOBALES;   }
-"arreglo"            { return ARREGLO;    }
+"/"                  { count(); return SLASH;      }
+"("                  { count(); return LPAREN;     }
+")"                  { count(); return RPAREN;     }
+";"                  { count(); return SEMICOLON;  }
+","                  { count(); return COMMA;      }
+"."                  { count(); return PERIOD;     }
+"="                  { count(); return BECOMES;    }
+"entonces"           { count(); return ENTONCES;   }
+"{"                  { count(); return LBRACKET;   }
+"}"                  { count(); return RBRACKET;   }
+"["                  { count(); return LCORCHET;   }
+"]"                  { count(); return RCORCHET;   }
+"o"                  { count(); return O;          }
+"no"                 { count(); return NO;         }
+"si"                 { count(); return SI;         }
+"mientras"           { count(); return MIENTRAS;   }
+"hacer"              { count(); return HACER;      }
+"para"               { count(); return PARA;       }
+"tal"                { count(); return TAL;        }
+"que"                { count(); return QUE;        }
+"con"                { count(); return CON;        }
+"cambio"             { count(); return CAMBIO;     }
+"leer"               { count(); return LEER;       }
+"imprimir"           { count(); return IMPRIMIR;   }
+"la"                 { count(); return LA;         }
+"funcion"            { count(); return FUNCION;    }
+"recibe"             { count(); return RECIBE;     }
+"y"                  { count(); return Y;          }
+"retorna"            { count(); return RETORNA;    }
+"sea"                { count(); return SEA;        }
+"estructura"         { count(); return ESTRUCTURA; }
+"contiene"           { count(); return CONTIENE;   }
+"union"              { count(); return UNION;      }
+"vacio"              { count(); return VACIO;      }
+"guacara"            { count(); return GUACARA;    }
+"entero"             { count(); return ENTERO;     }
+"caracter"           { count(); return CARACTER;   }
+"flotante"           { count(); return FLOTANTE;   }
+"booleano"           { count(); return BOOLEANO;   }
+"string"             { count(); return STRING;     }
+"retornar"           { count(); return RETORNAR;   }
+"valor"              { count(); return VALOR;      }
+"verdadero"          { count(); return VERDADERO;  }
+"falso"              { count(); return FALSO;      }
+"es"                 { count(); return ES;         }
+"a"                  { count(); return A;          }
+"mayor"              { count(); return MAYOR;      }
+"menor"              { count(); return MENOR;      }
+"igual"              { count(); return IGUAL;      }
+"distinto"           { count(); return DISTINTO;   }
+"de"                 { count(); return DE;         }
+"tipo"               { count(); return TIPO;       }
+"funciones"          { count(); return FUNCIONES;  }
+"variables"          { count(); return VARIABLES;  }
+"globales"           { count(); return GLOBALES;   }
+"arreglo"            { count(); return ARREGLO;    }
+{ID}                 { count(); return ID;         }
 
-{ID}                 { return ID;         }
+{DIGIT}+              { count(); sscanf(yytext, "%d" , &yylval); return NUMENTERO  ; }
+{DIGIT}+("."{DIGIT}+) { count(); sscanf(yytext, "%lf", &yylval); return NUMFLOTANTE; }
 
-{DIGIT}+              { sscanf(yytext, "%d" , &yylval); return NUMENTERO  ; }
-{DIGIT}+("."{DIGIT}+) { sscanf(yytext, "%lf", &yylval); return NUMFLOTANTE; }
+.           { printf("ERROR: %s\n", yytext); }
 
 %%
 
@@ -111,13 +117,11 @@ void count()
 
     for (i = 0; yytext[i] != '\0'; i++)
         if (yytext[i] == '\n')
-            column = 0;
+            column = 1;
         else if (yytext[i] == '\t')
             column += 8 - (column % 8);
         else
             column++;
-
-    ECHO;
 }
 
 yywrap() { }

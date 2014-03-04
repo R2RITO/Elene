@@ -10,6 +10,7 @@ variables globales {
 funciones {
 
     sea la funcion PrintHola que retorna vacio hacer {
+        imprimir "Esto es una pruebita";
         imprimir "Hola"
     }
 
@@ -34,10 +35,12 @@ guacara {
     si (X menor que 2+3) entonces {
 
         variables {
+
             sea Y de tipo entero con valor 17
         }
-
-        X = X + Y;
+        imprimir "Aqui es";
+        X = X + verdadero;
+        imprimir "Aqui fue";
         X = X * X
 
     } o si (X igual a 10) entonces {
