@@ -3,17 +3,16 @@
 #include <string>  /* Librerias para el manejo de Strings */
 #include <climits> /* Librerias para detecter overflows */
 #include <cstdlib>
-#include "y.tab.h"
+#include <cerrno>
+#include "parser.tab.hh"
+
 
 /* Definiciones */
 #undef yywrap      /* Desactivamos interaccion por consola */
 #define yywrap() 1 /* Decimos a flex que yywrap esta definido */
 
-static yy::location posicion; /* Posicion del token actual */
 
-/* Accion ejecutada cada vez que se obtiene un Token */
-/* Se escribe el numero de columna del token */
-#define YY_USER_ACTION posicion.columns (yyleng);
+static yy::location posicion; /* Posicion del token actual */
 
 %}
 
@@ -22,12 +21,21 @@ static yy::location posicion; /* Posicion del token actual */
 %option nounput
 %option batch
 %option debug
+%option c++
 
 %x comment
 
 DIGIT [0-9]
 ID    [A-Z][a-zA-Z0-9]*
 CARACTER [a-zA-Z0-9]
+
+%{
+
+/* Accion ejecutada cada vez que se obtiene un Token */
+/* Se escribe el numero de columna del token */
+#define YY_USER_ACTION posicion.columns (yyleng);
+
+%}
 
 %%
 
@@ -50,12 +58,6 @@ CARACTER [a-zA-Z0-9]
 
 \"(\\.|[^\\"])*\"    { return (yy::LN_parser::make_STRING("HOLA", posicion));  }
 "'"+{CARACTER}+"'"   { return (yy::LN_parser::make_CONSTCARACTER('H',posicion)); }
-
-
-
-
-
-
 
 {ID}                  { return (yy::LN_parser::make_ID("Hola", posicion)); }
 
@@ -82,4 +84,3 @@ CARACTER [a-zA-Z0-9]
 
 
 %%
-//Aqui no va nada mas

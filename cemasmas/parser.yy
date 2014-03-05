@@ -2,7 +2,9 @@
 %require "3.0.2"
 
 %{
-//#include <ARBOLSINTACTICO.hh> 
+//#include <ARBOLSINTACTICO.hh>
+int yylex(void);
+void yyerror(const char *);
 %}
 
 %defines
@@ -28,7 +30,6 @@
 %define api.token.prefix {TOK_}
 %token
     ENDFILE 0 "Fin de archivo"
-    SEMICOLON ";"
     /* Todos los tokens que no tengan tipo ... PARA...SI...*/
 ;
 
@@ -40,9 +41,10 @@
 %token <int> VERDADERO "Verdadero"
 %token <int> FALSO "Falso"
 
-%start inicio
+%printer { yyoutput << $$; } <*>;
 
 %%
+%start inicio;
 
 inicio : terminal { };
 
