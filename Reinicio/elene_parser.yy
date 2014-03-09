@@ -9,6 +9,7 @@
 
 %code requires {
     #include <string>
+    #include <iostream>
     class elene_driver;
 }
 
@@ -107,7 +108,7 @@
 %nonassoc LT GT LE GE
 %left PLUS MINUS
 %left TIMES SLASH
-%left NEG
+%left NEG NEGBOOL
 %printer { yyoutput << $$; } <*>;
 
 %%
@@ -115,7 +116,7 @@
 %start inicio;
 
 
-inicio : varglobal
+inicio : expr
 
 
 varglobal : funciones 
@@ -195,27 +196,31 @@ instruccion : LEER ID
 
 
 expr : LPAREN expr RPAREN 
-     | exprBooleana       
-     | exprAritmetica     
+     | exprBinaria       
+     | exprUnaria     
      | terminal           
      ;
 
-exprBooleana : expr MAYOR QUE expr %prec LT         
-             | expr MENOR QUE expr %prec GT         
-             | expr MAYOR O IGUAL QUE expr %prec GE 
-             | expr MENOR O IGUAL QUE expr %prec LE 
-             | expr IGUAL A expr %prec EQ           
-             | expr DISTINTO A expr %prec NE        
-             | expr Y expr                          
-             | expr O expr                          
-             ;
+exprBinaria : expr operador expr { std::cout << "Expresion \n"; }
+            ;
 
-exprAritmetica : expr PLUS expr  
-               | expr MINUS expr 
-               | expr TIMES expr 
-               | expr SLASH expr 
-               ;
- 
+operador : MAYOR QUE %prec GT  { std::cout << "mayor\n"; }
+         | MENOR QUE %prec LT  { std::cout << "menor\n"; }
+         | MAYOR O IGUAL QUE %prec GE { std::cout << "mayorigual\n"; }
+         | MENOR O IGUAL QUE %prec LE { std::cout << "menorigual\n"; }
+         | IGUAL A %prec EQ { std::cout << "igual\n"; }
+         | DISTINTO A %prec NE { std::cout << "distinto\n"; }
+         | Y { std::cout << "y\n"; }
+         | O { std::cout << "o\n"; }
+         | PLUS { std::cout << "mas\n"; }
+         | MINUS { std::cout << "menps\n"; }
+         | TIMES { std::cout << "por\n"; }
+         | SLASH { std::cout << "entre\n"; }
+         ; 
+
+exprUnaria : MINUS expr %prec NEG { std::cout << "menos unario \n"; }
+           | NO expr %prec NEGBOOL {std::cout << "negacion \n"; }
+           ;
 
 terminal : VERDADERO        
          | FALSO           

@@ -11,13 +11,14 @@
 class elene_ID {
 
     public:
-        elene_ID(<std::string> nombre, <std::string> tipo, void valor);
-        <std::string> nombre;
-        <std::string> tipo;
-        void valor;
+        elene_ID(std::string nombre, std::string tipo, elene_EXPR valor);
+        std::string nombre;
+        std::string tipo;
+        elene_EXPR valor;
 }
 
-elene_ID::elene_ID(<std::string> nombre, <std::string> tipo, void valor) {
+
+elene_ID::elene_ID(std::string nombre, std::string tipo, elene_EXP valor) {
 
     this -> nombre = nombre;
     this -> tipo   = tipo;
@@ -123,12 +124,12 @@ elene_IMPRIMIR::elene_IMPRIMIR(elene_EXPR valor) {
 
 
 
-class elene_DECVAR {
+/*class elene_DECVAR {
 
     public:
         <
 }
-
+*/
 
 
 
