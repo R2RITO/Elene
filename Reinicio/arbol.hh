@@ -123,6 +123,37 @@ elene_IMPRIMIR::elene_IMPRIMIR(elene_EXPR valor) {
 
 
 
+class elene_DECVAR {
+
+    public:
+        <
+}
+
+
+
+
+
+/* Falta considerar aun la tabla de simbolos, no sirve aun*/
+class elene_BLOQUE {
+
+    public:
+        elene_BLOQUE(void vars, <std::list<elene_INST>> insts);
+        void vars;
+        <std::list<elene_INST>> insts;
+}
+
+
+elene_BLOQUE::elene_BLOQUE(void vars , <std::list<elene_INST>> insts) {
+    this -> vars = vars;
+    this -> insts = insts;
+}
+
+
+
+
+
+
+
 
 /* REVISAR EL IF, FALTAN COSAS COMO ELSIF Y ELSE*/ 
 class elene_CONDICIONALSI {
@@ -205,6 +236,8 @@ elene_PARA::elene_PARA(elene_ASIGNACION asig, elene_EXPR expr, elene_ASIGNACION 
     this -> cambio = cambio;
     this -> bloque = bloque;
 }
+
+
 
 
 
