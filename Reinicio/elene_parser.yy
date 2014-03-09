@@ -104,8 +104,8 @@
 %token REFERENCIA
 %left O
 %left Y
-%left EQ NE
-%nonassoc LT GT LE GE
+%left IGUAL DISTINTO A
+%nonassoc MAYOR MENOR QUE
 %left PLUS MINUS
 %left TIMES SLASH
 %left NEG NEGBOOL
@@ -116,8 +116,7 @@
 %start inicio;
 
 
-inicio : expr
-
+inicio : varglobal
 
 varglobal : funciones 
           | VARIABLES GLOBALES LBRACKET listaVariables RBRACKET funciones
@@ -201,22 +200,19 @@ expr : LPAREN expr RPAREN
      | terminal           
      ;
 
-exprBinaria : expr operador expr { std::cout << "Expresion \n"; }
+exprBinaria : expr Y expr { std::cout << "y\n"; }
+            | expr O expr { std::cout << "o\n"; }
+            | expr PLUS expr { std::cout << "mas\n"; }
+            | expr MINUS expr { std::cout << "menps\n"; }
+            | expr TIMES expr { std::cout << "por\n"; }
+            | expr SLASH expr { std::cout << "entre\n"; }
+            | expr MAYOR QUE expr 
+            | expr MENOR QUE expr
+            | expr MAYOR O IGUAL QUE expr
+            | expr MENOR O IGUAL QUE expr
+            | expr DISTINTO A expr
+            | expr IGUAL A expr
             ;
-
-operador : MAYOR QUE %prec GT  { std::cout << "mayor\n"; }
-         | MENOR QUE %prec LT  { std::cout << "menor\n"; }
-         | MAYOR O IGUAL QUE %prec GE { std::cout << "mayorigual\n"; }
-         | MENOR O IGUAL QUE %prec LE { std::cout << "menorigual\n"; }
-         | IGUAL A %prec EQ { std::cout << "igual\n"; }
-         | DISTINTO A %prec NE { std::cout << "distinto\n"; }
-         | Y { std::cout << "y\n"; }
-         | O { std::cout << "o\n"; }
-         | PLUS { std::cout << "mas\n"; }
-         | MINUS { std::cout << "menps\n"; }
-         | TIMES { std::cout << "por\n"; }
-         | SLASH { std::cout << "entre\n"; }
-         ; 
 
 exprUnaria : MINUS expr %prec NEG { std::cout << "menos unario \n"; }
            | NO expr %prec NEGBOOL {std::cout << "negacion \n"; }
@@ -229,7 +225,7 @@ terminal : VERDADERO
          | CONSTCARACTER
          | ID           
          | STRING      
-
+         ;
 
 %%
 
