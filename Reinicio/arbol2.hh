@@ -6,6 +6,10 @@
 # include <iostream>
 
 
+/***************************************************************/
+/****** EXPRESIONES ********************************************/
+/***************************************************************/
+
 class elene_EXPR /* : public printable */ {
 
 protected:
@@ -20,8 +24,9 @@ public:
 };
 
 
-
-
+/***************************************************************/
+/****** EXPRESIONES BINARIAS ***********************************/
+/***************************************************************/
 
 class elene_EXPRBINARIA : public elene_EXPR {
 
@@ -43,7 +48,6 @@ public:
         return obj.stream_write(stream); 
     }
 };
-
 
 
 
@@ -555,6 +559,158 @@ public:
         }
     }
 };
+
+/**********************************************************/
+/***** EXPRESIONES UNARIAS ********************************/
+/**********************************************************/
+
+class elene_EXPRUNARIA : public elene_EXPR {
+
+protected:
+    elene_EXPR* expr;
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const = 0; 
+
+public:
+    /* Declaracion de constructor */
+    elene_EXPRUNARIA() {};
+    elene_EXPRUNARIA(elene_EXPR* E):expr(E) {};
+    /* Declaracion de destructor */
+    virtual ~elene_EXPRUNARIA () {}
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_EXPRUNARIA& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+
+/* Clase para el menos unario */
+class elene_MENOSUNARIO : public elene_EXPRUNARIA { 
+
+protected:
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Menos Unario:\n" 
+                   << "  Expr:\n" << (*expr));
+    }
+
+public:
+
+    /* Constructor */
+    elene_MENOSUNARIO(elene_EXPR* E): elene_EXPRUNARIA(E) {}
+
+    /* Metodo para copiar */
+    elene_MENOSUNARIO(const elene_MENOSUNARIO &other) {
+        expr = other.expr;
+    }
+
+    /* Metodo destructor */
+    virtual ~elene_MENOSUNARIO() {
+        delete expr;
+    }
+
+    elene_MENOSUNARIO &operator = (const elene_MENOSUNARIO &other) {
+
+        if (&other != this) {
+
+            delete expr;
+            expr = other.expr;
+
+        }
+    }
+};
+
+
+/* Clase para la negacion booleana */
+class elene_NEGACION : public elene_EXPRUNARIA { 
+
+protected:
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Menos Unario:\n" 
+                   << "  Expr:\n" << (*expr));
+    }
+
+public:
+
+    /* Constructor */
+    elene_NEGACION(elene_EXPR* E): elene_EXPRUNARIA(E) {}
+
+    /* Metodo para copiar */
+    elene_NEGACION(const elene_NEGACION &other) {
+        expr = other.expr;
+    }
+
+    /* Metodo destructor */
+    virtual ~elene_NEGACION() {
+        delete expr;
+    }
+
+    elene_NEGACION &operator = (const elene_NEGACION &other) {
+
+        if (&other != this) {
+
+            delete expr;
+            expr = other.expr;
+
+        }
+    }
+};
+
+
+
+
+/*****************************************************************/
+/******* INSTRUCCIONES *******************************************/
+/*****************************************************************/
+
+class elene_INST /* : public printable */ {
+
+protected:
+    /* Metodo para imprimir a ser sobreescrito por los hijos */
+    virtual std::ostream& stream_write(std::ostream& os) const = 0; 
+
+public:
+    /* Sobrecarga del operador << */
+    friend std::ostream& operator<< (std::ostream& stream,const elene_INST& obj){
+        return obj.stream_write(stream); 
+    }
+};
+
+
+
+class elene_INSTLEER : public elene_INST {
+
+protected:
+
+    elene_ID* id;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Instruccion Leer:\n" 
+                   << "  ID:\n" << (*id));
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_INSTLEER() {};
+    elene_INSTLEER(elene_ID* identrada): id(identrada) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_INSTLEER () {
+        delete id;    
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_EXPRBINARIA& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+
 
 
 # endif
