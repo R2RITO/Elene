@@ -404,7 +404,7 @@ public:
     elene_MENORIGUAL(elene_EXPR* izq, elene_EXPR* der): elene_EXPRBINARIA(izq, der) {}
 
     /* Metodo para copiar */
-    elene_MENORIGUAL(const elene_MENOR &other) {
+    elene_MENORIGUAL(const elene_MENORIGUAL &other) {
         expr_izq = other.expr_izq;
         expr_der = other.expr_der;
     }
