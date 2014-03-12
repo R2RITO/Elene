@@ -666,6 +666,8 @@ public:
 /*****************************************************************/
 
 /* Clase para el terminal */
+/* Pendiente con ese string*, fue para que no chillara g++
+   ademas de que no es seguro que solo un string con el nombre sea el miembro */
 class elene_EXPRTERMINAL : public elene_EXPR {
 
 protected:
@@ -802,6 +804,7 @@ public:
 
 /* Clase para el condicional */
 /* Falta la parte del else y sus relativos */
+/* Ese bloque es un elene_BLOQUE que no existe aun */
 class elene_INSTCOND : public elene_INST {
 
 protected:
@@ -834,7 +837,7 @@ public:
 };
 
 
-/* Clase para el condicional */
+/* Clase para la asignacion */
 class elene_INSTASIG : public elene_INST {
 
 protected:
@@ -865,5 +868,255 @@ public:
         return obj.stream_write(stream); 
     }
 };
+
+
+/* Clase para la iteracion indeterminada */
+/* Ese bloque es elene_BLOQUE */
+/* ALERTA: Lo que le sigue al guail es un bloque a juro? no puede ser inst directo? pensar esto <---- */
+class elene_INSTMIENTRAS : public elene_INST {
+
+protected:
+
+    elene_EXPR* condicion;
+    elene_EXPR* bloque; 
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Instruccion Mientras:\n" 
+                   << "  Condicion:\n" << (*condicion)
+                   << "  Bloque:\n" << (*bloque));
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_INSTMIENTRAS() {};
+    elene_INSTMIENTRAS(elene_EXPR* cond, elene_EXPR* blq): condicion(cond), bloque(blq) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_INSTMIENTRAS () {
+        delete condicion;
+        delete bloque;    
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_INSTMIENTRAS& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+
+/* Clase para la iteracion determinada */
+/* Ese bloque es elene_BLOQUE */
+class elene_INSTPARA : public elene_INST {
+
+protected:
+
+    elene_INSTASIG* asignacion;
+    elene_EXPR* condicion;
+    elene_INSTASIG* cambio;
+    elene_EXPR* bloque; 
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Instruccion Para:\n" 
+                   << "  Asignacion:\n" << (*asignacion)
+                   << "  Condicion:\n" << (*condicion)
+                   << "  Cambio:\n" << (*cambio)
+                   << "  Bloque:\n" << (*bloque));
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_INSTPARA() {};
+    elene_INSTPARA(elene_INSTASIG* asig, elene_EXPR* cond, elene_INSTASIG* cmb, elene_EXPR* blq): 
+                asignacion(asig), condicion(cond), cambio(cmb), bloque(blq) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_INSTPARA () {
+        delete asignacion;        
+        delete condicion;
+        delete cambio;
+        delete bloque;    
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_INSTPARA& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+
+/*****************************************************************/
+/******* LISTA DE INSTRUCCIONES **********************************/
+/*****************************************************************/
+
+/* Notar que tal vez no sea necesaria la clase abstracta y las dos implementaciones
+   ya que se puede hacer solo una concreta que tenga los dos casos */
+
+/* Clase abstracta para la lista de instrucciones */
+
+class elene_LISTAINST /* : public printable */ {
+
+protected:
+    /* Metodo para imprimir a ser sobreescrito por los hijos */
+    virtual std::ostream& stream_write(std::ostream& os) const = 0; 
+
+public:
+    /* Sobrecarga del operador << */
+    friend std::ostream& operator<< (std::ostream& stream,const elene_LISTAINST& obj){
+        return obj.stream_write(stream); 
+    }
+};
+
+
+/* Clase para la lista de instrucciones con una instruccion */
+class elene_LISTAUNIT : public elene_LISTAINST {
+
+protected:
+
+    elene_INST* instruccion;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Lista de Instrucciones:\n" 
+                   << "  Instruccion:\n" << (*instruccion));
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_LISTAUNIT() {};
+    elene_LISTAUNIT(elene_INST* inst): instruccion(inst) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_LISTAUNIT () {
+        delete instruccion;    
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_LISTAUNIT& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+
+/* Clase para la lista de instrucciones recursiva */
+class elene_LISTAMULT : public elene_LISTAINST {
+
+protected:
+
+    elene_INST* instruccion;
+    elene_LISTAINST* resto;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Lista de Instrucciones:\n" 
+                   << "  Instruccion:\n" << (*instruccion)
+                   << "  Resto:\n" << (*resto));
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_LISTAMULT() {};
+    elene_LISTAMULT(elene_INST* inst, elene_LISTAINST* rst): instruccion(inst), resto(rst) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_LISTAMULT () {
+        delete instruccion;
+        delete resto;    
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_LISTAMULT& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+
+/*****************************************************************/
+/******* LISTA DE VARIABLES **************************************/
+/*****************************************************************/
+
+/* Notar que tal vez no sea necesaria la clase abstracta y las dos implementaciones
+   ya que se puede hacer solo una concreta que tenga los dos casos */
+
+/* Clase abstracta para la lista de variables */
+
+class elene_LISTAVAR /* : public printable */ {
+
+protected:
+    /* Metodo para imprimir a ser sobreescrito por los hijos */
+    virtual std::ostream& stream_write(std::ostream& os) const = 0; 
+
+public:
+    /* Sobrecarga del operador << */
+    friend std::ostream& operator<< (std::ostream& stream,const elene_LISTAVAR& obj){
+        return obj.stream_write(stream); 
+    }
+};
+
+
+/* Clase para la lista de variables directa */
+class elene_LISTAVARDIR : public elene_LISTAVAR {
+
+protected:
+
+    elene_LISTAINST* listaInstruccion;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Lista de Variables:\n" 
+                   << " Lista de Instrucciones:\n" << (*listaInstruccion));
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_LISTAVARDIR() {};
+    elene_LISTAVARDIR(elene_LISTAINST* inst): listaInstruccion(inst) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_LISTAVARDIR () {
+        delete listaInstruccion;    
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_LISTAVARDIR& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+
+/* Clase para la lista de variables con declaraciones */
+/* Ese elene_EXPR es elene_listaVariables o como se vaya a llamar */
+class elene_LISTAVARDEC : public elene_LISTAVAR {
+
+protected:
+
+    elene_EXPR* listaVariables;
+    elene_LISTAINST* listaInstruccion;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Lista de Variables:\n"
+                   << " Lista de Declaraciones:\n" << (*listaVariables) 
+                   << " Lista de Instrucciones:\n" << (*listaInstruccion));
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_LISTAVARDEC() {};
+    elene_LISTAVARDEC(elene_EXPR* var, elene_LISTAINST* inst): listaVariables(var), listaInstruccion(inst) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_LISTAVARDEC () {
+        delete listaVariables;
+        delete listaInstruccion;    
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_LISTAVARDEC& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
 
 # endif
