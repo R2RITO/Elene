@@ -725,6 +725,226 @@ public:
     }
 };
 
+/* Clase para los terminales booleanos */
+class elene_BOOLEANO : public elene_EXPRTERMINAL { 
+
+protected:
+
+    std::string* valor;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Constante Booleana:\n" 
+                   << "  Valor:\n" << (valor));
+    }
+
+public:
+
+    /* Constructor */
+    elene_BOOLEANO(std::string* valor) {
+        this -> valor = valor;
+    }
+
+    /* Metodo para copiar */
+    elene_BOOLEANO(const elene_BOOLEANO &other) {
+        nombre = other.nombre;
+        valor  = other.valor;
+    }
+
+    /* Metodo destructor */
+    virtual ~elene_BOOLEANO() {
+        delete nombre;
+        delete valor;
+    }
+
+    elene_BOOLEANO &operator = (const elene_BOOLEANO &other) {
+
+        if (&other != this) {
+
+            delete nombre;
+            delete valor;
+            nombre = other.nombre;
+            valor  = other.valor;
+        }
+    }
+};
+
+/* Clase para los terminales enteros */
+class elene_ENTERO : public elene_EXPRTERMINAL { 
+
+protected:
+
+    int valor;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Constante Entera:\n" 
+                   << "  Valor:\n" << (valor));
+    }
+
+public:
+
+    /* Constructor */
+    elene_ENTERO(int valor) {
+        this -> valor = valor;
+    }
+
+    /* Metodo para copiar */
+    elene_ENTERO(const elene_ENTERO &other) {
+        nombre = other.nombre;
+        valor  = other.valor;
+    }
+
+    /* Metodo destructor */
+    virtual ~elene_ENTERO() {
+        delete nombre;
+    }
+
+    elene_ENTERO &operator = (const elene_ENTERO &other) {
+
+        if (&other != this) {
+
+            delete nombre;
+            nombre = other.nombre;
+            valor  = other.valor;
+        }
+    }
+};
+
+
+/* Clase para los terminales reales */
+class elene_REAL : public elene_EXPRTERMINAL { 
+
+protected:
+
+    float valor;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Constante Real:\n" 
+                   << "  Valor:\n" << (valor));
+    }
+
+public:
+
+    /* Constructor */
+    elene_REAL(float valor) {
+        this -> valor = valor;
+    }
+
+    /* Metodo para copiar */
+    elene_REAL(const elene_REAL &other) {
+        nombre = other.nombre;
+        valor  = other.valor;
+    }
+
+    /* Metodo destructor */
+    virtual ~elene_REAL() {
+        delete nombre;
+    }
+
+    elene_REAL &operator = (const elene_REAL &other) {
+
+        if (&other != this) {
+
+            delete nombre;
+            nombre = other.nombre;
+            valor  = other.valor;
+        }
+    }
+};
+
+
+/* Clase para los terminales caracteres */
+class elene_CARACTER : public elene_EXPRTERMINAL { 
+
+protected:
+
+    char valor;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Constante Caracter:\n" 
+                   << "  Valor:\n" << (valor));
+    }
+
+public:
+
+    /* Constructor */
+    elene_CARACTER(char valor) {
+        this -> valor = valor;
+    }
+
+    /* Metodo para copiar */
+    elene_CARACTER(const elene_CARACTER &other) {
+        nombre = other.nombre;
+        valor  = other.valor;
+    }
+
+    /* Metodo destructor */
+    virtual ~elene_CARACTER() {
+        delete nombre;
+    }
+
+    elene_CARACTER &operator = (const elene_CARACTER &other) {
+
+        if (&other != this) {
+
+            delete nombre;
+            nombre = other.nombre;
+            valor  = other.valor;
+        }
+    }
+};
+
+
+/* Clase para los terminales String */
+class elene_STRING : public elene_EXPRTERMINAL { 
+
+protected:
+
+    std::string* valor;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Constante Real:\n" 
+                   << "  Valor:\n" << (valor));
+    }
+
+public:
+
+    /* Constructor */
+    elene_STRING(std::string* valor) {
+        this -> valor = valor;
+    }
+
+    /* Metodo para copiar */
+    elene_STRING(const elene_STRING &other) {
+        nombre = other.nombre;
+        valor  = other.valor;
+    }
+
+    /* Metodo destructor */
+    virtual ~elene_STRING() {
+        delete nombre;
+        delete valor;
+    }
+
+    elene_STRING &operator = (const elene_STRING &other) {
+
+        if (&other != this) {
+
+            delete nombre;
+            delete valor;
+            nombre = other.nombre;
+            valor  = other.valor;
+        }
+    }
+};
+
+
+
+
 /*****************************************************************/
 /******* INSTRUCCIONES *******************************************/
 /*****************************************************************/
@@ -778,22 +998,22 @@ class elene_INSTESCR : public elene_INST {
 
 protected:
 
-    elene_ID* id;
+    elene_EXPR* expr;
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
         return (os << "Instruccion Escribir:\n" 
-                   << "  ID:\n" << (*id));
+                   << "  Expr:\n" << (*expr));
     }
 
 public:
     /* Declaracion de constructor */
     elene_INSTESCR() {};
-    elene_INSTESCR(elene_ID* identrada): id(identrada) {};
+    elene_INSTESCR(elene_EXPR* E): expr(E) {};
     
     /* Declaracion de destructor */
     virtual ~elene_INSTESCR () {
-        delete id;    
+        delete expr;    
     }
 
     /*<< Operator overload*/

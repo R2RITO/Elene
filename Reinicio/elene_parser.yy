@@ -10,6 +10,7 @@
 %code requires {
     #include <string>
     #include <iostream>
+    #include "arbol2.hh"
     class elene_driver;
 }
 
@@ -102,6 +103,15 @@
 %token LA
 %token POR
 %token REFERENCIA
+
+
+%type <elene_EXPR> expr
+%type <elene_EXPRBINARIA> exprBinaria
+%type <elene_EXPRUNARIA>  exprUnaria 
+%type <elene_EXPRTERMINAL> terminal
+
+%type <elene_INST> instruccion
+
 %left O
 %left Y
 %left IGUAL DISTINTO A
@@ -184,8 +194,8 @@ else        : SI NO ENTONCES bloque
 asignacion  : ID BECOMES expr 
             ;
 
-instruccion : LEER ID
-            | IMPRIMIR expr
+instruccion : LEER ID { $$ = new elene_INSTLEER($2); }
+            | IMPRIMIR expr { $$ = new elene_INSTESCR($2); }
             | SI expr ENTONCES bloque
             | SI expr ENTONCES bloque elseif
             | asignacion 
@@ -194,37 +204,37 @@ instruccion : LEER ID
             ;
 
 
-expr : LPAREN expr RPAREN 
-     | exprBinaria       
-     | exprUnaria     
-     | terminal           
+expr : LPAREN expr RPAREN  { $$ = $2 }
+     | exprBinaria         { $$ = new elene_EXPRBINARIA($1); }
+     | exprUnaria          { $$ = new elene_EXPRUNARIA($1); }
+     | terminal            { $$ = new elene_EXPRTERMINAL($1); }
      ;
 
-exprBinaria : expr Y expr { std::cout << "y\n"; }
-            | expr O expr { std::cout << "o\n"; }
-            | expr PLUS expr { std::cout << "mas\n"; }
-            | expr MINUS expr { std::cout << "menps\n"; }
-            | expr TIMES expr { std::cout << "por\n"; }
-            | expr SLASH expr { std::cout << "entre\n"; }
-            | expr MAYOR QUE expr 
-            | expr MENOR QUE expr
-            | expr MAYOR O IGUAL QUE expr
-            | expr MENOR O IGUAL QUE expr
-            | expr DISTINTO A expr
-            | expr IGUAL A expr
+exprBinaria : expr Y expr { $$ = new elene_CONJUNCION($1,$3); }
+            | expr O expr { $$ = new elene_DISYUNCION($1,$3); }
+            | expr PLUS expr { $$ = new elene_ADICION($1,$3); }
+            | expr MINUS expr { $$ = new elene_SUSTRACCION($1,$3); }
+            | expr TIMES expr { $$ = new elene_MULTIPLICACION($1,$3); }
+            | expr SLASH expr { $$ = new elene_DIVISION($1,$3); }
+            | expr MAYOR QUE expr { $$ = new elene_MAYOR($1,$4); } 
+            | expr MENOR QUE expr { $$ = new elene_MENOR($1,$4); }
+            | expr MAYOR O IGUAL QUE expr { $$ = new elene_MAYORIGUAL($1,$6); }
+            | expr MENOR O IGUAL QUE expr { $$ = new elene_MENORIGUAL($1,$6); }
+            | expr DISTINTO A expr        { $$ = new elene_DISTINTO($1,$4); }
+            | expr IGUAL A expr           { $$ = new elene_IGUAL($1,$4); }
             ;
 
-exprUnaria : MINUS expr %prec NEG { std::cout << "menos unario \n"; }
-           | NO expr %prec NEGBOOL {std::cout << "negacion \n"; }
+exprUnaria : MINUS expr %prec NEG  { $$ = new elene_MENOSUNARIO($2); }
+           | NO expr %prec NEGBOOL { $$ = new elene_NEGACION($2);  }
            ;
 
-terminal : VERDADERO        
-         | FALSO           
-         | NUMENTERO      
-         | NUMFLOTANTE   
-         | CONSTCARACTER
-         | ID           
-         | STRING      
+terminal : VERDADERO        { $$ = new elene_BOOLEANO("true");  }     
+         | FALSO            { $$ = new elene_BOOLEANO("false"); }
+         | NUMENTERO        { $$ = new elene_ENTERO($1); }
+         | NUMFLOTANTE      { $$ = new elene_REAL($1); }
+         | CONSTCARACTER    { $$ = new elene_CARACTER($1); }
+         | ID               { $$ = new elene_ID($1); }
+         | STRING           { $$ = new elene_STRING($1); }
          ;
 
 %%
