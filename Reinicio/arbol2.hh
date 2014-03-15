@@ -692,26 +692,28 @@ public:
 class elene_ID : public elene_EXPRTERMINAL { 
 
 protected:
-
+    std::string texto;
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
         return (os << "Id:\n" 
-                   << "  Nombre:\n" << (nombre));
+                   << "  Texto:\n" << (texto));
     }
 
 public:
 
     /* Constructor */
-    elene_ID(std::string* nomb) {}
+    elene_ID(std::string texto) {}
 
     /* Metodo para copiar */
     elene_ID(const elene_ID &other) {
+        texto = other.texto;
         nombre = other.nombre;
     }
 
     /* Metodo destructor */
     virtual ~elene_ID() {
         delete nombre;
+        texto.clear();
     }
 
     elene_ID &operator = (const elene_ID &other) {
@@ -719,8 +721,9 @@ public:
         if (&other != this) {
 
             delete nombre;
+            texto.clear();
             nombre = other.nombre;
-
+            texto = other.texto;
         }
     }
 };
@@ -730,7 +733,7 @@ class elene_BOOLEANO : public elene_EXPRTERMINAL {
 
 protected:
 
-    std::string* valor;
+    int valor;
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
@@ -741,7 +744,7 @@ protected:
 public:
 
     /* Constructor */
-    elene_BOOLEANO(std::string* valor) {
+    elene_BOOLEANO(int valor) {
         this -> valor = valor;
     }
 
@@ -754,7 +757,6 @@ public:
     /* Metodo destructor */
     virtual ~elene_BOOLEANO() {
         delete nombre;
-        delete valor;
     }
 
     elene_BOOLEANO &operator = (const elene_BOOLEANO &other) {
@@ -762,7 +764,6 @@ public:
         if (&other != this) {
 
             delete nombre;
-            delete valor;
             nombre = other.nombre;
             valor  = other.valor;
         }
@@ -903,18 +904,18 @@ class elene_STRING : public elene_EXPRTERMINAL {
 
 protected:
 
-    std::string* valor;
+    std::string valor;
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << "Constante Real:\n" 
+        return (os << "Cadena de caracteres:\n" 
                    << "  Valor:\n" << (valor));
     }
 
 public:
 
     /* Constructor */
-    elene_STRING(std::string* valor) {
+    elene_STRING(std::string valor) {
         this -> valor = valor;
     }
 
@@ -927,7 +928,7 @@ public:
     /* Metodo destructor */
     virtual ~elene_STRING() {
         delete nombre;
-        delete valor;
+        valor.clear();
     }
 
     elene_STRING &operator = (const elene_STRING &other) {
@@ -935,7 +936,7 @@ public:
         if (&other != this) {
 
             delete nombre;
-            delete valor;
+            valor.clear();
             nombre = other.nombre;
             valor  = other.valor;
         }

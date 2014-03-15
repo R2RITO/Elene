@@ -45,9 +45,9 @@ CARACTER [a-zA-Z0-9]
 <comment>"*"+"/"        BEGIN(INITIAL);  // Fin de comentario 
 
 
-\"(\\.|[^\\"])*\"    { return (yy::elene_parser::make_STRING("HOLA", loc));  }
+\"(\\.|[^\\"])*\"    { return (yy::elene_parser::make_STRING(yytext, loc));  }
 
-"'"+{CARACTER}+"'"   { return (yy::elene_parser::make_CONSTCARACTER('H',loc)); }
+"'"+{CARACTER}+"'"   { return (yy::elene_parser::make_CONSTCARACTER(yytext[0],loc)); }
 
 "+"                  {  return (yy::elene_parser::make_PLUS(loc));       }
 "-"                  {  return (yy::elene_parser::make_MINUS(loc));      }
@@ -106,18 +106,18 @@ CARACTER [a-zA-Z0-9]
 "globales"           {  return (yy::elene_parser::make_GLOBALES(loc));   }
 "arreglo"            {  return (yy::elene_parser::make_ARREGLO(loc));    }
 
-{ID}                  { return (yy::elene_parser::make_ID("Hola",loc)); }
+{ID}                  { return (yy::elene_parser::make_ID(yytext,loc)); }
 
-"verdadero"           { return (yy::elene_parser::make_VERDADERO(50,loc));  }
+"verdadero"           { return (yy::elene_parser::make_VERDADERO(1,loc));  }
 
-"falso"               { return (yy::elene_parser::make_FALSO(1, loc));      }
+"falso"               { return (yy::elene_parser::make_FALSO(0, loc));      }
 
 {DIGIT}+              {   // Regla para los enteros
                           long num = strtol(yytext, NULL, 10); 
                           if (!(INT_MIN <= num) && (num <= INT_MAX) && (errno != ERANGE)) {
                               //AQUI HAY QUE DAR ERROR
                           }
-                          return (yy::elene_parser::make_NUMENTERO(1, loc));
+                          return (yy::elene_parser::make_NUMENTERO(num, loc));
                       }
 
 {DIGIT}+("."{DIGIT}+) {   // Regla para los numeros reales

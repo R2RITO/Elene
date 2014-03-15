@@ -128,7 +128,7 @@
 %start inicio;
 
 
-inicio : expr 
+inicio : expr {std::ostream* os; os = $1::stream_write(os);}
 
 varglobal : funciones 
           | VARIABLES GLOBALES LBRACKET listaVariables RBRACKET funciones
@@ -230,8 +230,8 @@ exprUnaria : MINUS expr %prec NEG  { $$ = new elene_MENOSUNARIO($2); }
            | NO expr %prec NEGBOOL { $$ = new elene_NEGACION($2);  }
            ;
 
-terminal : VERDADERO        { $$ = new elene_BOOLEANO("true");  }     
-         | FALSO            { $$ = new elene_BOOLEANO("false"); }
+terminal : VERDADERO        { $$ = new elene_BOOLEANO($1);  }     
+         | FALSO            { $$ = new elene_BOOLEANO($1); }
          | NUMENTERO        { $$ = new elene_ENTERO($1); }
          | NUMFLOTANTE      { $$ = new elene_REAL($1); }
          | CONSTCARACTER    { $$ = new elene_CARACTER($1); }
