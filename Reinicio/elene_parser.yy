@@ -10,9 +10,13 @@
 %code requires {
     #include <string>
     #include <iostream>
+    #include <ostream>
     #include "arbol2.hh"
     class elene_driver;
 }
+
+
+
 
 // The parsing context.
 %param { elene_driver& driver }
@@ -105,12 +109,10 @@
 %token REFERENCIA
 
 
-%type <elene_EXPR> expr
-%type <elene_EXPRBINARIA> exprBinaria
-%type <elene_EXPRUNARIA>  exprUnaria 
-%type <elene_EXPRTERMINAL> terminal
-
-%type <elene_INST> instruccion
+%type <elene_EXPR*> expr
+%type <elene_EXPRBINARIA*> exprBinaria
+%type <elene_EXPRUNARIA*>  exprUnaria 
+%type <elene_EXPRTERMINAL*> terminal
 
 %left O
 %left Y
@@ -126,7 +128,7 @@
 %start inicio;
 
 
-inicio : varglobal
+inicio : expr 
 
 varglobal : funciones 
           | VARIABLES GLOBALES LBRACKET listaVariables RBRACKET funciones
@@ -194,8 +196,8 @@ else        : SI NO ENTONCES bloque
 asignacion  : ID BECOMES expr 
             ;
 
-instruccion : LEER ID { $$ = new elene_INSTLEER($2); }
-            | IMPRIMIR expr { $$ = new elene_INSTESCR($2); }
+instruccion : LEER ID 
+            | IMPRIMIR expr 
             | SI expr ENTONCES bloque
             | SI expr ENTONCES bloque elseif
             | asignacion 
@@ -204,10 +206,10 @@ instruccion : LEER ID { $$ = new elene_INSTLEER($2); }
             ;
 
 
-expr : LPAREN expr RPAREN  { $$ = $2 }
-     | exprBinaria         { $$ = new elene_EXPRBINARIA($1); }
-     | exprUnaria          { $$ = new elene_EXPRUNARIA($1); }
-     | terminal            { $$ = new elene_EXPRTERMINAL($1); }
+expr : LPAREN expr RPAREN  { $$ = $2; }
+     | exprBinaria         { $$ = $1; }
+     | exprUnaria          { $$ = $1; }
+     | terminal            { $$ = $1; }
      ;
 
 exprBinaria : expr Y expr { $$ = new elene_CONJUNCION($1,$3); }
