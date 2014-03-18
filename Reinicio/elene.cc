@@ -11,12 +11,13 @@ int main (int argc, char *argv[]) {
         else if (argv[i] == std::string("-s"))
             driver.trace_scanning = true;
         else if (!driver.parse(argv[i])) {
-            /*std::cout << "La concha" << "\n";
-            std::cout << driver.result << std::endl;*/
+            std::cout << "\n\n Result: ";
+            std::cout << driver.result << std::endl;
         }
         else
             res = 1;
 
     return res;
+
 }
 

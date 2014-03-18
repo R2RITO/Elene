@@ -108,6 +108,15 @@
 %token POR
 %token REFERENCIA
 
+%type <std::string> tipo
+
+%type <elene_BLOQUE*> bloque
+%type <elene_LISTAVAR*> listaVariables
+%type <elene_DECLARACION*> decVariable
+
+%type <elene_LISTAINST*> listaInstruccion
+%type <elene_INST*> instruccion
+%type <elene_INSTASIG*> asignacion
 
 %type <elene_EXPR*> expr
 %type <elene_EXPRBINARIA*> exprBinaria
@@ -128,28 +137,28 @@
 %start inicio;
 
 
-inicio : expr {std::ostream* os; os = $1::stream_write(os);}
+inicio : bloque { std::cout << *$1; }
 
 varglobal : funciones 
           | VARIABLES GLOBALES LBRACKET listaVariables RBRACKET funciones
           ;
 
-listaVariables : decVariable
-               | decVariable SEMICOLON listaVariables
+listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
+               | decVariable SEMICOLON listaVariables { $$ = new elene_LISTAVAR($1, $3); }
                ;
 
-decVariable   : SEA ID DE TIPO tipo
-              | SEA ID DE TIPO tipo CON VALOR expr
+decVariable   : SEA ID DE TIPO tipo { $$ = new elene_DECLARACION(new elene_ID($2),$5,0); }
+              | SEA ID DE TIPO tipo CON VALOR expr { $$ = new elene_DECLARACION(new elene_ID($2), $5, $8); }
               ;
 
-tipo : BOOLEANO
-     | ENTERO
-     | FLOTANTE
-     | CARACTER
-     | STRING
-     | VACIO
-     | ARREGLO DE tipo DE expr A expr
-     | LPAREN tipo RPAREN 
+tipo : BOOLEANO { $$ = "Bool"; }
+     | ENTERO   { $$ = "Entero"; }
+     | FLOTANTE { $$ = "Real"; }
+     | CARACTER { $$ = "Char"; }
+     | STRING   { $$ = "String";}
+     | VACIO    { $$ = "Vacio"; }
+     | ARREGLO DE tipo DE expr A expr { $$ = "Arreglo"; }
+     | LPAREN tipo RPAREN { $$ = $2; }
      ;
 
 funciones : programa
@@ -175,15 +184,12 @@ listArg : tipo ID
 programa  : GUACARA bloque
           ;
 
-bloque : LBRACKET variables RBRACKET
+bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,$2); }
+       | LBRACKET VARIABLES LBRACKET listaVariables RBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE($4, $6); }
        ;
 
-variables : listaInstruccion
-          | VARIABLES LBRACKET listaVariables RBRACKET listaInstruccion
-          ;
-
-listaInstruccion : instruccion
-                 | instruccion SEMICOLON listaInstruccion 
+listaInstruccion : instruccion { $$ = new elene_LISTAUNIT($1); }
+                 | instruccion SEMICOLON listaInstruccion { $$ = new elene_LISTAMULT($1,$3); }
                  ;
 
 elseif      : else
@@ -193,16 +199,16 @@ elseif      : else
 
 else        : SI NO ENTONCES bloque
             ;
-asignacion  : ID BECOMES expr 
+asignacion  : ID BECOMES expr { $$ = new elene_INSTASIG(new elene_ID($1), $3); }
             ;
 
-instruccion : LEER ID 
-            | IMPRIMIR expr 
-            | SI expr ENTONCES bloque
-            | SI expr ENTONCES bloque elseif
-            | asignacion 
-            | MIENTRAS expr HACER bloque
-            | PARA asignacion TAL QUE expr CON CAMBIO asignacion HACER bloque 
+instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2)); } 
+            | IMPRIMIR expr { $$ = new elene_INSTESCR($2); }
+            | SI expr ENTONCES bloque { $$ = new elene_INSTCOND($2, $4); }
+            | SI expr ENTONCES bloque elseif { $$ = new elene_INSTCOND($2,$4); }
+            | asignacion { $$ = $1; }
+            | MIENTRAS expr HACER bloque { $$ = new elene_INSTMIENTRAS($2,$4); }
+            | PARA asignacion TAL QUE expr CON CAMBIO asignacion HACER bloque { $$ = new elene_INSTPARA($2,$5,$8,$10); } 
             ;
 
 
