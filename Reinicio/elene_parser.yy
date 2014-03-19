@@ -108,7 +108,7 @@
 %token POR
 %token REFERENCIA
 
-%type <std::string> tipo
+%type <elene_TIPO*> tipo
 
 %type <elene_BLOQUE*> bloque
 %type <elene_LISTAVAR*> listaVariables
@@ -118,10 +118,18 @@
 %type <elene_INST*> instruccion
 %type <elene_INSTASIG*> asignacion
 
+%type <elene_INSTCOND*> elseif
+%type <elene_INSTCOND*> else
+
 %type <elene_EXPR*> expr
 %type <elene_EXPRBINARIA*> exprBinaria
 %type <elene_EXPRUNARIA*>  exprUnaria 
 %type <elene_EXPRTERMINAL*> terminal
+
+%type <elene_LISTARG*> listArg
+
+%type <elene_LISTFUN*> listaFunciones
+%type <elene_DECFUNCION*> decFuncion
 
 %left O
 %left Y
@@ -137,7 +145,7 @@
 %start inicio;
 
 
-inicio : bloque { std::cout << *$1; }
+inicio : varglobal
 
 varglobal : funciones 
           | VARIABLES GLOBALES LBRACKET listaVariables RBRACKET funciones
@@ -151,13 +159,13 @@ decVariable   : SEA ID DE TIPO tipo { $$ = new elene_DECLARACION(new elene_ID($2
               | SEA ID DE TIPO tipo CON VALOR expr { $$ = new elene_DECLARACION(new elene_ID($2), $5, $8); }
               ;
 
-tipo : BOOLEANO { $$ = "Bool"; }
-     | ENTERO   { $$ = "Entero"; }
-     | FLOTANTE { $$ = "Real"; }
-     | CARACTER { $$ = "Char"; }
-     | STRING   { $$ = "String";}
-     | VACIO    { $$ = "Vacio"; }
-     | ARREGLO DE tipo DE expr A expr { $$ = "Arreglo"; }
+tipo : BOOLEANO { $$ = new elene_TIPO_BOOLEANO("Booleano"); }
+     | ENTERO   { $$ = new elene_TIPO_ENTERO("Entero"); }
+     | FLOTANTE { $$ = new elene_TIPO_FLOTANTE("Flotante"); }
+     | CARACTER { $$ = new elene_TIPO_CARACTER("Caracter"); }
+     | STRING   { $$ = new elene_TIPO_STRING("String");}
+     | VACIO    { $$ = new elene_TIPO_VACIO("Vacio");}
+     | ARREGLO DE tipo DE expr A expr { $$ = new elene_TIPO_ARREGLO($3,$5,$7); }
      | LPAREN tipo RPAREN { $$ = $2; }
      ;
 
@@ -165,19 +173,19 @@ funciones : programa
           | FUNCIONES LBRACKET listaFunciones RBRACKET programa
           ;
     
-listaFunciones : decFuncion
-               | decFuncion listaFunciones
+listaFunciones : decFuncion { $$ = new elene_LISTFUN($1,0); }
+               | decFuncion listaFunciones { $$ = new elene_LISTFUN($1,$2); }
                ;
 
-decFuncion : SEA LA FUNCION ID QUE RECIBE listArg Y RETORNA tipo HACER bloque 
-           | SEA LA FUNCION ID QUE RETORNA tipo HACER bloque
-           | SEA LA FUNCION ID QUE RECIBE listArg HACER bloque
+decFuncion : SEA LA FUNCION ID QUE RECIBE listArg Y RETORNA tipo HACER bloque { $$ = new elene_DECFUNCION(new elene_ID($4),$7,$10,$12); }
+           | SEA LA FUNCION ID QUE RETORNA tipo HACER bloque { $$ = new elene_DECFUNCION(new elene_ID($4),0,$7,$9); }
+           | SEA LA FUNCION ID QUE RECIBE listArg HACER bloque { $$ = new elene_DECFUNCION(new elene_ID($4),$7,0,$9); }
            ;
 
-listArg : tipo ID
-        | tipo POR REFERENCIA ID
-        | tipo POR REFERENCIA ID COMMA listArg
-        | tipo ID COMMA listArg
+listArg : tipo ID  { $$ = new elene_LISTARG($1, new elene_ID($2), "Por Valor", 0); }
+        | tipo POR REFERENCIA ID { $$ = new elene_LISTARG($1, new elene_ID($4), "Por Referencia", 0); }
+        | tipo POR REFERENCIA ID COMMA listArg { $$ = new elene_LISTARG($1, new elene_ID($4), "Por Referencia", $6); }
+        | tipo ID COMMA listArg { $$ = new elene_LISTARG($1, new elene_ID($2), "Por Valor", $4); }
         ;
 
 
@@ -192,20 +200,20 @@ listaInstruccion : instruccion { $$ = new elene_LISTAUNIT($1); }
                  | instruccion SEMICOLON listaInstruccion { $$ = new elene_LISTAMULT($1,$3); }
                  ;
 
-elseif      : else
-            | O SI expr ENTONCES bloque
-            | O SI expr ENTONCES bloque elseif
+elseif      : else { $$ = $1; }
+            | O SI expr ENTONCES bloque { $$ = new elene_INSTCOND($3,$5,0); }
+            | O SI expr ENTONCES bloque elseif { $$ = new elene_INSTCOND($3,$5,$6); }
             ;
 
-else        : SI NO ENTONCES bloque
+else        : SI NO ENTONCES bloque { $$ = new elene_INSTCOND(new elene_BOOLEANO(1),$4,0); }
             ;
 asignacion  : ID BECOMES expr { $$ = new elene_INSTASIG(new elene_ID($1), $3); }
             ;
 
 instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2)); } 
             | IMPRIMIR expr { $$ = new elene_INSTESCR($2); }
-            | SI expr ENTONCES bloque { $$ = new elene_INSTCOND($2, $4); }
-            | SI expr ENTONCES bloque elseif { $$ = new elene_INSTCOND($2,$4); }
+            | SI expr ENTONCES bloque { $$ = new elene_INSTCOND($2, $4, 0); }
+            | SI expr ENTONCES bloque elseif { $$ = new elene_INSTCOND($2,$4,$5); }
             | asignacion { $$ = $1; }
             | MIENTRAS expr HACER bloque { $$ = new elene_INSTMIENTRAS($2,$4); }
             | PARA asignacion TAL QUE expr CON CAMBIO asignacion HACER bloque { $$ = new elene_INSTPARA($2,$5,$8,$10); } 
