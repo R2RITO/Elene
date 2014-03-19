@@ -1378,4 +1378,305 @@ public:
     }
 };
 
+/*****************************************************************/
+/******* TIPOS ***************************************************/
+/*****************************************************************/
+/*
+tipo : BOOLEANO { $$ = "Bool"; }
+     | ENTERO   { $$ = "Entero"; }
+     | FLOTANTE { $$ = "Real"; }
+     | CARACTER { $$ = "Char"; }
+     | STRING   { $$ = "String";}
+     | VACIO    { $$ = "Vacio"; }
+     | ARREGLO DE tipo DE expr A expr { $$ = "Arreglo"; }
+     | LPAREN tipo RPAREN { $$ = $2; }
+     ;*/
+
+class elene_TIPO /* : public printable */ {
+
+protected:
+    /* Metodo para imprimir a ser sobreescrito por los hijos */
+    virtual std::ostream& stream_write(std::ostream& os) const = 0; 
+
+public:
+    /* Sobrecarga del operador << */
+    friend std::ostream& operator<< (std::ostream& stream,const elene_TIPO& obj){
+        return obj.stream_write(stream); 
+    }
+};
+
+class elene_TIPO_BOOLEANO : public elene_TIPO {
+
+protected:
+
+    std::string nombre;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Tipo:\n" 
+                   << "  Nombre:" << (nombre)
+                   << "\n");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_BOOLEANO() {};
+    elene_TIPO_BOOLEANO(std::string nmb) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_BOOLEANO () {
+        nombre.clear();
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_TIPO_BOOLEANO& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+
+class elene_TIPO_ENTERO : public elene_TIPO {
+
+protected:
+
+    std::string nombre;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Tipo:\n" 
+                   << "  Nombre:" << (nombre)
+                   << "\n");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_ENTERO() {};
+    elene_TIPO_ENTERO(std::string nmb) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_ENTERO () {
+        nombre.clear();
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_TIPO_ENTERO& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+
+class elene_TIPO_FLOTANTE : public elene_TIPO {
+
+protected:
+
+    std::string nombre;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Tipo:\n" 
+                   << "  Nombre:" << (nombre)
+                   << "\n");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_FLOTANTE() {};
+    elene_TIPO_FLOTANTE(std::string nmb) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_FLOTANTE () {
+        nombre.clear();
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_TIPO_FLOTANTE& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+
+class elene_TIPO_CARACTER : public elene_TIPO {
+
+protected:
+
+    std::string nombre;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Tipo:\n" 
+                   << "  Nombre:" << (nombre)
+                   << "\n");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_CARACTER() {};
+    elene_TIPO_CARACTER(std::string nmb) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_CARACTER () {
+        nombre.clear();
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_TIPO_CARACTER& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+
+class elene_TIPO_STRING : public elene_TIPO {
+
+protected:
+
+    std::string nombre;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Tipo:\n" 
+                   << "  Nombre:" << (nombre)
+                   << "\n");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_STRING() {};
+    elene_TIPO_STRING(std::string nmb) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_STRING () {
+        nombre.clear();
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_TIPO_STRING& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+
+class elene_TIPO_VACIO : public elene_TIPO {
+
+protected:
+
+    std::string nombre;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Tipo:\n" 
+                   << "  Nombre:" << (nombre)
+                   << "\n");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_VACIO() {};
+    elene_TIPO_VACIO(std::string nmb) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_VACIO () {
+        nombre.clear();
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_TIPO_VACIO& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+
+class elene_TIPO_ARREGLO : public elene_TIPO {
+
+protected:
+
+    elene_TIPO* tipo;
+    elene_EXPR* indIzq;
+    elene_EXPR* indDer;
+    
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Arreglo:\n" 
+                   << "  Tipo: " << (tipo)
+                   << "\n"
+                   << "  Limite Izquierdo: " << (indIzq)
+                   << "\n"
+                   << "  Limite Derecho: " << (indDer) << "\n");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_ARREGLO() {};
+    elene_TIPO_ARREGLO(elene_TIPO* t, elene_EXPR* izq, elene_EXPR* der): tipo(t), indIzq(izq), indDer(der) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_ARREGLO () {
+        delete tipo;
+        delete indIzq;
+        delete indDer;
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_TIPO_ARREGLO& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+/*****************************************************************/
+/******* LISTA DE ARGUMENTOS *************************************/
+/*****************************************************************/
+
+/*listArg : tipo ID
+        | tipo POR REFERENCIA ID
+        | tipo POR REFERENCIA ID COMMA listArg
+        | tipo ID COMMA listArg
+        ;*/
+
+class elene_LSTARG /* : public printable */ {
+
+protected:
+    /* Metodo para imprimir a ser sobreescrito por los hijos */
+    virtual std::ostream& stream_write(std::ostream& os) const = 0; 
+
+public:
+    /* Sobrecarga del operador << */
+    friend std::ostream& operator<< (std::ostream& stream,const elene_LSTARG& obj){
+        return obj.stream_write(stream); 
+    }
+};
+
+
+/* Argumento al estilo int X, primera regla de gramatica */
+class elene_LSTARG_BASE : public elene_INST {
+
+protected:
+
+    elene_TIPO* tipo;
+    elene_ID* id;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Lista de Argumentos:\n" 
+                   << "  Tipo:" << (*tipo)
+                   << "  ID:" << (*id)
+                   << "\n");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_LSTARG_BASE() {};
+    elene_LSTARG_BASE(elene_TIPO* t, elene_ID* i): tipo(t), id(i) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_LSTARG_BASE () {
+        delete tipo;        
+        delete id;    
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_LSTARG_BASE& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
 # endif
