@@ -131,6 +131,10 @@
 %type <elene_LISTFUN*> listaFunciones
 %type <elene_DECFUNCION*> decFuncion
 
+%type <elene_VARGLOBAL*> varglobal
+%type <elene_FUNCIONES*> funciones
+%type <elene_BLOQUE*> programa
+
 %left O
 %left Y
 %left IGUAL DISTINTO A
@@ -145,10 +149,10 @@
 %start inicio;
 
 
-inicio : varglobal
+inicio : varglobal { std::cout << *$1; }
 
-varglobal : funciones 
-          | VARIABLES GLOBALES LBRACKET listaVariables RBRACKET funciones
+varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
+          | VARIABLES GLOBALES LBRACKET listaVariables RBRACKET funciones { $$ = new elene_VARGLOBAL($6,$4); }
           ;
 
 listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
@@ -159,18 +163,18 @@ decVariable   : SEA ID DE TIPO tipo { $$ = new elene_DECLARACION(new elene_ID($2
               | SEA ID DE TIPO tipo CON VALOR expr { $$ = new elene_DECLARACION(new elene_ID($2), $5, $8); }
               ;
 
-tipo : BOOLEANO { $$ = new elene_TIPO_BOOLEANO("Booleano"); }
-     | ENTERO   { $$ = new elene_TIPO_ENTERO("Entero"); }
-     | FLOTANTE { $$ = new elene_TIPO_FLOTANTE("Flotante"); }
-     | CARACTER { $$ = new elene_TIPO_CARACTER("Caracter"); }
-     | STRING   { $$ = new elene_TIPO_STRING("String");}
-     | VACIO    { $$ = new elene_TIPO_VACIO("Vacio");}
+tipo : BOOLEANO { $$ = new elene_TIPO_SIMPLE("Booleano"); }
+     | ENTERO   { $$ = new elene_TIPO_SIMPLE("Entero"); }
+     | FLOTANTE { $$ = new elene_TIPO_SIMPLE("Flotante"); }
+     | CARACTER { $$ = new elene_TIPO_SIMPLE("Caracter"); }
+     | STRING   { $$ = new elene_TIPO_SIMPLE("String");}
+     | VACIO    { $$ = new elene_TIPO_SIMPLE("Vacio");}
      | ARREGLO DE tipo DE expr A expr { $$ = new elene_TIPO_ARREGLO($3,$5,$7); }
      | LPAREN tipo RPAREN { $$ = $2; }
      ;
 
-funciones : programa
-          | FUNCIONES LBRACKET listaFunciones RBRACKET programa
+funciones : programa { $$ = new elene_FUNCIONES(0,$1); }
+          | FUNCIONES LBRACKET listaFunciones RBRACKET programa { $$ = new elene_FUNCIONES($3,$5); }
           ;
     
 listaFunciones : decFuncion { $$ = new elene_LISTFUN($1,0); }
@@ -189,7 +193,7 @@ listArg : tipo ID  { $$ = new elene_LISTARG($1, new elene_ID($2), "Por Valor", 0
         ;
 
 
-programa  : GUACARA bloque
+programa  : GUACARA bloque { $$ = $2; }
           ;
 
 bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,$2); }
