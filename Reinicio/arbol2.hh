@@ -2,6 +2,7 @@
 # define ELENE_CLASES_HH
 
 # include <string>
+# include <list>
 # include <map>
 # include <iostream>
 
