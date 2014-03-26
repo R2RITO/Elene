@@ -1,0 +1,176 @@
+<hr />
+<h1 id="elene">ELENE</h1>
+<hr />
+<h2 id="manual-de-referencia">Manual de referencia</h2>
+<blockquote>
+<p>Para todo programador es habitual lidiar con algoritmos escritos en pseudocódigo. Si bien es una manera fácil y rápida de comprender un algoritmo, existen ocasiones en las cuales los lenguajes de programación complican la implementación de dichos algoritmos. Esto se debe principalmente a que la sintáxis de los lenguajes se alejan demasiado del pseudocódigo. De esto último, nace ELENE (Cuyo nombre se deriva de &quot;LN&quot;, las primeras letras de Lenguaje Natural).</p>
+</blockquote>
+<blockquote>
+<p>Elene es un lenguaje fuertemente tipeado, no orientado a objetos, que busca estimular la programación mediante una aproximación al lenguaje natural.</p>
+</blockquote>
+<hr />
+<h2 id="palabras-reservadas-del-lenguaje">Palabras reservadas del lenguaje</h2>
+<blockquote>
+<p>Debido a que el diseño de éste lenguaje está pensado para parecerse al pseudocódigo, es natural que el mismo posea una gran cantidad de palabras reservadas. En el lenguaje ELENE, las palabras reservadas siempre comenzarán con un caracter en minuscula. A continuación se presenta la lista de palabras reservadas.</p>
+</blockquote>
+<blockquote>
+<p><code>entonces o no si mientras hacer para tal que con cambio leer imprimir la funcion recibe y retorna sea estructura contiene union vacio guacara entero caracter flotante booleano string retornar con valor verdadero falso es a mayor menor igual distinto de tipo funciones variables globales arreglo por referencia</code></p>
+</blockquote>
+<blockquote>
+<p>En cuanto a los <strong>identificadores</strong> de variables, tipos, funciones definidas por el programador, es importante destacar que todos ellos <strong>comienzan con mayúscula</strong>. Nombres de variables válidos serian X y no x, una función se podría llamar Quicksort pero no quicksort, etc.</p>
+</blockquote>
+<hr />
+<h2 id="tipos-de-datos-del-lenguaje">Tipos de Datos del lenguaje</h2>
+<blockquote>
+<p>A continuación se presenta una lista con los tipos de datos predefinidos por el lenguaje. El tipo string solo se utiliza en funciones como la de imprimir por pantalla.</p>
+</blockquote>
+<ul>
+<li>String (Solo para impresión)</li>
+<li>Números Punto Flotante</li>
+<li>Números Enteros</li>
+<li>Booleanos</li>
+<li>Arreglos</li>
+<li>Caracter</li>
+<li>Vacio</li>
+</ul>
+<hr />
+<h2 id="expresiones-aritmeticas-y-booleanas">Expresiones Aritmeticas y Booleanas</h2>
+<blockquote>
+<p>Elene utiliza una notación infija para sus expresiones.</p>
+</blockquote>
+<h2 id="operadores">Operadores:</h2>
+<blockquote>
+<p><strong>Operadores Aritméticos:</strong></p>
+</blockquote>
+<blockquote>
+<ul>
+<li>+</li>
+<li>-</li>
+<li>*</li>
+<li>/</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>Operadores Booleanos:</strong></p>
+</blockquote>
+<blockquote>
+<ul>
+<li>mayor que</li>
+<li>menor que</li>
+<li>mayor o igual que</li>
+<li>menor o igual que</li>
+<li>y</li>
+<li>o</li>
+<li>igual</li>
+<li>distinto</li>
+<li>no</li>
+</ul>
+</blockquote>
+<h2 id="precedencia-de-los-operadores">Precedencia de los operadores</h2>
+<blockquote>
+<p>Dentro de la gramática se encuentran separadas las expresiones binarias de las expresiones unarias. A continuación se presenta una lista para los operadores binarios y otra para los unarios ordenados segun su precedencia, siendo el primer conjunto de una lista de operadores aquel de menor precedencia. Asimismo, se especifican la asociatividad de los mismos.</p>
+</blockquote>
+<blockquote>
+<p><strong>Operadores Binarios:</strong></p>
+</blockquote>
+<blockquote>
+<ul>
+<li>(Izquierda) O (Disyunción)</li>
+<li>(Izquierda) Y (Conjunción)</li>
+<li>(Izquierda) igual distinto a</li>
+<li>(No Asociativo) mayor menor que</li>
+<li>(Izquierda) + -</li>
+<li>(Izquierda) * /</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>Operadores Unarios:</strong></p>
+</blockquote>
+<blockquote>
+<ul>
+<li>(Izquierda) Menos (Unario) Negación</li>
+</ul>
+</blockquote>
+<p><strong>Ejemplos de expresiones válidas:</strong></p>
+<ul>
+<li>10+16*2 igual a 42</li>
+<li>verdadero y falso</li>
+<li>3+2 menor o igual que 37 y 10 mayor que 3</li>
+</ul>
+<hr />
+<h2 id="estructura-básica-de-un-programa-en-elene">Estructura básica de un programa en Elene</h2>
+<blockquote>
+<p>En Elene los programas se encuentran dividos en tres áreas. La primera es para la declaración de variables globales, la segunda es para la declaración de funciones y la última es el programa principal. La estructura quedaría de la siguiente manera.</p>
+</blockquote>
+<pre><code>variables globales {
+    /* Declaración de Variables Globales */
+    /* Este segmento de código se puede omitir */
+}
+
+funciones {
+    /* Declaración de Funciones */
+    /* Este segmento de código se puede omitir */
+}
+
+guacara {
+    /* Programa Principal o Main */
+    /* Este segmento de código es obligatorio */
+}</code></pre>
+<h2 id="declaracion-de-variables">Declaracion de Variables</h2>
+<blockquote>
+<p>Las declaraciones de variables globales y locales se declaran de igual forma. La diferencia está en el lugar donde se declaren. Una variable declarada en el área de variables globales será global, todas las otras declaraciones en bloques o funciones serán locales dentro del alcance en donde fueron declaradas. Ejemplos de declaraciones:</p>
+</blockquote>
+<pre><code>variables globales {
+    sea Alto de tipo entero con valor 2;
+    sea Area de tipo flotante;
+    sea Anchos de tipo arreglo de tipo entero de 0 a 10
+    /* Note que la última no lleva punto y coma */
+}</code></pre>
+<p>** Falta la declaracion de unions y estructuras **</p>
+<h2 id="declaracion-de-funciones">Declaracion de Funciones</h2>
+<blockquote>
+<p>En Elene una funcion puede declararse de tres maneras, dependiendo de la necesidad del programador. Se puede declarar una función que reciba argumentos y retorne un valor (declaración típica de una función), se puede declarar una función que no recibe argumentos y retorna un valor, y por último, se puede declarar una función que recibe argumentos y no retorna valor alguno. Nótese que la primera contiene a las otras dos si hacemos que la función reciba vacío y retorne vacío. A continuación un ejemplo de una declaración de función.</p>
+</blockquote>
+<pre><code>sea la funcion AreaTriangulo que recibe flotante Base, flotante Altura
+y retorna flotante hacer {
+    variables {
+        sea Area de tipo flotante con valor Base*Altura/2 
+    }
+    retornar Area
+}</code></pre>
+<p><strong>FALTA LO DE POR REFERENCIA Y POR VALOR</strong></p>
+<hr />
+<h2 id="instrucciones-del-lenguaje">Instrucciones del lenguaje</h2>
+<blockquote>
+<p>Elene cuenta con instrucciones para asignación, selección, iteración, impresión y lectura. Estudiaremos cada una de ellas por separados y veremos un par de ejemplos para aclarar su uso.</p>
+</blockquote>
+<h2 id="instruccion-imprimir">* Instruccion 'imprimir'</h2>
+<blockquote>
+<p>Recibe como argumento una expresión y la imprime en pantalla. Aprovechemos la oportunidad de mostrar el uso de la función imprimir en un HelloWorld escrito en Elene. Recuerde que Elene no puede manipular o almacenar Strings en variables pero si los puede usar para imprimir por pantalla.</p>
+</blockquote>
+<p><code>guacara {     imprimir &quot;Hola Mundo!&quot; }</code></p>
+<blockquote>
+<p>Tambien pueden imprimirse en pantalla expresiones aritméticas o booleanas. Ej: imprimir 3*7*2</p>
+</blockquote>
+<h2 id="instruccion-leer">* Instruccion 'leer'</h2>
+<blockquote>
+<p>Recibe como argumento un identificador y lee por cónsola un valor para dicho identificador.</p>
+</blockquote>
+<p><code>guacara {     variables {         sea X de tipo entero     }        leer X }</code></p>
+<h2 id="instrucción-asignación">* Instrucción 'Asignación'</h2>
+<blockquote>
+<p>La asignación se lleva a cabo con el simbolo '='. Del lado derecho se encuentra una expresión y del lado izquierdo se encuentra la variable en donde se almacenará el valor de dicha expresión.</p>
+</blockquote>
+<p>guacara { variables { sea Contador de tipo entero con valor 1 } Contador = Contador + 1; imprimir Contador }</p>
+<h2 id="instrucción-condicional">* Instrucción Condicional</h2>
+<blockquote>
+<p>La instrucción condicional implementa la típica seleccion if-then-else. Se recibe una expresión booleana con la cual se realiza la selección inicial, seguidamente pueden haber más expresiones booelanas (else if) y finalmente puede haber una cláusula else en caso de que ninguna de las condiciones anteriores se haya cumplido. Se pueden escribir condicionales que tengan if, if-else, if-elsif-else, if-elsif.</p>
+</blockquote>
+<p>si 2*10+22 igual a 31+11 entonces { imprimir &quot;La respuesta es 42&quot; } o si Satan igual a 666 entonces { imprimir &quot;Salvese quien pueda&quot; } si no entonces { imprimir &quot;No hay nada que hacer&quot; }</p>
+<h2 id="iteraciones">* Iteraciones</h2>
+<blockquote>
+<p>*Instruccion 'Para': Es el equivalente al for en los lenguajes de programación comunes. <code>para X = 10 tal que X &gt; 0 con cambio X = X - 1 hacer { imprimir X }</code></p>
+</blockquote>
+<blockquote>
+<p>*Instruccion 'Mientras' : Es el equivalente al while en los lenguajes de programación comunes. <code>mientras X &gt; 0 hacer { imprimir X; X = X - 1 }</code></p>
+</blockquote>
