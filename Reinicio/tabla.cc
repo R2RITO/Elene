@@ -48,15 +48,18 @@ protected:
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
         std::map<std::string, elene_TABLA_VALOR*>::const_iterator iter;
+
         for (iter = tabla.begin(); iter!=tabla.end(); iter++) {
             std::cout << "Nombre: " << iter -> first << " "
                       << *(iter -> second) << "\n";
         }
+
         std::list<elene_TABLA*>::const_iterator t_iter;
+
         for (t_iter = hijos.begin(); t_iter!=hijos.end(); ++t_iter) {
-            std::cout << "HOLI"; /* Por aqui es el error, en este for */
-            std::cout << **t_iter << "\n"; /* Revisar ese ** */
+            std::cout << **t_iter ; /* Revisar ese ** */
         }
+        
     }
 
 public:
@@ -100,10 +103,12 @@ int main() {
   std::cout << "Hello World!\n";
 
     elene_TABLA* tablita = new elene_TABLA();
+    /*elene_TABLA* tablaHijo = new elene_TABLA(tablita); */
     elene_TABLA* tablon  = new elene_TABLA(tablita);
 
     tablon -> insertar("Hola","Entero",1,1,4);
     tablon -> insertar("Chais", "Char", 2,7,1);
+    /*tablaHijo -> insertar("SoyHijo", "Bool", 2,7,1); */
     tablita -> insertar("Pruebita", "Bool", 1,2,3); 
 
     std::cout << *tablita;
