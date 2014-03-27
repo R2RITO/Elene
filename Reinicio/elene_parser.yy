@@ -33,6 +33,9 @@
 %code
 {
     #include "elene_driver.hh"
+    #include "tabla.hh"
+    elene_TABLA* currentLevel;
+    elene_TABLA* tablaPadre;
 }
 
 %define api.token.prefix {TOK_}
@@ -149,18 +152,18 @@
 %start inicio;
 
 
-inicio : varglobal { std::cout << *$1; }
+inicio : { currentLevel = new elene_TABLA(); currentLevel -> insertar("Read",new elene_TIPO_SIMPLE("FuncionPredef"),1,1,4); tablaPadre=currentLevel;  } varglobal { std::cout << *$2; std::cout << "\n\nImprimiendo tabla\n\n"; std::cout << *currentLevel; }
 
 varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
-          | VARIABLES GLOBALES LBRACKET listaVariables RBRACKET funciones { $$ = new elene_VARGLOBAL($6,$4); }
+          | VARIABLES GLOBALES LBRACKET { currentLevel = enterScope(currentLevel); } listaVariables { currentLevel = exitScope(currentLevel); }  RBRACKET funciones { $$ = new elene_VARGLOBAL($8,$5); }
           ;
 
 listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
                | decVariable SEMICOLON listaVariables { $$ = new elene_LISTAVAR($1, $3); }
                ;
 
-decVariable   : SEA ID DE TIPO tipo { $$ = new elene_DECLARACION(new elene_ID($2),$5,0); }
-              | SEA ID DE TIPO tipo CON VALOR expr { $$ = new elene_DECLARACION(new elene_ID($2), $5, $8); }
+decVariable   : SEA ID DE TIPO tipo { $$ = new elene_DECLARACION(new elene_ID($2),$5,0); currentLevel -> insertar($2,$5,0,0,0); std::cout << typeid(@2.begin).name(); }
+              | SEA ID DE TIPO tipo CON VALOR expr { $$ = new elene_DECLARACION(new elene_ID($2), $5, $8); currentLevel -> insertar($2,$5,0,0,0) /* Falta el valor */; }
               ;
 
 tipo : BOOLEANO { $$ = new elene_TIPO_SIMPLE("Booleano"); }
@@ -197,7 +200,7 @@ programa  : GUACARA bloque { $$ = $2; }
           ;
 
 bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,$2); }
-       | LBRACKET VARIABLES LBRACKET listaVariables RBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE($4, $6); }
+       | LBRACKET VARIABLES LBRACKET { currentLevel = enterScope(currentLevel); } listaVariables { currentLevel = exitScope(currentLevel); } RBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE($5, $8); }
        ;
 
 listaInstruccion : instruccion { $$ = new elene_LISTAUNIT($1); }
@@ -216,7 +219,7 @@ asignacion  : ID BECOMES expr { $$ = new elene_INSTASIG(new elene_ID($1), $3); }
 
 instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2)); } 
             | IMPRIMIR expr { $$ = new elene_INSTESCR($2); }
-            | SI expr ENTONCES bloque { $$ = new elene_INSTCOND($2, $4, 0); }
+            | SI expr ENTONCES bloque { $$ = new elene_INSTCOND($2, $4, 0);  }
             | SI expr ENTONCES bloque elseif { $$ = new elene_INSTCOND($2,$4,$5); }
             | asignacion { $$ = $1; }
             | MIENTRAS expr HACER bloque { $$ = new elene_INSTMIENTRAS($2,$4); }

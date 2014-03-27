@@ -2,12 +2,13 @@
 # include <map>
 # include <iostream>
 # include <list>
+# include "arbol2.hh"
 
 class elene_TABLA_VALOR {
 
 protected:
 
-    std::string tipo;
+    elene_TIPO* tipo;
     int lin;
     int col;
     int size;
@@ -16,14 +17,14 @@ protected:
     virtual std::ostream& stream_write(std::ostream& os) const {              
         return (os << "Linea: " << lin
                    << " Columna: " << col
-                   << " Tipo: " << tipo 
+                   << " Tipo: " << *tipo 
                    << " Tam: " << size);
     }
 
 public:
 
     elene_TABLA_VALOR() {};
-    elene_TABLA_VALOR(std::string S, int L, int C, int T) {
+    elene_TABLA_VALOR(elene_TIPO* S, int L, int C, int T) {
         this -> tipo = S;
         this -> lin  = L;
         this -> col  = C;
@@ -41,7 +42,7 @@ public:
 class elene_TABLA {
 
 protected:
-    elene_TABLA* padre;
+
     std::map <std::string, elene_TABLA_VALOR*> tabla;
     std::list <elene_TABLA*> hijos;
 
@@ -64,6 +65,7 @@ protected:
 
 public:
 
+    elene_TABLA* padre;
     elene_TABLA() : padre(0) {};
     elene_TABLA(elene_TABLA* T) : padre(T) {
         if (T != 0) {
@@ -71,7 +73,7 @@ public:
         }
     };
     
-    void insertar(std::string nom, std::string tip, int lin, int col, int size) {
+    void insertar(std::string nom, elene_TIPO* tip, int lin, int col, int size) {
         elene_TABLA_VALOR* entrada = new elene_TABLA_VALOR(tip,lin,col,size);
         tabla[nom] = entrada;
     }
@@ -96,22 +98,36 @@ public:
     friend std::ostream& operator<< (std::ostream& stream,const elene_TABLA& obj){
         return obj.stream_write(stream); 
     }
+
+
 };
 
 
+elene_TABLA* enterScope(elene_TABLA* currentLevel) {
+    elene_TABLA* nTabla = new elene_TABLA(currentLevel);
+    return nTabla;
+}
+
+elene_TABLA* exitScope(elene_TABLA* currentLevel) {
+    return currentLevel -> padre;
+}
+
+/*
 int main() {
   std::cout << "Hello World!\n";
 
     elene_TABLA* tablita = new elene_TABLA();
-    /*elene_TABLA* tablaHijo = new elene_TABLA(tablita); */
+    elene_TABLA* tablaHijo = new elene_TABLA(tablita); 
     elene_TABLA* tablon  = new elene_TABLA(tablita);
 
     tablon -> insertar("Hola","Entero",1,1,4);
     tablon -> insertar("Chais", "Char", 2,7,1);
-    /*tablaHijo -> insertar("SoyHijo", "Bool", 2,7,1); */
+    tablaHijo -> insertar("SoyHijo", "Bool", 2,7,1); 
     tablita -> insertar("Pruebita", "Bool", 1,2,3); 
 
     std::cout << *tablita;
 
   return 1; 
-}
+} 
+*/
+

@@ -1,0 +1,18 @@
+guacara {
+
+variables
+{
+
+
+    sea X de tipo entero;
+    sea P de tipo booleano
+}
+
+si 1 entonces {
+leer X
+} si no entonces {
+leer P
+}
+
+
+}
