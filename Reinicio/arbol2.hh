@@ -1050,7 +1050,7 @@ protected:
     std::string tipo;
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << (tipo));
+        return (os << tipo << "\n");
     }
 
 public:
@@ -1147,6 +1147,7 @@ protected:
         if (expr != 0) {
             os << " Expresion:\n " << *expr;
         }
+
         return os;
     } 
 
@@ -1208,6 +1209,7 @@ protected:
     elene_LISTAVAR* resto;
     virtual std::ostream& stream_write(std::ostream& os) const {
         os << " Declaracion:\n" << *dec;
+
         if (resto != 0) {
             os << *resto;
         }
@@ -1218,6 +1220,7 @@ public:
     /* Declaracion de constructor */
     elene_LISTAVAR(elene_DECLARACION* dec, elene_LISTAVAR* resto) {
         this -> dec = dec;
+        this -> resto = resto;
     }
     
     /* Declaracion de destructor */
