@@ -12,6 +12,7 @@
     #include <iostream>
     #include <ostream>
     #include "arbol2.hh"
+    #include <cmath>
     class elene_driver;
 }
 
@@ -35,7 +36,9 @@
     #include "elene_driver.hh"
     #include "tabla.hh"
     elene_TABLA* currentLevel;
-    elene_TABLA* tablaPadre;
+    double col;
+    double linea;
+    elene_LISTFUN* lstf;
 }
 
 %define api.token.prefix {TOK_}
@@ -152,7 +155,7 @@
 %start inicio;
 
 
-inicio : { currentLevel = new elene_TABLA(); currentLevel -> insertar("Read",new elene_TIPO_SIMPLE("FuncionPredef"),1,1,4); tablaPadre=currentLevel;  } varglobal { std::cout << *$2; std::cout << "\n\nImprimiendo tabla\n\n"; std::cout << *currentLevel; }
+inicio : { currentLevel = new elene_TABLA(); currentLevel -> insertar("Read",new elene_TIPO_SIMPLE("FuncionPredef"),1,1,4); } varglobal { std::cout << *$2; std::cout << "\n\nImprimiendo tabla\n\n"; std::cout << *currentLevel; }
 
 varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
           | VARIABLES GLOBALES LBRACKET { currentLevel = enterScope(currentLevel); } listaVariables { currentLevel = exitScope(currentLevel); }  RBRACKET funciones { $$ = new elene_VARGLOBAL($8,$5); }
@@ -162,8 +165,8 @@ listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
                | decVariable SEMICOLON listaVariables { $$ = new elene_LISTAVAR($1, $3); }
                ;
 
-decVariable   : SEA ID DE TIPO tipo { $$ = new elene_DECLARACION(new elene_ID($2),$5,0); currentLevel -> insertar($2,$5,0,0,0); std::cout << typeid(@2.begin).name(); }
-              | SEA ID DE TIPO tipo CON VALOR expr { $$ = new elene_DECLARACION(new elene_ID($2), $5, $8); currentLevel -> insertar($2,$5,0,0,0) /* Falta el valor */; }
+decVariable   : SEA ID DE TIPO tipo { $$ = new elene_DECLARACION(new elene_ID($2),$5,0); currentLevel -> insertar($2,$5,@2.begin.line,@2.begin.column,0); } 
+              | SEA ID DE TIPO tipo CON VALOR expr { $$ = new elene_DECLARACION(new elene_ID($2), $5, $8); currentLevel -> insertar($2,$5,@2.begin.line,@2.begin.column,0) /* Falta el valor */; }
               ;
 
 tipo : BOOLEANO { $$ = new elene_TIPO_SIMPLE("Booleano"); }
@@ -200,7 +203,7 @@ programa  : GUACARA bloque { $$ = $2; }
           ;
 
 bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,$2); }
-       | LBRACKET VARIABLES LBRACKET { currentLevel = enterScope(currentLevel); } listaVariables { currentLevel = exitScope(currentLevel); } RBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE($5, $8); }
+       | LBRACKET VARIABLES LBRACKET { currentLevel = enterScope(currentLevel); } listaVariables RBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE($5, $7); currentLevel = exitScope(currentLevel); }
        ;
 
 listaInstruccion : instruccion { $$ = new elene_LISTAUNIT($1); }
@@ -256,12 +259,13 @@ terminal : VERDADERO        { $$ = new elene_BOOLEANO($1);  }
          | NUMENTERO        { $$ = new elene_ENTERO($1); }
          | NUMFLOTANTE      { $$ = new elene_REAL($1); }
          | CONSTCARACTER    { $$ = new elene_CARACTER($1); }
-         | ID               { $$ = new elene_ID($1); }
+         | ID               { $$ = new elene_ID($1); if (!(*currentLevel).lookup($1)) { std::cout << "Error no encuentro " << $1 << "\n"; /*yy::elene_parser::error(@1,"Var no declarada\n");*/ };   }
          | STRING           { $$ = new elene_STRING($1); }
          ;
 
 %%
 
 void yy::elene_parser::error (const location_type& l, const std::string& m) {
+    std::cout << "La";
     driver.error (l, m);
 }
