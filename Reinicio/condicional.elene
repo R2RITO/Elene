@@ -5,13 +5,16 @@ variables
 
 
     sea X de tipo entero;
-    sea P de tipo booleano
+    sea P de tipo booleano;
+    sea A de tipo arreglo de entero de 0 a 10
 }
 
 si 1 entonces {
 leer X
 } si no entonces {
-leer P
+leer P;
+P = Y+1;
+P = Y+1
 }
 
 

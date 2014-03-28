@@ -50,9 +50,10 @@ protected:
     virtual std::ostream& stream_write(std::ostream& os) const {              
         std::map<std::string, elene_TABLA_VALOR*>::const_iterator iter;
 
-        for (iter = tabla.begin(); iter!=tabla.end(); iter++) {
+        for (iter = tabla.begin(); iter!=tabla.end(); ++iter) {
             std::cout << "Nombre: " << iter -> first << " "
-                      << *(iter -> second) << "\n";
+                      << *(iter -> second) ;
+            std::cout << "\n"; 
         }
 
         std::list<elene_TABLA*>::const_iterator t_iter;
@@ -74,14 +75,17 @@ public:
     };
     
     void insertar(std::string nom, elene_TIPO* tip, int lin, int col, int size) {
+       
         elene_TABLA_VALOR* entrada = new elene_TABLA_VALOR(tip,lin,col,size);
         tabla[nom] = entrada;
     }
 
     elene_TABLA_VALOR* lookup(std::string nom) {
-
-        if (tabla[nom] != 0) {
-            return tabla[nom];
+        
+        std::map<std::string, elene_TABLA_VALOR*>::const_iterator res; 
+        res = tabla.find(nom);
+        if (res != tabla.end()) {
+            return (res -> second);
         } else {
             if (padre != 0) {
                 return (*padre).lookup(nom);
