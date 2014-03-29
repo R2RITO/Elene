@@ -69,6 +69,8 @@ guacara {
         imprimir X;
         imprimir X-1;
         X = X -1
-    }
+    };
+
+    probandoFuncionsita(X, 2+5, verdadero, Y)
 
 }

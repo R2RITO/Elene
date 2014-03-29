@@ -1572,6 +1572,106 @@ public:
     }
 
 };
+
+/*****************************************************************/
+/******* LISTA DE EXPRESIONES ************************************/
+/*****************************************************************/
+
+/* Argumento al estilo int X, primera regla de gramatica */
+class elene_LISTAEXPR {
+
+protected:
+
+    elene_EXPR* expr;
+    elene_LISTAEXPR* resto;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {    
+
+        os << "  Arg:" << (*expr);
+
+        if (resto != 0) {
+            os << "\n" << (*resto);
+        }
+
+        return os;
+
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_LISTAEXPR() {};
+    elene_LISTAEXPR(elene_EXPR* e, elene_LISTAEXPR* r): expr(e), resto(r) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_LISTAEXPR() {
+        delete expr;        
+        delete resto;    
+    }
+
+    /* Metodo para copiar */
+    elene_LISTAEXPR(const elene_LISTAEXPR &other) {
+        expr = other.expr;
+        resto = other.resto;
+    }
+
+    elene_LISTAEXPR &operator = (const elene_LISTAEXPR &other) {
+        if (&other != this) {
+            delete expr;        
+            delete resto;
+            expr = other.expr;
+            resto = other.resto;
+        }
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_LISTAEXPR& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+/* Clase para manejar la llamada de funciones */
+class elene_INSTFUNC : public elene_INST {
+
+protected:
+
+    elene_ID* nombre;
+    elene_LISTAEXPR* args; 
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Llamada a funcion:\n" 
+                   << "  Nombre:\n" << (*nombre)
+                   << "  Argumentos:\n" << (*args));
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_INSTFUNC() {};
+    elene_INSTFUNC(elene_ID* i, elene_LISTAEXPR* a): nombre(i), args(a) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_INSTFUNC () {
+        delete nombre;
+        delete args;
+    }
+
+    /* Metodo para copiar */
+    elene_INSTFUNC(const elene_INSTFUNC &other) {
+        nombre = other.nombre;
+        args = other.args;
+    }
+
+    elene_INSTFUNC &operator = (const elene_INSTFUNC &other) {
+        if (&other != this) {
+            delete nombre;
+            delete args;
+            nombre = other.nombre;
+            args = other.args;
+        }
+    }
+};
+
 /*****************************************************************/
 /******* LISTA DE ARGUMENTOS *************************************/
 /*****************************************************************/

@@ -141,6 +141,8 @@
 %type <elene_FUNCIONES*> funciones
 %type <elene_BLOQUE*> programa
 
+%type <elene_LISTAEXPR*> listaExpr
+
 %left O
 %left Y
 %left IGUAL DISTINTO A
@@ -155,7 +157,7 @@
 %start inicio;
 
 
-inicio : { currentLevel = new elene_TABLA(); currentLevel -> insertar("Read",new elene_TIPO_SIMPLE("FuncionPredef"),1,1,4); } varglobal { /*std::cout << *$2;*/ std::cout << "\n\nImprimiendo tabla\n\n"; std::cout << *currentLevel; std::cout << "*****FIN****\n"; }
+inicio : { currentLevel = new elene_TABLA(); currentLevel -> insertar("Read",new elene_TIPO_SIMPLE("FuncionPredef"),1,1,4); } varglobal { std::cout << *$2; std::cout << "\n\nImprimiendo tabla\n\n"; std::cout << *currentLevel; std::cout << "*****FIN****\n"; }
 
 varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
           | VARIABLES GLOBALES LBRACKET { currentLevel = enterScope(currentLevel); } listaVariables RBRACKET funciones { $$ = new elene_VARGLOBAL($7,$5); }
@@ -227,8 +229,12 @@ instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2)); }
             | asignacion { $$ = $1; }
             | MIENTRAS expr HACER bloque { $$ = new elene_INSTMIENTRAS($2,$4); }
             | PARA asignacion TAL QUE expr CON CAMBIO asignacion HACER bloque { $$ = new elene_INSTPARA($2,$5,$8,$10); } 
+            | ID LPAREN listaExpr RPAREN { $$ = new elene_INSTFUNC(new elene_ID($1),$3); }
             ;
 
+listaExpr: listaExpr COMMA expr { $$ = new elene_LISTAEXPR($3,$1);}
+         | expr { $$ = new elene_LISTAEXPR($1, 0); }
+         ;
 
 expr : LPAREN expr RPAREN  { $$ = $2; }
      | exprBinaria         { $$ = $1; }
