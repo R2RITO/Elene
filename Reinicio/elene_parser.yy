@@ -157,7 +157,7 @@
 %start inicio;
 
 
-inicio : { currentLevel = new elene_TABLA(); currentLevel -> insertar("Read",new elene_TIPO_SIMPLE("FuncionPredef"),1,1,4); } varglobal { std::cout << *$2; std::cout << "\n\nImprimiendo tabla\n\n"; std::cout << *currentLevel; std::cout << "*****FIN****\n"; }
+inicio : { currentLevel = new elene_TABLA(); currentLevel -> insertar("Read",new elene_TIPO_SIMPLE("FuncionPredef"),1,1,4); } varglobal { std::cout << "\n\nImprimiendo tabla\n\n"; std::cout << *currentLevel; std::cout << "*****FIN****\n"; }
 
 varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
           | VARIABLES GLOBALES LBRACKET { currentLevel = enterScope(currentLevel); } listaVariables RBRACKET funciones { $$ = new elene_VARGLOBAL($7,$5); }
@@ -165,6 +165,7 @@ varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
 
 listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
                | decVariable SEMICOLON listaVariables { $$ = new elene_LISTAVAR($1, $3); }
+               | decVariable SEMICOLON error { yyerrok; }
                ;
 
 decVariable   : SEA ID DE TIPO tipo { $$ = new elene_DECLARACION(new elene_ID($2),$5,0); if (!(*currentLevel).local_lookup($2)) { currentLevel -> insertar($2,$5,@2.begin.line,@2.begin.column,0); } else { std::cout << "Error variable: " << $2 << " ya esta declarada en Linea: "<< @2.begin.line << " Columna: " << @2.begin.column << "\n"/* Reportar error con recuperacion */; }; } 
@@ -189,15 +190,15 @@ listaFunciones : decFuncion { $$ = new elene_LISTFUN($1,0); }
                | decFuncion listaFunciones { $$ = new elene_LISTFUN($1,$2); }
                ;
 
-decFuncion : SEA LA FUNCION ID QUE RECIBE listArg Y RETORNA tipo HACER bloque { $$ = new elene_DECFUNCION(new elene_ID($4),$7,$10,$12); }
-           | SEA LA FUNCION ID QUE RETORNA tipo HACER bloque { $$ = new elene_DECFUNCION(new elene_ID($4),0,$7,$9); }
-           | SEA LA FUNCION ID QUE RECIBE listArg HACER bloque { $$ = new elene_DECFUNCION(new elene_ID($4),$7,0,$9); }
+decFuncion : SEA LA FUNCION ID QUE RECIBE  { currentLevel = enterScope(currentLevel); } listArg Y RETORNA tipo HACER bloque { $$ = new elene_DECFUNCION(new elene_ID($4),$8,$11,$13); currentLevel = exitScope(currentLevel); if (!(*currentLevel).local_lookup($4)) { currentLevel -> insertar($4,new elene_TIPO_SIMPLE("Funcion"),@4.begin.line,@4.begin.column,0); } else { std::cout << "Error, funcion : " << $4 << " ya esta declarada en Linea: "<< @4.begin.line << " Columna: " << @4.begin.column << "\n"; }; }
+           | SEA LA FUNCION ID QUE RETORNA tipo HACER bloque { $$ = new elene_DECFUNCION(new elene_ID($4),0,$7,$9); if (!(*currentLevel).local_lookup($4)) { currentLevel -> insertar($4,new elene_TIPO_SIMPLE("Funcion"),@4.begin.line,@4.begin.column,0); } else { std::cout << "Error, funcion: " << $4 << " ya esta declarada en Linea: "<< @4.begin.line << " Columna: " << @4.begin.column << "\n"; }; }
+           
            ;
 
-listArg : tipo ID  { $$ = new elene_LISTARG($1, new elene_ID($2), "Por Valor", 0); }
-        | tipo POR REFERENCIA ID { $$ = new elene_LISTARG($1, new elene_ID($4), "Por Referencia", 0); }
-        | tipo POR REFERENCIA ID COMMA listArg { $$ = new elene_LISTARG($1, new elene_ID($4), "Por Referencia", $6); }
-        | tipo ID COMMA listArg { $$ = new elene_LISTARG($1, new elene_ID($2), "Por Valor", $4); }
+listArg : tipo ID  { $$ = new elene_LISTARG($1, new elene_ID($2), "Por Valor", 0); if (!(*currentLevel).local_lookup($2)) { currentLevel -> insertar($2,$1,@2.begin.line,@2.begin.column,0); } else { std::cout << "Error, parametro: " << $2 << " ya esta declarado en Linea: "<< @2.begin.line << " Columna: " << @2.begin.column << "\n"; }; }
+        | tipo POR REFERENCIA ID { $$ = new elene_LISTARG($1, new elene_ID($4), "Por Referencia", 0); if (!(*currentLevel).local_lookup($4)) { currentLevel -> insertar($4,$1,@4.begin.line,@4.begin.column,0); } else { std::cout << "Error, parametro: " << $4 << " ya esta declarado en Linea: "<< @4.begin.line << " Columna: " << @4.begin.column << "\n"; }; }
+        | tipo POR REFERENCIA ID COMMA listArg { $$ = new elene_LISTARG($1, new elene_ID($4), "Por Referencia", $6); if (!(*currentLevel).local_lookup($4)) { currentLevel -> insertar($4,$1,@4.begin.line,@4.begin.column,0); } else { std::cout << "Error, parametro: " << $4 << " ya esta declarado en Linea: "<< @4.begin.line << " Columna: " << @4.begin.column << "\n"; }; }
+        | tipo ID COMMA listArg { $$ = new elene_LISTARG($1, new elene_ID($2), "Por Valor", $4); if (!(*currentLevel).local_lookup($2)) { currentLevel -> insertar($2,$1,@2.begin.line,@2.begin.column,0); } else { std::cout << "Error, parametro: " << $2 << " ya esta declarado en Linea: "<< @2.begin.line << " Columna: " << @2.begin.column << "\n"; }; }
         ;
 
 
@@ -229,7 +230,7 @@ instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2)); if (!(*curren
             | asignacion { $$ = $1; }
             | MIENTRAS expr HACER bloque { $$ = new elene_INSTMIENTRAS($2,$4); }
             | PARA asignacion TAL QUE expr CON CAMBIO asignacion HACER bloque { $$ = new elene_INSTPARA($2,$5,$8,$10); } 
-            | ID LPAREN listaExpr RPAREN { $$ = new elene_INSTFUNC(new elene_ID($1),$3); }
+            | ID LPAREN listaExpr RPAREN { $$ = new elene_INSTFUNC(new elene_ID($1),$3); if (!(*currentLevel).lookup($1)) { std::cout << "Error no encuentro " << $1 << " utilizada en la linea: " << @1.begin.line << " y columna: " << @1.begin.column << "\n";}; }
             ;
 
 listaExpr: listaExpr COMMA expr { $$ = new elene_LISTAEXPR($3,$1);}
