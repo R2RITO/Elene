@@ -104,6 +104,19 @@ public:
         }    
     }
 
+    elene_TABLA_VALOR* local_lookup(std::string nom) {
+
+        std::map<std::string, elene_TABLA_VALOR*>::const_iterator res;
+        res = tabla.find(nom);
+        
+        if (res != tabla.end()) {
+            return (res -> second);
+        } else {
+            return 0;
+        }
+
+    }
+
     void nuevoHijo(elene_TABLA* hijo) {
         (this -> hijos).push_back(hijo);
     }
