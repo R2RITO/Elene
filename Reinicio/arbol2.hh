@@ -1252,6 +1252,43 @@ public:
 };
 
 
+/* Clase para manejar los union */
+class elene_TIPO_UNION : public elene_TIPO {
+
+protected:
+
+    elene_LISTAVAR* contenido; 
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Union\n"
+                   << "Contenido: " << *contenido);
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_UNION() {};
+    elene_TIPO_UNION(elene_LISTAVAR* c) : contenido(c) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_UNION () {
+        delete contenido;
+    }
+    
+    /* Metodo para copiar */
+    elene_TIPO_UNION(const elene_TIPO_UNION &other) { 
+        contenido = other.contenido;
+    }
+
+    elene_TIPO_UNION &operator = (const elene_TIPO_UNION &other) {
+        if (&other != this) {
+            delete contenido;
+            contenido = other.contenido;
+        }
+    }
+
+};
+
+
 
 /* Clase para la lista de variables con declaraciones */
 class elene_BLOQUE {
