@@ -219,10 +219,10 @@ elseif      : else { $$ = $1; }
 
 else        : SI NO ENTONCES bloque { $$ = new elene_INSTCOND(new elene_BOOLEANO(1),$4,0); }
             ;
-asignacion  : ID BECOMES expr { $$ = new elene_INSTASIG(new elene_ID($1), $3); if (!(*currentLevel).lookup($1)) { std::cout << "Error no encuentro " << $1 << "utilizada en la linea: " << @1.begin.line << " y columna: " << @1.begin.column << "\n"; /*yy::elene_parser::error(@1,"Var no declarada\n");*/ };  }
+asignacion  : ID BECOMES expr { $$ = new elene_INSTASIG(new elene_ID($1), $3); if (!(*currentLevel).lookup($1)) { std::cout << "Error no encuentro " << $1 << " utilizada en la linea: " << @1.begin.line << " y columna: " << @1.begin.column << "\n"; /*yy::elene_parser::error(@1,"Var no declarada\n");*/ };  }
             ;
 
-instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2)); if (!(*currentLevel).lookup($2)) { std::cout << "Error no encuentro " << $2 << "utilizada en la linea: " << @2.begin.line << " y columna: " << @2.begin.column << "\n"; /*yy::elene_parser::error(@1,"Var no declarada\n");*/ };  } 
+instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2)); if (!(*currentLevel).lookup($2)) { std::cout << "Error no encuentro " << $2 << " utilizada en la linea: " << @2.begin.line << " y columna: " << @2.begin.column << "\n"; /*yy::elene_parser::error(@1,"Var no declarada\n");*/ };  } 
             | IMPRIMIR expr { $$ = new elene_INSTESCR($2); }
             | SI expr ENTONCES bloque { $$ = new elene_INSTCOND($2, $4, 0);  }
             | SI expr ENTONCES bloque elseif { $$ = new elene_INSTCOND($2,$4,$5); }
@@ -265,7 +265,7 @@ terminal : VERDADERO        { $$ = new elene_BOOLEANO($1);  }
          | NUMENTERO        { $$ = new elene_ENTERO($1); }
          | NUMFLOTANTE      { $$ = new elene_REAL($1); }
          | CONSTCARACTER    { $$ = new elene_CARACTER($1); }
-         | ID               { $$ = new elene_ID($1); if (!(*currentLevel).lookup($1)) { std::cout << "Error no encuentro " << $1 << "utilizada en la linea: " << @1.begin.line << " y columna: " << @1.begin.column << "\n"; /*yy::elene_parser::error(@1,"Var no declarada\n");*/ };   }
+         | ID               { $$ = new elene_ID($1); if (!(*currentLevel).lookup($1)) { std::cout << "Error no encuentro " << $1 << " utilizada en la linea: " << @1.begin.line << " y columna: " << @1.begin.column << "\n"; /*yy::elene_parser::error(@1,"Var no declarada\n");*/ };   }
          | STRING           { $$ = new elene_STRING($1); }
          ;
 
