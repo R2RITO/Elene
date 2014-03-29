@@ -220,8 +220,10 @@ bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,$2); }
        | LBRACKET VARIABLES LBRACKET { currentLevel = enterScope(currentLevel); } listaVariables RBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE($5, $7); currentLevel = exitScope(currentLevel); }
        ;
 
-listaInstruccion : instruccion { $$ = new elene_LISTAUNIT($1); }
-                 | instruccion SEMICOLON listaInstruccion { $$ = new elene_LISTAMULT($1,$3); }
+listaInstruccion : instruccion SEMICOLON { $$ = new elene_LISTAUNIT($1); }
+                 | listaInstruccion instruccion SEMICOLON { $$ = new elene_LISTAMULT($2,$1); }
+                 | error SEMICOLON { yyerrok; }
+                 | listaInstruccion error SEMICOLON { yyerrok; }
                  ;
 
 elseif      : else { $$ = $1; }
@@ -231,6 +233,7 @@ elseif      : else { $$ = $1; }
 
 else        : SI NO ENTONCES bloque { $$ = new elene_INSTCOND(new elene_BOOLEANO(1),$4,0); }
             ;
+
 asignacion  : ID BECOMES expr { $$ = new elene_INSTASIG(new elene_ID($1), $3); if (!(*currentLevel).lookup($1)) { std::cout << "Error no encuentro " << $1 << " utilizada en la linea: " << @1.begin.line << " y columna: " << @1.begin.column << "\n"; /*yy::elene_parser::error(@1,"Var no declarada\n");*/ };  }
             ;
 
