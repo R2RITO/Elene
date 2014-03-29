@@ -143,6 +143,9 @@
 
 %type <elene_LISTAEXPR*> listaExpr
 
+%type <elene_LISTAVAR*> bloqueContenido
+%type <elene_DECLARACION*> decContenido
+
 %left O
 %left Y
 %left IGUAL DISTINTO A
@@ -172,6 +175,13 @@ decVariable   : SEA ID DE TIPO tipo { $$ = new elene_DECLARACION(new elene_ID($2
               | SEA ID DE TIPO tipo CON VALOR expr { $$ = new elene_DECLARACION(new elene_ID($2), $5, $8); if (!(*currentLevel).local_lookup($2)) { currentLevel -> insertar($2,$5,@2.begin.line,@2.begin.column,0) /* Falta el valor */; } else { std::cout << "Error variable: " << $2 << " ya esta declarada en Linea: "<< @2.begin.line << " Columna: " << @2.begin.column << "\n" /* Reportar error */;}; }
               ;
 
+bloqueContenido : decContenido { $$ = new elene_LISTAVAR($1, 0); }
+                | bloqueContenido SEMICOLON decContenido { $$ = new elene_LISTAVAR($3,$1); }
+                ;
+
+decContenido    : ID DE TIPO tipo { $$ = new elene_DECLARACION(new elene_ID($1),$4,0); }
+                ;
+
 tipo : BOOLEANO { $$ = new elene_TIPO_SIMPLE("Booleano"); }
      | ENTERO   { $$ = new elene_TIPO_SIMPLE("Entero"); }
      | FLOTANTE { $$ = new elene_TIPO_SIMPLE("Flotante"); }
@@ -179,6 +189,7 @@ tipo : BOOLEANO { $$ = new elene_TIPO_SIMPLE("Booleano"); }
      | STRING   { $$ = new elene_TIPO_SIMPLE("String");}
      | VACIO    { $$ = new elene_TIPO_SIMPLE("Vacio");}
      | ARREGLO DE tipo DE expr A expr { $$ = new elene_TIPO_ARREGLO($3,$5,$7); }
+     | UNION QUE CONTIENE LBRACKET bloqueContenido RBRACKET { $$ = new elene_TIPO_UNION($5); }
      | LPAREN tipo RPAREN { $$ = $2; }
      ;
 
