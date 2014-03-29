@@ -17,8 +17,7 @@ protected:
     virtual std::ostream& stream_write(std::ostream& os) const {              
         return (os << "Linea: " << lin
                    << " Columna: " << col
-                   << " Tipo: " << *tipo 
-                   << " Tam: " << size);
+                   << " Tipo: " << *tipo);
     }
 
 public:
@@ -45,17 +44,26 @@ protected:
 
     std::map <std::string, elene_TABLA_VALOR*> tabla;
     std::list <elene_TABLA*> hijos;
+    int ident;
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
         std::map<std::string, elene_TABLA_VALOR*>::const_iterator iter;
 
+        int i;
+        std::string identacion = "";
+        for (i = 0; i<this -> ident; i++) {
+            identacion += " ";
+        }
+
+        std::cout << identacion << "Tabla de Simbolos: \n";
+
         for (iter = tabla.begin(); iter!=tabla.end(); ++iter) {
-            std::cout << "Nombre: " << iter -> first << " "
+            std::cout << identacion << "Nombre: " << iter -> first << " "
                       << *(iter -> second) ;
             std::cout << "\n"; 
         }
-
+        std::cout << "\n";
         std::list<elene_TABLA*>::const_iterator t_iter;
 
         for (t_iter = hijos.begin(); t_iter!=hijos.end(); ++t_iter) {
@@ -67,10 +75,11 @@ protected:
 public:
 
     elene_TABLA* padre;
-    elene_TABLA() : padre(0) {};
+    elene_TABLA() : padre(0), ident(0) {};
     elene_TABLA(elene_TABLA* T) : padre(T) {
         if (T != 0) {
             T -> nuevoHijo(this);
+            this -> ident = T -> ident + 2;
         }
     };
     

@@ -155,10 +155,10 @@
 %start inicio;
 
 
-inicio : { currentLevel = new elene_TABLA(); currentLevel -> insertar("Read",new elene_TIPO_SIMPLE("FuncionPredef"),1,1,4); } varglobal { std::cout << *$2; std::cout << "\n\nImprimiendo tabla\n\n"; std::cout << *currentLevel; }
+inicio : { currentLevel = new elene_TABLA(); currentLevel -> insertar("Read",new elene_TIPO_SIMPLE("FuncionPredef"),1,1,4); } varglobal { /*std::cout << *$2;*/ std::cout << "\n\nImprimiendo tabla\n\n"; std::cout << *currentLevel; std::cout << "*****FIN****\n"; }
 
 varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
-          | VARIABLES GLOBALES LBRACKET { currentLevel = enterScope(currentLevel); } listaVariables { currentLevel = exitScope(currentLevel); }  RBRACKET funciones { $$ = new elene_VARGLOBAL($8,$5); }
+          | VARIABLES GLOBALES LBRACKET { currentLevel = enterScope(currentLevel); } listaVariables RBRACKET funciones { $$ = new elene_VARGLOBAL($7,$5); }
           ;
 
 listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
@@ -199,7 +199,7 @@ listArg : tipo ID  { $$ = new elene_LISTARG($1, new elene_ID($2), "Por Valor", 0
         ;
 
 
-programa  : GUACARA bloque { $$ = $2; }
+programa  : GUACARA bloque { $$ = $2; currentLevel = exitScope(currentLevel); }
           ;
 
 bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,$2); }
@@ -266,6 +266,5 @@ terminal : VERDADERO        { $$ = new elene_BOOLEANO($1);  }
 %%
 
 void yy::elene_parser::error (const location_type& l, const std::string& m) {
-    std::cout << "La";
     driver.error (l, m);
 }

@@ -17,7 +17,7 @@ static yy::location loc;
 %option noyywrap nounput batch debug noinput
 
 DIGIT [0-9]
-ID    [A-Z][a-zA-Z0-9]*
+ID    [a-zA-Z][a-zA-Z0-9]*
 CARACTER [a-zA-Z0-9]
 
 %{
@@ -106,12 +106,8 @@ CARACTER [a-zA-Z0-9]
 "globales"           {  return (yy::elene_parser::make_GLOBALES(loc));   }
 "arreglo"            {  return (yy::elene_parser::make_ARREGLO(loc));    }
 
-{ID}                  { return (yy::elene_parser::make_ID(yytext,loc)); }
-
 "verdadero"           { return (yy::elene_parser::make_VERDADERO(1,loc));  }
-
 "falso"               { return (yy::elene_parser::make_FALSO(0, loc));      }
-
 {DIGIT}+              {   // Regla para los enteros
                           long num = strtol(yytext, NULL, 10); 
                           if (!(INT_MIN <= num) && (num <= INT_MAX) && (errno != ERANGE)) {
@@ -120,12 +116,14 @@ CARACTER [a-zA-Z0-9]
                           return (yy::elene_parser::make_NUMENTERO(num, loc));
                       }
 
+
+{ID}                  { return (yy::elene_parser::make_ID(yytext,loc)); }
 {DIGIT}+("."{DIGIT}+) {   // Regla para los numeros reales
                           //Falta esto. Como pasar de yytext a real y chequear overflow
                           return (yy::elene_parser::make_NUMFLOTANTE(0.0, loc));
                       }
 
-.                     { /* Driver de error FALTA*/ } 
+.                     { std::cout << loc << " Error lexicografico - Caracter \""<< yytext[0]<<"\" inesperado.\n"; /* Driver de error FALTA*/ } 
 
 <<EOF>>               { return (yy::elene_parser::make_END(loc)); }
 

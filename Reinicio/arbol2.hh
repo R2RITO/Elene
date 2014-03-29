@@ -1050,7 +1050,7 @@ protected:
     std::string tipo;
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << tipo << "\n");
+        return (os << tipo);
     }
 
 public:
