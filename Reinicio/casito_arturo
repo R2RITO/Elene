@@ -3,7 +3,6 @@ variables globales {
     sea Foo de tipo caracter;
     sea Meh de tipo booleano;
     sea Qux$ de tipo entero;
-    asdaweq;
     sea Delta de tipo entero;
     sea Bar de tipo flotante;
 
