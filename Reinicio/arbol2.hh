@@ -1774,6 +1774,72 @@ public:
 
 };
 
+
+/* Clase para la iteracion determinada */
+class elene_INSTROMPER: public elene_INST {
+
+    protected:
+
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {
+        return (os << "Instruccion Romper\n");
+    }
+
+    public:
+    /* Declaracion de constructor */
+    elene_INSTROMPER() {};
+
+    /* Declaracion de destructor */
+    virtual ~elene_INSTROMPER () {
+    }
+
+    /* Metodo para copiar */
+    elene_INSTROMPER(const elene_INSTROMPER &other) {
+
+    }
+
+    elene_INSTROMPER &operator = (const elene_INSTROMPER &other) {
+        if (&other != this) {
+        }
+    }
+
+};
+
+
+
+/* Clase para la iteracion determinada */
+class elene_INSTCONTINUAR: public elene_INST {
+
+    protected:
+
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {
+        return (os << "Instruccion Continuar\n");
+    }
+
+    public:
+    /* Declaracion de constructor */
+    elene_INSTCONTINUAR() {};
+
+    /* Declaracion de destructor */
+    virtual ~elene_INSTCONTINUAR () {
+    }
+
+    /* Metodo para copiar */
+    elene_INSTCONTINUAR(const elene_INSTCONTINUAR &other) {
+
+    }
+
+    elene_INSTCONTINUAR &operator = (const elene_INSTCONTINUAR &other) {
+        if (&other != this) {
+        }
+    }
+
+};
+
+
 /*****************************************************************/
 /******* LISTA DE EXPRESIONES ************************************/
 /*****************************************************************/
