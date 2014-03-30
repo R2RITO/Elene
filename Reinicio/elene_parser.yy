@@ -167,8 +167,8 @@ varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
           ;
 
 listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
-               | decVariable SEMICOLON listaVariables { $$ = new elene_LISTAVAR($1, $3); }
-               | decVariable SEMICOLON error { yyerrok; }
+               | listaVariables SEMICOLON decVariable { $$ = new elene_LISTAVAR($3, $1); }
+               | listaVariables SEMICOLON error { yyerrok; }
                ;
 
 decVariable   : SEA ID DE TIPO tipo { $$ = new elene_DECLARACION(new elene_ID($2),$5,0); if (!(*currentLevel).local_lookup($2)) { currentLevel -> insertar($2,$5,@2.begin.line,@2.begin.column,0); } else { std::cout << "Error variable: " << $2 << " ya esta declarada en Linea: "<< @2.begin.line << " Columna: " << @2.begin.column << "\n"/* Reportar error con recuperacion */; }; } 
@@ -220,10 +220,9 @@ bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,$2); }
        | LBRACKET VARIABLES LBRACKET { currentLevel = enterScope(currentLevel); } listaVariables RBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE($5, $7); currentLevel = exitScope(currentLevel); }
        ;
 
-listaInstruccion : instruccion SEMICOLON { $$ = new elene_LISTAUNIT($1); }
-                 | listaInstruccion instruccion SEMICOLON { $$ = new elene_LISTAMULT($2,$1); }
-                 | error SEMICOLON { yyerrok; }
-                 | listaInstruccion error SEMICOLON { yyerrok; }
+listaInstruccion : instruccion { $$ = new elene_LISTAUNIT($1); }
+                 | listaInstruccion SEMICOLON instruccion { $$ = new elene_LISTAMULT($3,$1); }
+                 | listaInstruccion SEMICOLON error { yyerrok; }
                  ;
 
 elseif      : else { $$ = $1; }
