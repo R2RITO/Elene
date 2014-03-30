@@ -1,0 +1,8 @@
+variables globales {
+    sea x de tipo entero con valor 3;
+    sea y de tipo caracter
+}
+
+guacara {
+    imprimir x
+}

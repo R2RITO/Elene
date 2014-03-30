@@ -1,0 +1,17 @@
+guacara {
+
+    variables {
+        sea varX de tipo entero con valor 10
+        sea varY de tipo entero
+    }
+
+    mientras verdadero hacer {
+        si x menor que 0 entonces {
+            romper iteracion
+        } si no entonces {
+            x = x - 1;
+            continuar iteracion
+        };
+        imprimir "Esta linea nunca se ejecutara"
+    }
+}

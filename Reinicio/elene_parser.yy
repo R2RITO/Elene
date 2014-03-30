@@ -12,7 +12,7 @@
 %define parser_class_name {elene_parser}
 %define api.token.constructor
 %define api.value.type variant
-%define parse.assert
+/*%define parse.assert*/
 
 
 %code requires {
@@ -185,6 +185,7 @@ varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
           | VARIABLES GLOBALES LBRACKET listaVariables RBRACKET funciones 
             { $$ = new elene_VARGLOBAL($6,$4); }
           ;
+
 listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
                | listaVariables SEMICOLON decVariable { $$ = new elene_LISTAVAR($3, $1); }
                | listaVariables SEMICOLON error { yyerrok; }

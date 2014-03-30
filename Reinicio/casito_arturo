@@ -4,8 +4,7 @@ variables globales {
     sea Meh de tipo booleano;
     sea Qux$ de tipo entero;
     sea Delta de tipo entero;
-    sea Bar de tipo flotante;
-
+    sea Bar de tipo flotante
 }
 
 funciones {
