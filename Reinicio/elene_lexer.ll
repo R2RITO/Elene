@@ -1,16 +1,27 @@
-%{ 
-/* -*- C++ -*- */
+%{
+ 
+/* LENGUAJES DE PROGRAMACION II
+ * 
+ * Implementacion para el Lexer del lenguaje Elene
+ * Autores:
+ *     Arturo Voltattorni 10-10774
+ *     Fernando Dagostino 10-10812
+ *
+ */
+
 # include <cerrno>
 # include <climits>
 # include <cstdlib>
 # include <string>
+# include <cfloat>
+# include <stdlib.h>
 # include "elene_driver.hh"
 # include "elene_parser.tab.hh"
 
 # undef yywrap
 # define yywrap() 1
 
-// The location of the current token.
+// Para detectar la posicion de cada token declarado.
 static yy::location loc;
 %}
 
@@ -21,7 +32,7 @@ ID    [a-zA-Z][a-zA-Z0-9]*
 CARACTER [a-zA-Z0-9]
 
 %{
-    // Code run each time a pattern is matched.
+    // Codigo a ejecutar cada vez que un token hace match.
     #define YY_USER_ACTION  loc.columns (yyleng);
 %}
 
@@ -46,9 +57,7 @@ CARACTER [a-zA-Z0-9]
 
 
 \"(\\.|[^\\"])*\"    { return (yy::elene_parser::make_STRING(yytext, loc));  }
-
 "'"+{CARACTER}+"'"   { return (yy::elene_parser::make_CONSTCARACTER(yytext[0],loc)); }
-
 "+"                  {  return (yy::elene_parser::make_PLUS(loc));       }
 "-"                  {  return (yy::elene_parser::make_MINUS(loc));      }
 "*"                  {  return (yy::elene_parser::make_TIMES(loc));      }
@@ -105,32 +114,41 @@ CARACTER [a-zA-Z0-9]
 "variables"          {  return (yy::elene_parser::make_VARIABLES(loc));  }
 "globales"           {  return (yy::elene_parser::make_GLOBALES(loc));   }
 "arreglo"            {  return (yy::elene_parser::make_ARREGLO(loc));    }
+"verdadero"          { return (yy::elene_parser::make_VERDADERO(1,loc));  }
+"falso"              { return (yy::elene_parser::make_FALSO(0, loc));      }
 
-"verdadero"           { return (yy::elene_parser::make_VERDADERO(1,loc));  }
-"falso"               { return (yy::elene_parser::make_FALSO(0, loc));      }
-{DIGIT}+              {   // Regla para los enteros
-                          long num = strtol(yytext, NULL, 10); 
-                          if (!(INT_MIN <= num) && (num <= INT_MAX) && (errno != ERANGE)) {
-                              //AQUI HAY QUE DAR ERROR
-                          }
-                          return (yy::elene_parser::make_NUMENTERO(num, loc));
-                      }
+{DIGIT}+             {   // Regla para los enteros
+                         long num = strtol(yytext, NULL, 10);
+                         if (!(INT_MIN <= num) && (num <= INT_MAX) && (errno != ERANGE)) {
+                             std::cout << loc << "Error - Overflow para los enteros";
+                             return (yy::elene_parser::make_NUMENTERO(0, loc));
+                         }
+                         return (yy::elene_parser::make_NUMENTERO(num, loc));
+                     }
 
 
-{ID}                  { return (yy::elene_parser::make_ID(yytext,loc)); }
+{ID}                 { return (yy::elene_parser::make_ID(yytext,loc)); }
+
+
 {DIGIT}+("."{DIGIT}+) {   // Regla para los numeros reales
-                          //Falta esto. Como pasar de yytext a real y chequear overflow
-                          return (yy::elene_parser::make_NUMFLOTANTE(0.0, loc));
+
+                          float num = atof(yytext);
+                          if (!(FLT_MIN <= num) && (num <= FLT_MAX) && (errno != ERANGE)) {
+                              std::cout << loc << "Error - Overflow para los reales";
+                              return (yy::elene_parser::make_NUMFLOTANTE(0.0, loc));
+                          }
+                          return (yy::elene_parser::make_NUMFLOTANTE(num, loc));
                       }
 
-.                     { std::cout << loc << " Error lexicografico - Caracter \""<< yytext[0]<<"\" inesperado.\n"; /* Driver de error FALTA*/ } 
+.                     { std::cout << loc << " Error lexicografico - Caracter \""
+                                  << yytext[0]<<"\" inesperado.\n";
+                      } 
 
 <<EOF>>               { return (yy::elene_parser::make_END(loc)); }
 
 %%
 
 // Funciones del driver implementadas aca por simplicidad
-
 void elene_driver::scan_begin() {
 
     yy_flex_debug = trace_scanning;

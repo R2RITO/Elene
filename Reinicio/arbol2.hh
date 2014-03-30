@@ -560,6 +560,49 @@ public:
     }
 };
 
+/* Clase para el operador de acceso a estructuras*/
+class elene_ACCESO : public elene_EXPRBINARIA { 
+
+protected:
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Acceso:\n" 
+                   << "  Expr Izq:\n" << (*expr_izq)
+                   << "  Expr Der:\n" << (*expr_der));
+    }
+
+public:
+
+    /* Constructor */
+    elene_ACCESO(elene_EXPR* izq, elene_EXPR* der): elene_EXPRBINARIA(izq, der) {}
+
+    /* Metodo para copiar */
+    elene_ACCESO(const elene_ACCESO &other) {
+        expr_izq = other.expr_izq;
+        expr_der = other.expr_der;
+    }
+
+    /* Metodo destructor */
+    virtual ~elene_ACCESO() {
+        delete expr_izq;
+        delete expr_der;
+    }
+
+    elene_ACCESO &operator = (const elene_ACCESO &other) {
+
+        if (&other != this) {
+
+            delete expr_izq;
+            delete expr_der;
+            expr_izq = other.expr_izq;
+            expr_der = other.expr_der;
+
+        }
+    }
+};
+
+
 /**********************************************************/
 /***** EXPRESIONES UNARIAS ********************************/
 /**********************************************************/
@@ -1077,6 +1120,43 @@ public:
 
 };
 
+/* Clase para manejar tipos definidos por el usuario*/
+class elene_TIPO_DEFINIDO : public elene_TIPO {
+
+protected:
+
+    elene_ID* id;
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << *id);
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_DEFINIDO() {};
+    elene_TIPO_DEFINIDO(elene_ID* t): id(t) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_DEFINIDO () {
+        delete id;
+    }
+    
+    /* Metodo para copiar */
+    elene_TIPO_DEFINIDO(const elene_TIPO_DEFINIDO &other) { 
+        id = other.id;
+    }
+
+    elene_TIPO_DEFINIDO &operator = (const elene_TIPO_DEFINIDO &other) {
+        if (&other != this) {
+            delete id;
+            id = other.id;
+        }
+    }
+
+};
+
+
+
 /* Clase para manejar el tipo de datos de arreglos */
 class elene_TIPO_ARREGLO : public elene_TIPO {
 
@@ -1100,7 +1180,8 @@ protected:
 public:
     /* Declaracion de constructor */
     elene_TIPO_ARREGLO() {};
-    elene_TIPO_ARREGLO(elene_TIPO* t, elene_EXPR* izq, elene_EXPR* der): tipo(t), indIzq(izq), indDer(der) {};
+    elene_TIPO_ARREGLO(elene_TIPO* t, elene_EXPR* izq, elene_EXPR* der): 
+        tipo(t), indIzq(izq), indDer(der) {};
     
     /* Declaracion de destructor */
     virtual ~elene_TIPO_ARREGLO () {
@@ -1450,6 +1531,42 @@ public:
     }
 };
 
+/* Clase para el return */
+class elene_INSTRETORNAR : public elene_INST {
+
+protected:
+
+    elene_EXPR* expr;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Instruccion Retornar:\n" 
+                   << "  Expr:\n" << (*expr));
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_INSTRETORNAR() {};
+    elene_INSTRETORNAR(elene_EXPR* E): expr(E) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_INSTRETORNAR () {
+        delete expr;    
+    }
+
+    /* Metodo para copiar */
+    elene_INSTRETORNAR(const elene_INSTRETORNAR &other) {
+        expr = other.expr;
+    }
+
+    elene_INSTRETORNAR &operator = (const elene_INSTRETORNAR &other) {
+        if (&other != this) {
+            delete expr;
+            expr = other.expr;
+        }
+    }
+};
+
 /* Clase para el condicional */
 class elene_INSTCOND : public elene_INST {
 
@@ -1475,7 +1592,8 @@ protected:
 public:
     /* Declaracion de constructor */
     elene_INSTCOND() {};
-    elene_INSTCOND(elene_EXPR* cond, elene_BLOQUE* blq, elene_INSTCOND* s): condicion(cond), bloque(blq), sig(s) {};
+    elene_INSTCOND(elene_EXPR* cond, elene_BLOQUE* blq, elene_INSTCOND* s): 
+        condicion(cond), bloque(blq), sig(s) {};
     
     /* Declaracion de destructor */
     virtual ~elene_INSTCOND () {
@@ -1522,7 +1640,8 @@ protected:
 public:
     /* Declaracion de constructor */
     elene_INSTASIG() {};
-    elene_INSTASIG(elene_ID* variable, elene_EXPR* rvalue): id(variable), ladoDer(rvalue) {};
+    elene_INSTASIG(elene_ID* variable, elene_EXPR* rvalue): 
+        id(variable), ladoDer(rvalue) {};
     
     /* Declaracion de destructor */
     virtual ~elene_INSTASIG () {
@@ -1565,7 +1684,8 @@ protected:
 public:
     /* Declaracion de constructor */
     elene_INSTMIENTRAS() {};
-    elene_INSTMIENTRAS(elene_EXPR* cond, elene_BLOQUE* blq): condicion(cond), bloque(blq) {};
+    elene_INSTMIENTRAS(elene_EXPR* cond, elene_BLOQUE* blq): 
+        condicion(cond), bloque(blq) {};
     
     /* Declaracion de destructor */
     virtual ~elene_INSTMIENTRAS () {
@@ -1778,7 +1898,8 @@ protected:
 public:
     /* Declaracion de constructor */
     elene_LISTARG() {};
-    elene_LISTARG(elene_TIPO* t, elene_ID* i, std::string mod, elene_LISTARG* r): tipo(t), id(i), ref(mod), resto(r) {};
+    elene_LISTARG(elene_TIPO* t, elene_ID* i, std::string mod, elene_LISTARG* r): 
+        tipo(t), id(i), ref(mod), resto(r) {};
     
     /* Declaracion de destructor */
     virtual ~elene_LISTARG() {
@@ -1846,7 +1967,8 @@ public:
     /* Declaracion de constructor */
     elene_DECFUNCION() {};
 
-    elene_DECFUNCION(elene_ID* nmb, elene_LISTARG* param, elene_TIPO* ret, elene_BLOQUE* blq): nombre(nmb), parametros(param), retorno(ret), bloque(blq) {};
+    elene_DECFUNCION(elene_ID* nmb, elene_LISTARG* param, elene_TIPO* ret, elene_BLOQUE* blq): 
+        nombre(nmb), parametros(param), retorno(ret), bloque(blq) {};
 
     /* Declaracion de destructor */
     virtual ~elene_DECFUNCION () {
@@ -2030,7 +2152,8 @@ protected:
 public:
 
     /* Constructor */
-    elene_VARGLOBAL(elene_FUNCIONES* func, elene_LISTAVAR* lv): funciones(func), listaVar(lv) {}
+    elene_VARGLOBAL(elene_FUNCIONES* func, elene_LISTAVAR* lv): 
+        funciones(func), listaVar(lv) {}
 
     /* Metodo para copiar */
     elene_VARGLOBAL(const elene_VARGLOBAL &other) {

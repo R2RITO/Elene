@@ -16,8 +16,6 @@ class elene_driver {
         elene_driver();
         virtual ~elene_driver();
 
-    /*std::map<std::string, int> variables;*/
-
     int result;
 
     // Handling the scanner.

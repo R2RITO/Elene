@@ -16,18 +16,24 @@ variables globales {
     };
     sea estructurita de tipo estructura que contiene {
         B de tipo booleano
-    }
+    };
+    sea KK de tipo estructurita;
+    sea CK de tipo MASCK
 }
 
 funciones {
 
     sea la funcion PrintHola que retorna vacio hacer {
         imprimir "Esto es una pruebita";
-        imprimir "Hola"
+        imprimir 9+4;
+        imprimir "Hola";
+        PrintChao();
+        PrintHola()
     }
 
-    sea la funcion PrintChao que retorna vacio hacer {
-        imprimir Chao
+    sea la funcion PrintChao que retorna entero hacer {
+        imprimir Chao;
+        retornar 1
     }
 
 }

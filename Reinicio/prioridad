@@ -1,7 +1,7 @@
 Manejo de errores sintacticos
-Acomodar lo de punto flotante y conversiones en el lexer
-Crear el token de acceso a unions y records (con su conversion)
-Gramatica para el acceso a unions y records (tabla de simbolos y estrcuturas necesarias)
+hacer que se impriman bien las uniones y las estructuras
+hacer que la impresion de errores se vea en formato consistente
 Agregar las funcionalidades extras
 Terminar el manual
 Hacer programas correctos e incorrectos
+Acomodar el codigo

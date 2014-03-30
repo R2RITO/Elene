@@ -1,3 +1,11 @@
+/* LENGUAJES DE PROGRAMACION II
+ * 
+ * Implementacion del parser de Elene
+ * Autores:
+ *      Arturo Voltattorni 10-10774
+ *      Fernando Dagostino 10-10812
+ */
+
 %skeleton "lalr1.cc" /* -*- C++ -*- */
 %require "3.0.2"
 %defines
@@ -114,6 +122,7 @@
 %token POR
 %token REFERENCIA
 
+
 %type <elene_TIPO*> tipo
 %type <elene_BLOQUE*> bloque
 %type <elene_LISTAVAR*> listaVariables
@@ -144,6 +153,7 @@
 %left PLUS MINUS
 %left TIMES SLASH
 %left NEG NEGBOOL
+%left PERIOD
 %printer { yyoutput << $$; } <*>;
 
 %%
@@ -218,6 +228,16 @@ tipo : BOOLEANO { $$ = new elene_TIPO_SIMPLE("Booleano"); }
      | CARACTER { $$ = new elene_TIPO_SIMPLE("Caracter"); }
      | STRING   { $$ = new elene_TIPO_SIMPLE("String");}
      | VACIO    { $$ = new elene_TIPO_SIMPLE("Vacio");}
+     | ID       
+       { if (!(*currentLevel).local_lookup($1)) {
+            std::cout << "Error - Declaracion con tipo '" << $1
+                      <<"' no definido en Linea: "
+                      << @1.begin.line << " Columna: " << @1.begin.column << "\n";
+            $$ = new elene_TIPO_SIMPLE("Indefinido");
+         } else {
+            $$ = new elene_TIPO_DEFINIDO(new elene_ID($1)); 
+         }
+       }
      | ARREGLO DE tipo DE expr A expr { $$ = new elene_TIPO_ARREGLO($3,$5,$7); }
      | UNION QUE CONTIENE LBRACKET 
        { currentLevel = enterScope(currentLevel); }
@@ -238,33 +258,34 @@ listaFunciones : decFuncion { $$ = new elene_LISTFUN($1,0); }
                | decFuncion listaFunciones { $$ = new elene_LISTFUN($1,$2); }
                ;
 
-decFuncion : SEA LA FUNCION ID QUE RECIBE  { currentLevel = enterScope(currentLevel); } listArg Y RETORNA tipo HACER bloque 
+decFuncion : SEA LA FUNCION ID QUE RECIBE  
+             { if (!(*currentLevel).local_lookup($4)) { 
+                   currentLevel -> 
+                   insertar($4,new elene_TIPO_SIMPLE("Funcion"),@4.begin.line,@4.begin.column,0); 
+               } else { 
+                   std::cout << "Error, funcion : " << $4 
+                             << " ya esta declarada en Linea: "<< @4.begin.line 
+                             << " Columna: " << @4.begin.column << "\n"; 
+               }; 
+               currentLevel = enterScope(currentLevel); 
+            } 
+            listArg Y RETORNA tipo HACER bloque 
             { 
-                    $$ = new elene_DECFUNCION(new elene_ID($4),$8,$11,$13); 
-                    currentLevel = exitScope(currentLevel); 
-                    if (!(*currentLevel).local_lookup($4)) { 
-                        currentLevel -> 
-                        insertar($4,new elene_TIPO_SIMPLE("Funcion"),@4.begin.line,@4.begin.column,0); 
-                    } else { 
-                        std::cout 
-                        << "Error, funcion : " << $4 
-                        << " ya esta declarada en Linea: "<< @4.begin.line 
-                        << " Columna: " << @4.begin.column << "\n"; 
-                    }; 
+                $$ = new elene_DECFUNCION(new elene_ID($4),$8,$11,$13); 
+                currentLevel = exitScope(currentLevel);     
             }
-           | SEA LA FUNCION ID QUE RETORNA tipo HACER bloque 
-             { 
-                    $$ = new elene_DECFUNCION(new elene_ID($4),0,$7,$9); 
-                    if (!(*currentLevel).local_lookup($4)) { 
-                        currentLevel -> 
-                        insertar($4,new elene_TIPO_SIMPLE("Funcion"),@4.begin.line,@4.begin.column,0); 
-                    } else { 
-                        std::cout << "Error, funcion: " << $4 
-                        << " ya esta declarada en Linea: "<< @4.begin.line 
-                        << " Columna: " << @4.begin.column << "\n"; 
-                    }; 
+           | SEA LA FUNCION ID QUE RETORNA
+             { if (!(*currentLevel).local_lookup($4)) { 
+                   currentLevel -> 
+                   insertar($4,new elene_TIPO_SIMPLE("Funcion"),@4.begin.line,@4.begin.column,0); 
+               } else { 
+                   std::cout << "Error, funcion: " << $4 
+                             << " ya esta declarada en Linea: "<< @4.begin.line 
+                             << " Columna: " << @4.begin.column << "\n"; 
+               }; 
              }
-           
+             tipo HACER bloque
+             { $$ = new elene_DECFUNCION(new elene_ID($4),0,$8,$10); }
            ;
 
 listArg : tipo ID  
@@ -324,11 +345,16 @@ programa  : GUACARA bloque { $$ = $2; currentLevel = exitScope(currentLevel); }
           ;
 
 bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,$2); }
-       | LBRACKET VARIABLES LBRACKET { currentLevel = enterScope(currentLevel); } listaVariables RBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE($5, $7); currentLevel = exitScope(currentLevel); }
+       | LBRACKET VARIABLES LBRACKET 
+         { currentLevel = enterScope(currentLevel); } 
+         listaVariables RBRACKET listaInstruccion RBRACKET 
+         { $$ = new elene_BLOQUE($5, $7); 
+           currentLevel = exitScope(currentLevel); }
        ;
 
 listaInstruccion : instruccion { $$ = new elene_LISTAUNIT($1); }
-                 | listaInstruccion SEMICOLON instruccion { $$ = new elene_LISTAMULT($3,$1); }
+                 | listaInstruccion SEMICOLON instruccion 
+                   { $$ = new elene_LISTAMULT($3,$1); }
                  | listaInstruccion SEMICOLON error { yyerrok; }
                  ;
 
@@ -360,11 +386,13 @@ instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2));
                         };  
                       } 
             | IMPRIMIR expr { $$ = new elene_INSTESCR($2); }
+            | RETORNAR expr { $$ = new elene_INSTRETORNAR($2); }
             | SI expr ENTONCES bloque { $$ = new elene_INSTCOND($2, $4, 0);  }
             | SI expr ENTONCES bloque elseif { $$ = new elene_INSTCOND($2,$4,$5); }
             | asignacion { $$ = $1; }
             | MIENTRAS expr HACER bloque { $$ = new elene_INSTMIENTRAS($2,$4); }
-            | PARA asignacion TAL QUE expr CON CAMBIO asignacion HACER bloque { $$ = new elene_INSTPARA($2,$5,$8,$10); } 
+            | PARA asignacion TAL QUE expr CON CAMBIO asignacion HACER bloque 
+              { $$ = new elene_INSTPARA($2,$5,$8,$10); } 
             | ID LPAREN listaExpr RPAREN { $$ = new elene_INSTFUNC(new elene_ID($1),$3); 
                                            if (!(*currentLevel).lookup($1)) { 
                                                std::cout 
@@ -378,6 +406,7 @@ instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2));
 
 listaExpr: listaExpr COMMA expr { $$ = new elene_LISTAEXPR($3,$1);}
          | expr { $$ = new elene_LISTAEXPR($1, 0); }
+         | { $$ = new elene_LISTAEXPR(0,0); }
          ;
 
 expr : LPAREN expr RPAREN  { $$ = $2; }
@@ -398,6 +427,7 @@ exprBinaria : expr Y expr { $$ = new elene_CONJUNCION($1,$3); }
             | expr MENOR O IGUAL QUE expr { $$ = new elene_MENORIGUAL($1,$6); }
             | expr DISTINTO A expr        { $$ = new elene_DISTINTO($1,$4); }
             | expr IGUAL A expr           { $$ = new elene_IGUAL($1,$4); }
+            | expr PERIOD expr            { $$ = new elene_ACCESO($1,$3); }
             ;
 
 exprUnaria : MINUS expr %prec NEG  { $$ = new elene_MENOSUNARIO($2); }
