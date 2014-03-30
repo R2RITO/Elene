@@ -78,7 +78,9 @@ guacara {
 
     };
 
-    mientras X mayor que 0 hacer {
+    mientras X mayor que 0 hacer 
+    
+    BLOQUESITO : {
 
         variables {
             sea A de tipo caracter con valor 'A'

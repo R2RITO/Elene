@@ -1412,12 +1412,16 @@ class elene_BLOQUE {
 
 protected:
 
+    elene_ID* etiqueta;
     elene_LISTAVAR* listaVariables;
     elene_LISTAINST* listaInstruccion;
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
 
+        if (etiqueta != 0) {
+            os << "Etiqueta del bloque: " << (*etiqueta);
+        }
         if (listaVariables != 0) {
             os << " Lista de Declaraciones:\n" << (*listaVariables);   
         }
@@ -1428,24 +1432,28 @@ protected:
 public:
     /* Declaracion de constructor */
     elene_BLOQUE() {};
-    elene_BLOQUE(elene_LISTAVAR* var, elene_LISTAINST* inst): listaVariables(var), listaInstruccion(inst) {};
+    elene_BLOQUE(elene_ID* et, elene_LISTAVAR* var, elene_LISTAINST* inst): etiqueta(et), listaVariables(var), listaInstruccion(inst) {};
     
     /* Declaracion de destructor */
     virtual ~elene_BLOQUE () {
+        delete etiqueta;
         delete listaVariables;
         delete listaInstruccion;    
     }
 
     /* Metodo para copiar */
     elene_BLOQUE(const elene_BLOQUE &other) {
+        etiqueta = other.etiqueta;
         listaVariables = other.listaVariables;
         listaInstruccion = other.listaInstruccion;
     }
 
     elene_BLOQUE &operator = (const elene_BLOQUE &other) {
         if (&other != this) {
+            delete etiqueta;
             delete listaVariables;
             delete listaInstruccion;
+            etiqueta = other.etiqueta;
             listaVariables = other.listaVariables;
             listaInstruccion = other.listaInstruccion;
         }

@@ -70,6 +70,7 @@
 %token LPAREN
 %token RPAREN
 %token SEMICOLON
+%token COLON
 %token COMMA
 %token PERIOD
 %token BECOMES
@@ -344,12 +345,20 @@ listArg : tipo ID
 programa  : GUACARA bloque { $$ = $2; currentLevel = exitScope(currentLevel); }
           ;
 
-bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,$2); }
+bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,0,$2); }
        | LBRACKET VARIABLES LBRACKET 
          { currentLevel = enterScope(currentLevel); } 
          listaVariables RBRACKET listaInstruccion RBRACKET 
-         { $$ = new elene_BLOQUE($5, $7); 
+         { $$ = new elene_BLOQUE(0,$5,$7); 
            currentLevel = exitScope(currentLevel); }
+       | ID COLON LBRACKET listaInstruccion RBRACKET 
+         { $$ = new elene_BLOQUE(new elene_ID($1),0,$4); }
+       | ID COLON LBRACKET VARIABLES LBRACKET
+         { currentLevel = enterScope(currentLevel); }
+         listaVariables RBRACKET listaInstruccion RBRACKET
+         { $$ = new elene_BLOQUE(new elene_ID($1),$7,$9);  
+           currentLevel = exitScope(currentLevel); }
+
        ;
 
 listaInstruccion : instruccion { $$ = new elene_LISTAUNIT($1); }

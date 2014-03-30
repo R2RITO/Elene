@@ -65,6 +65,7 @@ CARACTER [a-zA-Z0-9]
 "("                  {  return (yy::elene_parser::make_LPAREN(loc));     }
 ")"                  {  return (yy::elene_parser::make_RPAREN(loc));     }
 ";"                  {  return (yy::elene_parser::make_SEMICOLON(loc));  }
+":"                  {  return (yy::elene_parser::make_COLON(loc));      }
 ","                  {  return (yy::elene_parser::make_COMMA(loc));      }
 "."                  {  return (yy::elene_parser::make_PERIOD(loc));     }
 "="                  {  return (yy::elene_parser::make_BECOMES(loc));    }

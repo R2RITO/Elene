@@ -1,4 +1,5 @@
 Manejo de errores sintacticos
+acceder a arreglos (esto va en expresion, ej: A[1])
 hacer que se impriman bien las uniones y las estructuras
 hacer que la impresion de errores se vea en formato consistente
 Agregar las funcionalidades extras
