@@ -53,6 +53,7 @@
 %token <char>  CONSTCARACTER "Caracter"
 %token <int> VERDADERO "Verdadero"
 %token <int> FALSO "Falso"
+
 /* Bison declarations.  */
 %token PLUS
 %token MINUS
@@ -68,7 +69,6 @@
 %token RBRACKET
 %token LCORCHET
 %token RCORCHET
-
 %token ENTONCES
 %token O
 %token NO
@@ -115,34 +115,25 @@
 %token REFERENCIA
 
 %type <elene_TIPO*> tipo
-
 %type <elene_BLOQUE*> bloque
 %type <elene_LISTAVAR*> listaVariables
 %type <elene_DECLARACION*> decVariable
-
 %type <elene_LISTAINST*> listaInstruccion
 %type <elene_INST*> instruccion
 %type <elene_INSTASIG*> asignacion
-
 %type <elene_INSTCOND*> elseif
 %type <elene_INSTCOND*> else
-
 %type <elene_EXPR*> expr
 %type <elene_EXPRBINARIA*> exprBinaria
 %type <elene_EXPRUNARIA*>  exprUnaria 
 %type <elene_EXPRTERMINAL*> terminal
-
 %type <elene_LISTARG*> listArg
-
 %type <elene_LISTFUN*> listaFunciones
 %type <elene_DECFUNCION*> decFuncion
-
 %type <elene_VARGLOBAL*> varglobal
 %type <elene_FUNCIONES*> funciones
 %type <elene_BLOQUE*> programa
-
 %type <elene_LISTAEXPR*> listaExpr
-
 %type <elene_LISTAVAR*> bloqueContenido
 %type <elene_DECLARACION*> decContenido
 
@@ -160,10 +151,19 @@
 %start inicio;
 
 
-inicio : { currentLevel = new elene_TABLA(); currentLevel -> insertar("Read",new elene_TIPO_SIMPLE("FuncionPredef"),1,1,4); } varglobal { std::cout << "\n\nImprimiendo tabla\n\n"; std::cout << *currentLevel; std::cout << "*****FIN****\n"; }
+inicio : { currentLevel = new elene_TABLA(); 
+           currentLevel -> insertar("Read",new elene_TIPO_SIMPLE("Funcion"),1,1,4);
+         } 
+         varglobal 
+         { std::cout << "\n\nImprimiendo tabla\n\n"; 
+           std::cout << *currentLevel; 
+         }
 
 varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
-          | VARIABLES GLOBALES LBRACKET { currentLevel = enterScope(currentLevel); } listaVariables RBRACKET funciones { $$ = new elene_VARGLOBAL($7,$5); }
+          | VARIABLES GLOBALES LBRACKET 
+            { currentLevel = enterScope(currentLevel); } 
+            listaVariables RBRACKET funciones 
+            { $$ = new elene_VARGLOBAL($7,$5); }
           ;
 
 listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
@@ -171,15 +171,45 @@ listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
                | listaVariables SEMICOLON error { yyerrok; }
                ;
 
-decVariable   : SEA ID DE TIPO tipo { $$ = new elene_DECLARACION(new elene_ID($2),$5,0); if (!(*currentLevel).local_lookup($2)) { currentLevel -> insertar($2,$5,@2.begin.line,@2.begin.column,0); } else { std::cout << "Error variable: " << $2 << " ya esta declarada en Linea: "<< @2.begin.line << " Columna: " << @2.begin.column << "\n"/* Reportar error con recuperacion */; }; } 
-              | SEA ID DE TIPO tipo CON VALOR expr { $$ = new elene_DECLARACION(new elene_ID($2), $5, $8); if (!(*currentLevel).local_lookup($2)) { currentLevel -> insertar($2,$5,@2.begin.line,@2.begin.column,0) /* Falta el valor */; } else { std::cout << "Error variable: " << $2 << " ya esta declarada en Linea: "<< @2.begin.line << " Columna: " << @2.begin.column << "\n" /* Reportar error */;}; }
+decVariable   : SEA ID DE TIPO tipo 
+                { $$ = new elene_DECLARACION(new elene_ID($2),$5,0); 
+                  if (!(*currentLevel).local_lookup($2)) { 
+                      currentLevel -> insertar($2,$5,@2.begin.line,@2.begin.column,0);
+                  } else { 
+                      std::cout << "Error variable: " 
+                                << $2 << " ya esta declarada en Linea: "
+                                << @2.begin.line << " Columna: " 
+                                << @2.begin.column << "\n"; 
+                  }; 
+                } 
+              | SEA ID DE TIPO tipo CON VALOR expr 
+                { $$ = new elene_DECLARACION(new elene_ID($2), $5, $8); 
+                  if (!(*currentLevel).local_lookup($2)) { 
+                      currentLevel -> insertar($2,$5,@2.begin.line,@2.begin.column,0); 
+                  } else { 
+                      std::cout << "Error variable: " << $2 
+                                << " ya esta declarada en Linea: "
+                                << @2.begin.line << " Columna: " 
+                                << @2.begin.column << "\n";
+                  }; 
+                }
               ;
 
 bloqueContenido : decContenido { $$ = new elene_LISTAVAR($1, 0); }
                 | bloqueContenido SEMICOLON decContenido { $$ = new elene_LISTAVAR($3,$1); }
                 ;
 
-decContenido    : ID DE TIPO tipo { $$ = new elene_DECLARACION(new elene_ID($1),$4,0); }
+decContenido    : ID DE TIPO tipo 
+                  { $$ = new elene_DECLARACION(new elene_ID($1),$4,0);
+                    if (!(*currentLevel).local_lookup($1)) {
+                        currentLevel -> insertar($1,$4,@1.begin.line,@1.begin.column,0);
+                    } else {
+                        std::cout << "Error variable: " << $1
+                                  << " ya esta declarada en Linea: "
+                                  << @1.begin.line << " Columna: "
+                                  << @1.begin.column << "\n";
+                    }; 
+                  }
                 ;
 
 tipo : BOOLEANO { $$ = new elene_TIPO_SIMPLE("Booleano"); }
@@ -189,7 +219,14 @@ tipo : BOOLEANO { $$ = new elene_TIPO_SIMPLE("Booleano"); }
      | STRING   { $$ = new elene_TIPO_SIMPLE("String");}
      | VACIO    { $$ = new elene_TIPO_SIMPLE("Vacio");}
      | ARREGLO DE tipo DE expr A expr { $$ = new elene_TIPO_ARREGLO($3,$5,$7); }
-     | UNION QUE CONTIENE LBRACKET bloqueContenido RBRACKET { $$ = new elene_TIPO_UNION($5); }
+     | UNION QUE CONTIENE LBRACKET 
+       { currentLevel = enterScope(currentLevel); }
+       bloqueContenido 
+       { currentLevel = exitScope(currentLevel); }
+       RBRACKET 
+       { $$ = new elene_TIPO_UNION($6); }
+
+     | ESTRUCTURA QUE CONTIENE LBRACKET bloqueContenido RBRACKET { $$ = new elene_TIPO_ESTRUCTURA($5); }
      | LPAREN tipo RPAREN { $$ = $2; }
      ;
 

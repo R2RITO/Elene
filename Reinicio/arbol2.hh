@@ -1288,6 +1288,42 @@ public:
 
 };
 
+/* Clase para manejar las estructuras */
+class elene_TIPO_ESTRUCTURA : public elene_TIPO {
+
+protected:
+
+    elene_LISTAVAR* contenido; 
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Estructura\n"
+                   << "Contenido: " << *contenido);
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_ESTRUCTURA() {};
+    elene_TIPO_ESTRUCTURA(elene_LISTAVAR* c) : contenido(c) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_ESTRUCTURA () {
+        delete contenido;
+    }
+    
+    /* Metodo para copiar */
+    elene_TIPO_ESTRUCTURA(const elene_TIPO_ESTRUCTURA &other) { 
+        contenido = other.contenido;
+    }
+
+    elene_TIPO_ESTRUCTURA &operator = (const elene_TIPO_ESTRUCTURA &other) {
+        if (&other != this) {
+            delete contenido;
+            contenido = other.contenido;
+        }
+    }
+
+};
+
 
 
 /* Clase para la lista de variables con declaraciones */
