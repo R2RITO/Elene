@@ -260,7 +260,8 @@ funciones : programa { $$ = new elene_FUNCIONES(0,$1); }
           ;
     
 listaFunciones : decFuncion { $$ = new elene_LISTFUN($1,0); }
-               | decFuncion listaFunciones { $$ = new elene_LISTFUN($1,$2); }
+               | listaFunciones decFuncion { $$ = new elene_LISTFUN($2,$1); }
+               | listaFunciones error      { $$ = new elene_LISTFUN(0,$1); yyerrok; yyclearin; }
                ;
 
 decFuncion : SEA LA FUNCION ID QUE RECIBE  
