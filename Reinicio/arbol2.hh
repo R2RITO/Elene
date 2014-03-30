@@ -24,6 +24,8 @@ public:
 };
 
 
+
+
 /***************************************************************/
 /****** EXPRESIONES BINARIAS ***********************************/
 /***************************************************************/
@@ -759,7 +761,58 @@ public:
         }
     }
 };
+/*-------------------------------------------------------------*/
+/*----- EXPRESION PARA ACCEDER A ARREGLOS ---------------------*/
+/*-------------------------------------------------------------*/
 
+
+class elene_ACCARREG : public elene_EXPR {
+
+protected:
+    
+    elene_ID* arrayID;
+    elene_EXPR* expr;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {
+        return (os << "Acceso a arreglo:\n"
+                   << "  ID del Arreglo:" << (*arrayID)
+                   << "  Expresion del acceso: " << (*expr));
+    }
+
+public:
+
+    /* Constructor */
+    elene_ACCARREG(elene_ID* a, elene_EXPR* e): arrayID(a), expr(e) {}
+
+    /* Metodo para copiar */
+    elene_ACCARREG(const elene_ACCARREG &other) {
+        arrayID = other.arrayID;
+        expr = other.expr;
+    }
+
+    /* Metodo destructor */
+    virtual ~elene_ACCARREG() {
+        delete arrayID;
+        delete expr;
+    }
+
+    elene_ACCARREG &operator = (const elene_ACCARREG &other) {
+
+        if (&other != this) {
+
+            delete arrayID;
+            delete expr;
+            arrayID = other.arrayID;
+            expr = other.expr;
+
+        }
+    }
+    /* Sobrecarga del operador << */
+    friend std::ostream& operator<< (std::ostream& stream,const elene_ACCARREG& obj){
+        return obj.stream_write(stream); 
+    }
+};
 /* Clase para los terminales booleanos */
 class elene_BOOLEANO : public elene_EXPRTERMINAL { 
 
@@ -1938,6 +1991,157 @@ public:
         }
     }
 };
+
+
+/* Clase para manejar un caso de la instruccion case */
+class elene_CASO {
+
+protected:
+    elene_EXPR* expr;
+    elene_BLOQUE* bloque;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {
+        return (os << "Caso:\n"
+                   << "  Expresion: " << (*expr)
+                   << "  Bloque: " << (*bloque));
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_CASO() {};
+    elene_CASO(elene_EXPR* e, elene_BLOQUE* b): expr(e), bloque(b) {};
+
+    /* Declaracion de destructor */
+    virtual ~elene_CASO () {
+        delete expr;
+        delete bloque;
+    }
+
+    /* Metodo para copiar */
+    elene_CASO(const elene_CASO &other) {
+        expr = other.expr; 
+        bloque = other.bloque;
+    }
+
+    elene_CASO &operator = (const elene_CASO &other) {
+        if (&other != this) {
+            delete expr;
+            delete bloque;
+            expr = other.expr;
+            bloque = other.bloque;
+        }
+    }
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_CASO& obj) {
+        return obj.stream_write(stream);
+    }
+};
+
+/* Lista de casos para el case */
+class elene_LISTACASE {
+
+protected:
+
+    elene_CASO* caso;
+    elene_LISTACASE* resto;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {    
+
+        os << "Caso: " << (*caso);
+
+        if (resto != 0) {
+            os << "  " << (*resto);
+        }
+
+        return os;
+
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_LISTACASE() {};
+    elene_LISTACASE(elene_CASO* c, elene_LISTACASE* l): caso(c), resto(l) {};
+ 
+    /* Declaracion de destructor */
+    virtual ~elene_LISTACASE() {
+        delete caso;
+        delete resto;
+    }
+
+    /* Metodo para copiar */
+    elene_LISTACASE(const elene_LISTACASE &other) {
+        caso = other.caso;
+        resto = other.resto;
+    }
+
+    elene_LISTACASE &operator = (const elene_LISTACASE &other) {
+        if (&other != this) {
+            delete caso;
+            delete resto;
+            caso = other.caso;
+            resto = other.resto;
+        }
+    }
+
+    /*<< Operator overload*/
+    friend std::ostream& operator<< (std::ostream& stream,const elene_LISTACASE& obj) { 
+        return obj.stream_write(stream); 
+    }
+};
+
+
+
+/* Clase para manejar el case */
+class elene_INSTCASE : public elene_INST {
+
+protected:
+
+    elene_ID* var;
+    elene_LISTACASE* casos;
+    elene_BLOQUE* defecto; 
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Instruccion Case:\n" 
+                   << "  Variable: " << (*var)
+                   << "  Casos: " << (*casos)
+                   << "  Caso por Defecto: " << (*defecto));
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_INSTCASE() {};
+    elene_INSTCASE(elene_ID* v, elene_LISTACASE* l, elene_BLOQUE* c): 
+        var(v), casos(l), defecto(c) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_INSTCASE () {
+        delete var;
+        delete casos;
+        delete defecto;
+    }
+
+    /* Metodo para copiar */
+    elene_INSTCASE(const elene_INSTCASE &other) {
+        var = other.var;
+        casos = other.casos;
+        defecto = other.defecto;
+    }
+
+    elene_INSTCASE &operator = (const elene_INSTCASE &other) {
+        if (&other != this) {
+            delete var;
+            delete casos;
+            delete defecto;
+            var = other.var;
+            casos = other.casos;
+            defecto = other.defecto;
+        }
+    }
+};
+
 
 /*****************************************************************/
 /******* LISTA DE ARGUMENTOS *************************************/

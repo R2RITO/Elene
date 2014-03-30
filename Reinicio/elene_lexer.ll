@@ -115,11 +115,14 @@ CARACTER [a-zA-Z0-9]
 "variables"          {  return (yy::elene_parser::make_VARIABLES(loc));  }
 "globales"           {  return (yy::elene_parser::make_GLOBALES(loc));   }
 "arreglo"            {  return (yy::elene_parser::make_ARREGLO(loc));    }
-"verdadero"          {  return (yy::elene_parser::make_VERDADERO(1,loc));  }
-"falso"              {  return (yy::elene_parser::make_FALSO(0, loc));      }
+"verdadero"          {  return (yy::elene_parser::make_VERDADERO(1,loc));}
+"falso"              {  return (yy::elene_parser::make_FALSO(0, loc));   }
 "romper"             {  return (yy::elene_parser::make_ROMPER(loc));     }
 "continuar"          {  return (yy::elene_parser::make_CONTINUAR(loc));  }
 "iteracion"          {  return (yy::elene_parser::make_ITERACION(loc));  }
+"por"                {  return (yy::elene_parser::make_POR(loc));        }
+"referencia"         {  return (yy::elene_parser::make_REFERENCIA(loc)); }
+"defecto"            {  return (yy::elene_parser::make_DEFECTO(loc));    }
 
 {DIGIT}+             {   // Regla para los enteros
                          long num = strtol(yytext, NULL, 10);

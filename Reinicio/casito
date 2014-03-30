@@ -42,12 +42,13 @@ guacara {
 
     variables {
 
-        sea X de tipo entero
-
+        sea X de tipo entero;
+        sea array de tipo arreglo de entero de 2 a 10
     }
 
     leer X;
     leer Y;
+    imprimir array[5];
         
     /* Casito del IF */
     si (X menor que 2+3) entonces {
@@ -91,6 +92,18 @@ guacara {
         X = X -1
     };
 
-    probandoFuncionsita(X, 2+5, verdadero, Y)
+    probandoFuncionsita(X, 2+5, verdadero, Y);
+    
+    sea X igual a {
 
+        3 entonces hacer {
+            imprimir "3"
+        }
+        4+7 entonces hacer {
+            imprimir "4+7"
+        }
+        por defecto hacer {
+            imprimir "Defecto"
+        }
+    }
 }

@@ -126,7 +126,7 @@
 %token ROMPER
 %token CONTINUAR
 %token ITERACION
-
+%token DEFECTO
 
 %type <elene_TIPO*> tipo
 %type <elene_BLOQUE*> bloque
@@ -150,6 +150,10 @@
 %type <elene_LISTAEXPR*> listaExpr
 %type <elene_LISTAVAR*> bloqueContenido
 %type <elene_DECLARACION*> decContenido
+%type <elene_INSTCASE*> instruccionCase
+%type <elene_LISTACASE*> casosCase
+%type <elene_CASO*> caso
+
 
 %left O
 %left Y
@@ -439,7 +443,18 @@ instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2));
                                          }
             | ROMPER ITERACION { $$ = new elene_INSTROMPER(); }
             | CONTINUAR ITERACION { $$ = new elene_INSTCONTINUAR(); }
+            | instruccionCase { $$ = new elene_INSTROMPER(); }
             ;
+
+instruccionCase : SEA ID IGUAL A LBRACKET casosCase POR DEFECTO HACER bloque RBRACKET
+                  { $$ = new elene_INSTCASE(new elene_ID($2),$6,$10); }
+                ;
+
+casosCase : caso {  $$ = new elene_LISTACASE($1,0); }
+          | casosCase caso { $$ = new elene_LISTACASE($2,0); }
+          ;
+
+caso : expr ENTONCES HACER bloque { $$ = new elene_CASO($1,$4); }
 
 listaExpr: listaExpr COMMA expr { $$ = new elene_LISTAEXPR($3,$1);}
          | expr { $$ = new elene_LISTAEXPR($1, 0); }
@@ -447,6 +462,7 @@ listaExpr: listaExpr COMMA expr { $$ = new elene_LISTAEXPR($3,$1);}
          ;
 
 expr : LPAREN expr RPAREN  { $$ = $2; }
+     | ID LCORCHET expr RCORCHET { $$ = new elene_ACCARREG(new elene_ID($1),$3); }
      | exprBinaria         { $$ = $1; }
      | exprUnaria          { $$ = $1; }
      | terminal            { $$ = $1; }
