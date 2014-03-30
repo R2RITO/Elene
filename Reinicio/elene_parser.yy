@@ -44,6 +44,7 @@
     #include "elene_driver.hh"
     #include "tabla.hh"
     elene_TABLA* currentLevel;
+    elene_TABLA* tablaGlobal;
     double col;
     double linea;
     elene_LISTFUN* lstf;
@@ -167,19 +168,19 @@
 
 inicio : { currentLevel = new elene_TABLA(); 
            currentLevel -> insertar("Read",new elene_TIPO_SIMPLE("Funcion"),1,1,4);
+           currentLevel = enterScope(currentLevel);
+           tablaGlobal = currentLevel;
          } 
          varglobal 
-         { std::cout << "\n\nImprimiendo tabla\n\n"; 
+         { 
+           std::cout << "\n\nImprimiendo tabla\n\n"; 
            std::cout << *currentLevel; 
          }
 
 varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
-          | VARIABLES GLOBALES LBRACKET 
-            { currentLevel = enterScope(currentLevel); } 
-            listaVariables RBRACKET funciones 
-            { $$ = new elene_VARGLOBAL($7,$5); }
+          | VARIABLES GLOBALES LBRACKET listaVariables RBRACKET funciones 
+            { $$ = new elene_VARGLOBAL($6,$4); }
           ;
-
 listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
                | listaVariables SEMICOLON decVariable { $$ = new elene_LISTAVAR($3, $1); }
                | listaVariables SEMICOLON error { yyerrok; }
@@ -355,10 +356,32 @@ bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,0,$2); }
          { $$ = new elene_BLOQUE(0,$5,$7); 
            currentLevel = exitScope(currentLevel); }
        | ID COLON LBRACKET listaInstruccion RBRACKET 
-         { $$ = new elene_BLOQUE(new elene_ID($1),0,$4); }
+         { $$ = new elene_BLOQUE(new elene_ID($1),0,$4); 
+           if (!(*tablaGlobal).local_lookup($1)) {
+               tablaGlobal ->
+               insertar($1,new elene_TIPO_SIMPLE("Etiqueta"),@1.begin.line,@1.begin.column,0);
+           } else {
+               std::cout << "Error, etiqueta: " << $1
+               << " ya esta declarada en Linea: "<< @1.begin.line
+               << " Columna: " << @1.begin.column << "\n";
+           }
+         }
        | ID COLON LBRACKET VARIABLES LBRACKET
-         { currentLevel = enterScope(currentLevel); }
+         { 
+             if (!(*tablaGlobal).local_lookup($1)) {
+                 tablaGlobal ->
+                 insertar($1,new elene_TIPO_SIMPLE("Etiqueta"),@1.begin.line,@1.begin.column,0);
+             } else {
+                 std::cout << "Error, etiqueta: " << $1
+                 << " ya esta declarada en Linea: "<< @1.begin.line
+                 << " Columna: " << @1.begin.column << "\n";
+            }
+
+            currentLevel = enterScope(currentLevel);
+         }
+
          listaVariables RBRACKET listaInstruccion RBRACKET
+         
          { $$ = new elene_BLOQUE(new elene_ID($1),$7,$9);  
            currentLevel = exitScope(currentLevel); }
 
