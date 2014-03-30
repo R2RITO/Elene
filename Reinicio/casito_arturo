@@ -12,7 +12,9 @@ funciones {
 
     sea la funcion PrintHola que retorna vacio hacer {
         imprimir "Esto es una pruebita";
-        imprimir "Hola"
+        imprimir "Hola";
+        romper iteracion
+        
     }
 
     sea la funcion PrintChao que retorna vacio hacer {

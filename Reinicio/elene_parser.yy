@@ -121,6 +121,9 @@
 %token LA
 %token POR
 %token REFERENCIA
+%token ROMPER
+%token CONTINUAR
+%token ITERACION
 
 
 %type <elene_TIPO*> tipo
@@ -402,6 +405,8 @@ instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2));
                                                << @1.begin.column << "\n";
                                             }; 
                                          }
+            | ROMPER ITERACION { $$ = new elene_INSTROMPER(); }
+            | CONTINUAR ITERACION { $$ = new elene_INSTCONTINUAR(); }
             ;
 
 listaExpr: listaExpr COMMA expr { $$ = new elene_LISTAEXPR($3,$1);}
