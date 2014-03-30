@@ -1,0 +1,7 @@
+Manejo de errores sintacticos
+Acomodar lo de punto flotante y conversiones en el lexer
+Crear el token de acceso a unions y records (con su conversion)
+Gramatica para el acceso a unions y records (tabla de simbolos y estrcuturas necesarias)
+Agregar las funcionalidades extras
+Terminar el manual
+Hacer programas correctos e incorrectos

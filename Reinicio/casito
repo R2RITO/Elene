@@ -8,6 +8,14 @@ variables globales {
         A de tipo entero;
         B de tipo booleano;
         C de tipo caracter
+    };
+    sea estructurita de tipo estructura que contiene {
+        A de tipo entero;
+        A de tipo booleano;
+        cosita de tipo caracter
+    };
+    sea estructurita de tipo estructura que contiene {
+        B de tipo booleano
     }
 }
 
