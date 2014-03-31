@@ -188,7 +188,9 @@ varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
 
 listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
                | listaVariables SEMICOLON decVariable { $$ = new elene_LISTAVAR($3, $1); }
-               | listaVariables error RBRACKET { yyerrok; }
+               | listaVariables SEMICOLON error { yyerrok; }
+               | error SEMICOLON decVariable { yyerrok; }
+               | error decVariable              { yyerrok; }
                ;
 
 decVariable   : SEA ID DE TIPO tipo 
@@ -457,6 +459,8 @@ instruccionCase : SEA ID IGUAL A LBRACKET casosCase POR DEFECTO HACER bloque RBR
                 | SEA error IGUAL A LBRACKET casosCase POR DEFECTO HACER bloque RBRACKET
                   { yyerrok; }
                 | SEA ID IGUAL A LBRACKET error POR DEFECTO HACER bloque RBRACKET
+                  { yyerrok; }
+                | SEA error IGUAL A LBRACKET error POR DEFECTO HACER bloque RBRACKET
                   { yyerrok; }
                 ;
 
