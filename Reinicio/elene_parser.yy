@@ -188,7 +188,7 @@ varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
 
 listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
                | listaVariables SEMICOLON decVariable { $$ = new elene_LISTAVAR($3, $1); }
-               | listaVariables SEMICOLON error { yyerrok; }
+               | listaVariables error RBRACKET { yyerrok; }
                ;
 
 decVariable   : SEA ID DE TIPO tipo 
@@ -256,7 +256,11 @@ tipo : BOOLEANO { $$ = new elene_TIPO_SIMPLE("Booleano"); }
        RBRACKET 
        { $$ = new elene_TIPO_UNION($6); }
 
-     | ESTRUCTURA QUE CONTIENE LBRACKET bloqueContenido RBRACKET { $$ = new elene_TIPO_ESTRUCTURA($5); }
+     | ESTRUCTURA QUE CONTIENE LBRACKET 
+       { currentLevel = enterScope(currentLevel); }
+       bloqueContenido 
+       { currentLevel = exitScope(currentLevel); }
+       RBRACKET { $$ = new elene_TIPO_ESTRUCTURA($6); }
      | LPAREN tipo RPAREN { $$ = $2; }
      ;
 

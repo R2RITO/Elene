@@ -734,8 +734,7 @@ protected:
     std::string nombre;
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << "Id:\n" 
-                   << "  Nombre:\n" << (nombre));
+        return (os << (nombre));
     }
 
 public:
@@ -1222,12 +1221,12 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << "Arreglo:\n" 
-                   << "  Tipo: " << (*tipo)
+        return (os << "Arreglo"); 
+                  /* << "  Tipo: " << (*tipo)
                    << "\n"
                    << "  Limite Izquierdo: " << (*indIzq)
                    << "\n"
-                   << "  Limite Derecho: " << (*indDer) << "\n");
+                   << "  Limite Derecho: " << (*indDer) << "\n");*/
     }
 
 public:
@@ -1394,8 +1393,8 @@ protected:
     elene_LISTAVAR* contenido; 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << "Union\n"
-                   << "Contenido: " << *contenido);
+        return (os << "Union");
+                   /*<< "Contenido: " << *contenido);*/
     }
 
 public:
@@ -1430,8 +1429,8 @@ protected:
     elene_LISTAVAR* contenido; 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << "Estructura\n"
-                   << "Contenido: " << *contenido);
+        return (os << "Estructura");
+                   /*<< "Contenido: " << *contenido);*/
     }
 
 public:
