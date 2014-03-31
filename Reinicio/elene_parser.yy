@@ -438,15 +438,7 @@ instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2));
             | MIENTRAS expr HACER bloque { $$ = new elene_INSTMIENTRAS($2,$4); }
             | PARA asignacion TAL QUE expr CON CAMBIO asignacion HACER bloque 
               { $$ = new elene_INSTPARA($2,$5,$8,$10); } 
-            | ID LPAREN listaExpr RPAREN { $$ = new elene_INSTFUNC(new elene_ID($1),$3); 
-                                           if (!(*currentLevel).lookup($1)) { 
-                                               std::cout 
-                                               << "Error no encuentro " 
-                                               << $1 << " utilizada en la linea: " 
-                                               << @1.begin.line << " y columna: " 
-                                               << @1.begin.column << "\n";
-                                            }; 
-                                         }
+            | expr { $$ = new elene_INSTEXPR($1); }
             | ROMPER ITERACION { $$ = new elene_INSTROMPER(); }
             | CONTINUAR ITERACION { $$ = new elene_INSTCONTINUAR(); }
             | instruccionCase { $$ = new elene_INSTROMPER(); }
@@ -506,6 +498,16 @@ terminal : VERDADERO        { $$ = new elene_BOOLEANO($1);  }
                                   << " y columna: " << @1.begin.column << "\n"; 
                               };   
                             }
+         | ID LPAREN listaExpr RPAREN 
+           { $$ = new elene_EXPRFUNC(new elene_ID($1),$3); 
+             if (!(*currentLevel).lookup($1)) { 
+                 std::cout 
+                 << "Error no encuentro " 
+                 << $1 << " utilizada en la linea: " 
+                 << @1.begin.line << " y columna: " 
+                 << @1.begin.column << "\n";
+             }; 
+           }
          | STRING           { $$ = new elene_STRING($1); }
          ;
 
