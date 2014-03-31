@@ -23,7 +23,12 @@ int elene_driver::parse(const std::string &f) {
 
 /* Implementacion de las funciones para reporte de errores */
 void elene_driver::error (const yy::location& l, const std::string& m) {
-    std::cerr << l << ": " << m << std::endl;
+    std::cerr 
+        << "Error de sintaxis en:
+        << "Linea: " << l.begin.line
+        << " y Columna: " << l.begin.column ".\n " 
+        << "Bison dice que : " << m 
+        << std::endl;
 }
 void elene_driver::error (const std::string& m) {
     std::cerr << m << std::endl;
