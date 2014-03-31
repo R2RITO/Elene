@@ -189,7 +189,7 @@ varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
 listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
                | listaVariables SEMICOLON decVariable { $$ = new elene_LISTAVAR($3, $1); }
                | listaVariables SEMICOLON error { yyerrok; }
-               | error SEMICOLON decVariable { yyerrok; }
+               | error SEMICOLON decVariable    { yyerrok; }
                | error decVariable              { yyerrok; }
                ;
 
@@ -473,7 +473,10 @@ caso : expr ENTONCES HACER bloque { $$ = new elene_CASO($1,$4); }
 listaExpr: listaExpr COMMA expr { $$ = new elene_LISTAEXPR($3,$1);}
          | expr { $$ = new elene_LISTAEXPR($1, 0); }
          | { $$ = new elene_LISTAEXPR(0,0); }
-         ;
+         | listaExpr COMMA error { yyerrok; yyclearin; }
+         | error expr            { yyerrok; yyclearin; }
+         ;         
+
 
 expr : LPAREN expr RPAREN  { $$ = $2; }
      | ID LCORCHET expr RCORCHET { $$ = new elene_ACCARREG(new elene_ID($1),$3); }
