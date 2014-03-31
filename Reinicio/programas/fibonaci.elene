@@ -1,0 +1,25 @@
+funciones {
+    sea la funcion fibonacci que recibe entero n 
+    y retorna entero hacer {
+
+        si (n igual a 0) entonces {
+            retornar 0
+        } o si (n igual a 1) entonces {
+            retornar 1
+        } si no entonces {
+            retornar fibonacci(n-1)+fibonacci(n-2)
+        }
+    }
+}
+
+guacara {
+
+    variables {
+        sea x de tipo entero con valor 0
+    }
+
+    imprimir "Fibonacci\n";
+    imprimir "Introduzca el N a calcular: ";
+    leer x;
+    fibonacci(x)
+}
