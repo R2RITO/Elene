@@ -266,6 +266,8 @@ tipo : BOOLEANO { $$ = new elene_TIPO_SIMPLE("Booleano"); }
 
 funciones : programa { $$ = new elene_FUNCIONES(0,$1); }
           | FUNCIONES LBRACKET listaFunciones RBRACKET programa { $$ = new elene_FUNCIONES($3,$5); }
+          | error END { yyerrok; }
+          | FUNCIONES LBRACKET listaFunciones RBRACKET error END { yyerrok; }
           ;
     
 listaFunciones : decFuncion { $$ = new elene_LISTFUN($1,0); }
@@ -329,30 +331,33 @@ listArg : tipo ID
                    << @4.begin.column << "\n"; 
                 }; 
             }
-        | tipo POR REFERENCIA ID COMMA listArg 
+        | listArg COMMA tipo POR REFERENCIA ID
           { 
-              $$ = new elene_LISTARG($1, new elene_ID($4), "Por Referencia", $6); 
-              if (!(*currentLevel).local_lookup($4)) { 
+              $$ = new elene_LISTARG($3, new elene_ID($6), "Por Referencia", $1); 
+              if (!(*currentLevel).local_lookup($6)) { 
                   currentLevel 
-                  -> insertar($4,$1,@4.begin.line,@4.begin.column,0); 
+                  -> insertar($6,$3,@6.begin.line,@6.begin.column,0); 
+              } else { 
+                  std::cout << "Error, parametro: " << $6 
+                  << " ya esta declarado en Linea: "<< @6.begin.line 
+                  << " Columna: " << @6.begin.column << "\n"; 
+              }; 
+          }
+        | listArg COMMA tipo ID
+          { 
+              $$ = new elene_LISTARG($3, new elene_ID($4), "Por Valor", $1); 
+              if (!(*currentLevel).local_lookup($4)) { 
+                  currentLevel -> 
+                  insertar($4,$3,@4.begin.line,@4.begin.column,0); 
               } else { 
                   std::cout << "Error, parametro: " << $4 
                   << " ya esta declarado en Linea: "<< @4.begin.line 
                   << " Columna: " << @4.begin.column << "\n"; 
               }; 
           }
-        | tipo ID COMMA listArg 
-          { 
-              $$ = new elene_LISTARG($1, new elene_ID($2), "Por Valor", $4); 
-              if (!(*currentLevel).local_lookup($2)) { 
-                  currentLevel -> 
-                  insertar($2,$1,@2.begin.line,@2.begin.column,0); 
-              } else { 
-                  std::cout << "Error, parametro: " << $2 
-                  << " ya esta declarado en Linea: "<< @2.begin.line 
-                  << " Columna: " << @2.begin.column << "\n"; 
-              }; 
-          }
+        | listArg COMMA error { yyerrok; yyclearin; }
+        | error COMMA tipo POR REFERENCIA ID { yyerrok; yyclearin; }
+        | error COMMA tipo ID { yyerrok; yyclearin; }
         ;
 
 
@@ -394,13 +399,16 @@ bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,0,$2); }
          
          { $$ = new elene_BLOQUE(new elene_ID($1),$7,$9);  
            currentLevel = exitScope(currentLevel); }
-
+       | error COLON LBRACKET VARIABLES LBRACKET listaVariables RBRACKET 
+         listaInstruccion RBRACKET { yyerrok; }
+       | error COLON LBRACKET listaInstruccion RBRACKET { yyerrok; }
        ;
 
 listaInstruccion : instruccion { $$ = new elene_LISTAUNIT($1); }
                  | listaInstruccion SEMICOLON instruccion 
                    { $$ = new elene_LISTAMULT($3,$1); }
                  | listaInstruccion SEMICOLON error { yyerrok; }
+                 | error instruccion { yyerrok; }
                  ;
 
 elseif      : else { $$ = $1; }
@@ -454,6 +462,10 @@ instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2));
 
 instruccionCase : SEA ID IGUAL A LBRACKET casosCase POR DEFECTO HACER bloque RBRACKET
                   { $$ = new elene_INSTCASE(new elene_ID($2),$6,$10); }
+                | SEA error IGUAL A LBRACKET casosCase POR DEFECTO HACER bloque RBRACKET
+                  { yyerrok; }
+                | SEA ID IGUAL A LBRACKET error POR DEFECTO HACER bloque RBRACKET
+                  { yyerrok; }
                 ;
 
 casosCase : caso {  $$ = new elene_LISTACASE($1,0); }
