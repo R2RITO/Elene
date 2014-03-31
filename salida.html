@@ -11,13 +11,13 @@
 <hr />
 <h2 id="palabras-reservadas-del-lenguaje">Palabras reservadas del lenguaje</h2>
 <blockquote>
-<p>Debido a que el diseño de éste lenguaje está pensado para parecerse al pseudocódigo, es natural que el mismo posea una gran cantidad de palabras reservadas. En el lenguaje ELENE, las palabras reservadas siempre comenzarán con un caracter en minuscula. A continuación se presenta la lista de palabras reservadas.</p>
+<p>Debido a que el diseño de éste lenguaje está pensado para parecerse al pseudocódigo, es natural que el mismo posea una gran cantidad de palabras reservadas. A continuación se presenta la lista de palabras reservadas.</p>
 </blockquote>
 <blockquote>
-<p><code>entonces o no si mientras hacer para tal que con cambio leer imprimir la funcion recibe y retorna sea estructura contiene union vacio guacara entero caracter flotante booleano string retornar con valor verdadero falso es a mayor menor igual distinto de tipo funciones variables globales arreglo por referencia</code></p>
+<p><code>entonces o no si mientras hacer para tal que con cambio leer imprimir la funcion recibe y retorna sea estructura contiene union vacio guacara entero caracter flotante booleano string retornar con valor verdadero falso es a mayor menor igual distinto de tipo funciones variables globales arreglo por referencia defecto romper continuar iteracion</code></p>
 </blockquote>
 <blockquote>
-<p>En cuanto a los <strong>identificadores</strong> de variables, tipos, funciones definidas por el programador, es importante destacar que todos ellos <strong>comienzan con mayúscula</strong>. Nombres de variables válidos serian X y no x, una función se podría llamar Quicksort pero no quicksort, etc.</p>
+<p>En cuanto a los <strong>identificadores</strong> de variables, tipos, funciones definidas por el programador, es importante destacar que todos ellos empiezan por un caracter seguido de una combinacion arbitraria de caracteres alfanumericos, siempre que no sea una palabra reservada de la lista anterior. Nombres de variables válidos serian x, quicksort, etc.</p>
 </blockquote>
 <hr />
 <h2 id="tipos-de-datos-del-lenguaje">Tipos de Datos del lenguaje</h2>
@@ -35,10 +35,13 @@
 </ul>
 <hr />
 <h2 id="expresiones-aritmeticas-y-booleanas">Expresiones Aritmeticas y Booleanas</h2>
+<hr />
 <blockquote>
 <p>Elene utiliza una notación infija para sus expresiones.</p>
 </blockquote>
+<hr />
 <h2 id="operadores">Operadores:</h2>
+<hr />
 <blockquote>
 <p><strong>Operadores Aritméticos:</strong></p>
 </blockquote>
@@ -66,7 +69,9 @@
 <li>no</li>
 </ul>
 </blockquote>
+<hr />
 <h2 id="precedencia-de-los-operadores">Precedencia de los operadores</h2>
+<hr />
 <blockquote>
 <p>Dentro de la gramática se encuentran separadas las expresiones binarias de las expresiones unarias. A continuación se presenta una lista para los operadores binarios y otra para los unarios ordenados segun su precedencia, siendo el primer conjunto de una lista de operadores aquel de menor precedencia. Asimismo, se especifican la asociatividad de los mismos.</p>
 </blockquote>
@@ -99,6 +104,7 @@
 </ul>
 <hr />
 <h2 id="estructura-básica-de-un-programa-en-elene">Estructura básica de un programa en Elene</h2>
+<hr />
 <blockquote>
 <p>En Elene los programas se encuentran dividos en tres áreas. La primera es para la declaración de variables globales, la segunda es para la declaración de funciones y la última es el programa principal. La estructura quedaría de la siguiente manera.</p>
 </blockquote>
@@ -116,7 +122,9 @@ guacara {
     /* Programa Principal o Main */
     /* Este segmento de código es obligatorio */
 }</code></pre>
+<hr />
 <h2 id="declaracion-de-variables">Declaracion de Variables</h2>
+<hr />
 <blockquote>
 <p>Las declaraciones de variables globales y locales se declaran de igual forma. La diferencia está en el lugar donde se declaren. Una variable declarada en el área de variables globales será global, todas las otras declaraciones en bloques o funciones serán locales dentro del alcance en donde fueron declaradas. Ejemplos de declaraciones:</p>
 </blockquote>
@@ -126,8 +134,30 @@ guacara {
     sea Anchos de tipo arreglo de tipo entero de 0 a 10
     /* Note que la última no lleva punto y coma */
 }</code></pre>
-<p>** Falta la declaracion de unions y estructuras **</p>
+<hr />
+<h2 id="declaracion-de-unions">Declaracion de Unions</h2>
+<hr />
+<blockquote>
+<p>La declaracion de los unions se realiza de la siguiente manera:</p>
+</blockquote>
+<pre><code>sea Ejemplo de tipo union que contiene {
+    A de tipo entero;
+    B de tipo booleano;
+    C de tipo caracter
+}</code></pre>
+<hr />
+<h2 id="declaracion-de-estructuras">Declaracion de Estructuras</h2>
+<hr />
+<blockquote>
+<p>La declaracion de los estructuras es casi analoga a la declaracion de un union, se realiza de la siguiente manera:</p>
+</blockquote>
+<pre><code>sea Vector de tipo estructura que contiene {
+    X de tipo entero;
+    Y de tipo entero
+}</code></pre>
+<hr />
 <h2 id="declaracion-de-funciones">Declaracion de Funciones</h2>
+<hr />
 <blockquote>
 <p>En Elene una funcion puede declararse de tres maneras, dependiendo de la necesidad del programador. Se puede declarar una función que reciba argumentos y retorne un valor (declaración típica de una función), se puede declarar una función que no recibe argumentos y retorna un valor, y por último, se puede declarar una función que recibe argumentos y no retorna valor alguno. Nótese que la primera contiene a las otras dos si hacemos que la función reciba vacío y retorne vacío. A continuación un ejemplo de una declaración de función.</p>
 </blockquote>
@@ -138,13 +168,22 @@ y retorna flotante hacer {
     }
     retornar Area
 }</code></pre>
-<p><strong>FALTA LO DE POR REFERENCIA Y POR VALOR</strong></p>
+<blockquote>
+<p>Tambien se pueden pasar argumentos <strong>por valor</strong> o <strong>por referencia</strong>.</p>
+</blockquote>
+<pre><code>sea la funcion CambiarClave que recibe entero por referencia X, entero Y
+y retorna vacio {
+    imprimir &quot;X es por referencia&quot;;
+    imprimir &quot;Y es por valor&quot;
+}</code></pre>
 <hr />
 <h2 id="instrucciones-del-lenguaje">Instrucciones del lenguaje</h2>
 <blockquote>
 <p>Elene cuenta con instrucciones para asignación, selección, iteración, impresión y lectura. Estudiaremos cada una de ellas por separados y veremos un par de ejemplos para aclarar su uso.</p>
 </blockquote>
-<h2 id="instruccion-imprimir">* Instruccion 'imprimir'</h2>
+<hr />
+<h2 id="instruccion-imprimir">Instruccion 'imprimir'</h2>
+<hr />
 <blockquote>
 <p>Recibe como argumento una expresión y la imprime en pantalla. Aprovechemos la oportunidad de mostrar el uso de la función imprimir en un HelloWorld escrito en Elene. Recuerde que Elene no puede manipular o almacenar Strings en variables pero si los puede usar para imprimir por pantalla.</p>
 </blockquote>
@@ -152,25 +191,81 @@ y retorna flotante hacer {
 <blockquote>
 <p>Tambien pueden imprimirse en pantalla expresiones aritméticas o booleanas. Ej: imprimir 3*7*2</p>
 </blockquote>
-<h2 id="instruccion-leer">* Instruccion 'leer'</h2>
+<hr />
+<h2 id="instruccion-leer">Instruccion 'leer'</h2>
+<hr />
 <blockquote>
 <p>Recibe como argumento un identificador y lee por cónsola un valor para dicho identificador.</p>
 </blockquote>
 <p><code>guacara {     variables {         sea X de tipo entero     }        leer X }</code></p>
-<h2 id="instrucción-asignación">* Instrucción 'Asignación'</h2>
+<hr />
+<h2 id="instrucción-asignación">Instrucción 'Asignación'</h2>
+<hr />
 <blockquote>
 <p>La asignación se lleva a cabo con el simbolo '='. Del lado derecho se encuentra una expresión y del lado izquierdo se encuentra la variable en donde se almacenará el valor de dicha expresión.</p>
 </blockquote>
 <p>guacara { variables { sea Contador de tipo entero con valor 1 } Contador = Contador + 1; imprimir Contador }</p>
-<h2 id="instrucción-condicional">* Instrucción Condicional</h2>
+<hr />
+<h2 id="instrucción-condicional">Instrucción Condicional</h2>
+<hr />
 <blockquote>
 <p>La instrucción condicional implementa la típica seleccion if-then-else. Se recibe una expresión booleana con la cual se realiza la selección inicial, seguidamente pueden haber más expresiones booelanas (else if) y finalmente puede haber una cláusula else en caso de que ninguna de las condiciones anteriores se haya cumplido. Se pueden escribir condicionales que tengan if, if-else, if-elsif-else, if-elsif.</p>
 </blockquote>
 <p>si 2*10+22 igual a 31+11 entonces { imprimir &quot;La respuesta es 42&quot; } o si Satan igual a 666 entonces { imprimir &quot;Salvese quien pueda&quot; } si no entonces { imprimir &quot;No hay nada que hacer&quot; }</p>
-<h2 id="iteraciones">* Iteraciones</h2>
+<hr />
+<h2 id="iteraciones">Iteraciones</h2>
+<hr />
 <blockquote>
 <p>*Instruccion 'Para': Es el equivalente al for en los lenguajes de programación comunes. <code>para X = 10 tal que X &gt; 0 con cambio X = X - 1 hacer { imprimir X }</code></p>
 </blockquote>
 <blockquote>
 <p>*Instruccion 'Mientras' : Es el equivalente al while en los lenguajes de programación comunes. <code>mientras X &gt; 0 hacer { imprimir X; X = X - 1 }</code></p>
 </blockquote>
+<hr />
+<h2 id="instrucción-case">Instrucción Case</h2>
+<hr />
+<blockquote>
+<p>La instrucción case funciona como el switch del lenguaje C. Primero se especifica la variable la cual se quiere verificar y luego se realiza una lista de casos. Es obligatorio la especificación de un caso obligatorio, es decir, si no se logra hacer match de la variable con la lista de casos especificados, se ejecutara el bloque definido por defecto. Veamos un ejemplo.</p>
+</blockquote>
+<p>sea X igual a { /* Estas llaves NO corresponden a un bloque */</p>
+<pre><code>3 entonces hacer { /* Estas llaves si corresponden a un bloque */
+    imprimir &quot;3&quot;
+}
+4+7 entonces hacer {
+    imprimir &quot;4+7&quot;
+}
+por defecto hacer {
+    imprimir &quot;Defecto&quot;
+}</code></pre>
+<p>}</p>
+<hr />
+<h2 id="instrucción-romper-iteracion-y-continuar-iteracion">Instrucción &quot;Romper Iteracion&quot; y &quot;Continuar Iteracion&quot;</h2>
+<hr />
+<blockquote>
+<p>Son equivalentes al break y continue de los lenguajes convencionales. El Romper Iteracion nos permite abandonar una iteracion mientras que el Continuar Iteracion nos permite subir y comenzar el siguiente ciclo. Veamos un ejemplo.</p>
+</blockquote>
+<p>guacara { /* Esto es un bloque de codigo en elene */</p>
+<pre><code>variables { /* Pero estas llaves NO corresponden a un bloque de elene */
+    sea x de tipo entero con valor 10
+}
+
+mientras verdadero hacer { /* Estas si corresponden a un bloque */
+    si x menor que 0 entonces {
+        romper iteracion
+    } si no entonces {
+        x = x - 1;
+        continuar iteracion
+    };
+    imprimir &quot;Esta linea nunca se ejecutara&quot;   
+}</code></pre>
+<p>}</p>
+<hr />
+<h2 id="etiquetas-en-bloques">Etiquetas en Bloques</h2>
+<hr />
+<blockquote>
+<p>En Elene los bloques son aquellos segmentos de codigos que se encuentran dentro de funciones, instrucciones o el programa principal, se encuentran delimitados por un abre llaves y cierra llaves. Como hemos hecho enfasis en los ejemplos anteriores, existen algunos casos especificos en los cuales algo que parece ser un bloque en realidad no lo es, esto ocurre en las llaves de declaracion de variables y las llaves mas externas de la instruccion case. No deben ser vistas como bloques.</p>
+</blockquote>
+<blockquote>
+<p>Por otro lado, elene tambien puede darle etiquetas a los bloques. La etiqueta se almacenara en la tabla de simbolos correspondiente. Esto se realiza de la siguiente manera.</p>
+</blockquote>
+<p>guacara MAIN : { imprimir &quot;Hola Mundo&quot; }</p>
