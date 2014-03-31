@@ -147,7 +147,9 @@ CARACTER [a-zA-Z0-9]
                           return (yy::elene_parser::make_NUMFLOTANTE(num, loc));
                       }
 
-.                     { std::cout << loc << " Error lexicografico - Caracter \""
+.                     { std::cout <<  " Error lexicografico en: "
+                        << "Linea: " << loc.begin.line << " y Columna: "
+                        << loc.begin.column << " - Caracter \""
                                   << yytext[0]<<"\" inesperado.\n";
                       } 
 
