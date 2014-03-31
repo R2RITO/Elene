@@ -7,7 +7,7 @@ Manual de referencia
 --------------------
 
 
-> Para todo programador es habitual lidiar con algoritmos escritos en pseudocódigo. Si bien es una manera fácil y rápida de comprender un algoritmo, existen ocasiones en las cuales los lenguajes de programación complican la implementación de dichos algoritmos. Esto se debe principalmente a que la sintáxis de los lenguajes se alejan demasiado del pseudocódigo. De esto último, nace ELENE (Cuyo nombre se deriva de "LN", las primeras letras de Lenguaje Natural).
+> Para todo programador es habitual lidiar con algoritmos escritos en pseudocódigo. Si bien es una manera fácil y rápida de comprender un algoritmo, existen ocasiones en las cuales los lenguajes de programación complican la implementación de dichos algoritmos. Esto se debe principalmente a que la sintaxis de los lenguajes se alejan demasiado del pseudocódigo. De esto último, nace ELENE (Cuyo nombre se deriva de "LN", las primeras letras de Lenguaje Natural).
 
 > Elene es un lenguaje fuertemente tipeado, no orientado a objetos, que busca estimular la programación mediante una aproximación al lenguaje natural.
 
@@ -21,7 +21,7 @@ Palabras reservadas del lenguaje
 
 > `entonces o no si mientras hacer para tal que con cambio leer imprimir la funcion recibe y retorna sea estructura contiene union vacio guacara entero caracter flotante booleano string retornar con valor verdadero falso es a mayor menor igual distinto de tipo funciones variables globales arreglo por referencia defecto romper continuar iteracion`
 
-> En cuanto a los **identificadores** de variables, tipos, funciones definidas por el programador, es importante destacar que todos ellos empiezan por un caracter seguido de una combinacion arbitraria de caracteres alfanumericos, siempre que no sea una palabra reservada de la lista anterior. Nombres de variables válidos serian x, quicksort, etc.
+> En cuanto a los **identificadores** de variables, tipos, funciones definidas por el programador, es importante destacar que todos ellos empiezan por un caracter seguido de una combinación arbitraria de caracteres alfanuméricos, siempre que no sea una palabra reservada de la lista anterior. Nombres de variables válidos serian x, quicksort, etc.
 
 ***
 
@@ -36,10 +36,10 @@ Tipos de Datos del lenguaje
 * Booleanos
 * Arreglos
 * Caracter
-* Vacio
+* Vacío
 
 ***
-Expresiones Aritmeticas y Booleanas
+Expresiones Aritméticas y Booleanas
 -----------------------------------
 ***
 
@@ -116,7 +116,7 @@ Estructura básica de un programa en Elene
     }
 
 ***
-Declaracion de Variables
+Declaración de Variables
 ------------------------
 ***
 > Las declaraciones de variables globales y locales se declaran de igual forma. La diferencia está en el lugar donde se declaren. Una variable declarada en el área de variables globales será global, todas las otras declaraciones en bloques o funciones serán locales dentro del alcance en donde fueron declaradas. Ejemplos de declaraciones:
@@ -128,7 +128,7 @@ Declaracion de Variables
         /* Note que la última no lleva punto y coma */
     }
 ***
-Declaracion de Unions
+Declaración de Unions
 ------------------------
 ***
 > La declaracion de los unions se realiza de la siguiente manera:
@@ -140,20 +140,20 @@ Declaracion de Unions
     }
 
 ***
-Declaracion de Estructuras
+Declaración de Estructuras
 ------------------------
 ***
-> La declaracion de los estructuras es casi analoga a la declaracion de un union, se realiza de la siguiente manera:
+> La declaracion de los estructuras es casi análoga a la declaración de un union, se realiza de la siguiente manera:
 
     sea Vector de tipo estructura que contiene {
         X de tipo entero;
         Y de tipo entero
     }
 ***
-Declaracion de Funciones
+Declaración de Funciones
 ------------------------
 ***
-> En Elene una funcion puede declararse de tres maneras, dependiendo de la necesidad del programador. Se puede declarar una función que reciba argumentos y retorne un valor (declaración típica de una función), se puede declarar una función que no recibe argumentos y retorna un valor, y por último, se puede declarar una función que recibe argumentos y no retorna valor alguno. Nótese que la primera contiene a las otras dos si hacemos que la función reciba vacío y retorne vacío. A continuación un ejemplo de una declaración de función.
+> En Elene una función puede declararse de dos maneras, dependiendo de la necesidad del programador. Se puede declarar una función que reciba argumentos y retorne un valor (declaración típica de una función), y se puede declarar una función que no recibe argumentos y retorna un valor. Nótese que la primera contiene a la segunda si hacemos que la función reciba vacío. A continuación un ejemplo de una declaración de función.
 
     sea la funcion AreaTriangulo que recibe flotante Base, flotante Altura
     y retorna flotante hacer {
@@ -163,7 +163,7 @@ Declaracion de Funciones
         retornar Area
     }
 
-> Tambien se pueden pasar argumentos **por valor** o **por referencia**. 
+> También se pueden pasar argumentos **por valor** o **por referencia**. 
 
     sea la funcion CambiarClave que recibe entero por referencia X, entero Y
     y retorna vacio {
@@ -178,7 +178,7 @@ Instrucciones del lenguaje
 > Elene cuenta con instrucciones para asignación, selección, iteración, impresión y lectura. Estudiaremos cada una de ellas por separados y veremos un par de ejemplos para aclarar su uso.
 
 ***
-Instruccion 'imprimir'
+Instrucción 'imprimir'
 ------------------------
 ***
 
@@ -188,10 +188,10 @@ Instruccion 'imprimir'
     imprimir "Hola Mundo!"
 }` 
 
-> Tambien pueden imprimirse en pantalla expresiones aritméticas o booleanas. Ej: imprimir 3\*7\*2
+> También pueden imprimirse en pantalla expresiones aritméticas o booleanas. Ej: imprimir 3\*7\*2
 
 ***
-Instruccion 'leer'
+Instrucción 'leer'
 --------------------
 ***
 > Recibe como argumento un identificador y lee por cónsola un valor para dicho identificador.
@@ -208,7 +208,7 @@ Instrucción 'Asignación'
 --------------------------
 ***
 
-> La asignación se lleva a cabo con el simbolo '='. Del lado derecho se encuentra una expresión y del lado izquierdo se encuentra la variable en donde se almacenará el valor de dicha expresión.
+> La asignación se lleva a cabo con el símbolo '='. Del lado derecho se encuentra una expresión y del lado izquierdo se encuentra la variable en donde se almacenará el valor de dicha expresión.
 
 guacara {
     variables {
@@ -223,7 +223,7 @@ Instrucción Condicional
 -------------------------
 ***
 
-> La instrucción condicional implementa la típica seleccion if-then-else. Se recibe una expresión booleana con la cual se realiza la selección inicial, seguidamente pueden haber más expresiones booelanas (else if) y finalmente puede haber una cláusula else en caso de que ninguna de las condiciones anteriores se haya cumplido. Se pueden escribir condicionales que tengan if, if-else, if-elsif-else, if-elsif. 
+> La instrucción condicional implementa la típica selección if-then-else. Se recibe una expresión booleana con la cual se realiza la selección inicial, seguidamente pueden haber más expresiones booelanas (else if) y finalmente puede haber una cláusula else en caso de que ninguna de las condiciones anteriores se haya cumplido. Se pueden escribir condicionales que tengan if, if-else, if-elsif-else, if-elsif. 
 
 si 2*10+22 igual a 31+11 entonces {
     imprimir "La respuesta es 42"
@@ -238,10 +238,10 @@ Iteraciones
 -------------
 ***
 
-> *Instruccion 'Para': Es el equivalente al for en los lenguajes de programación comunes. 
+> *Instrucción 'Para': Es el equivalente al for en los lenguajes de programación comunes. 
 `para X = 10 tal que X > 0 con cambio X = X - 1 hacer { imprimir X }`
 
-> *Instruccion 'Mientras' : Es el equivalente al while en los lenguajes de programación comunes.
+> *Instrucción 'Mientras' : Es el equivalente al while en los lenguajes de programación comunes.
 `mientras X > 0 hacer { imprimir X; X = X - 1 }`
 
 
@@ -270,7 +270,7 @@ Instrucción "Romper Iteracion" y "Continuar Iteracion"
 ------------------
 ***
 
-> Son equivalentes al break y continue de los lenguajes convencionales. El Romper Iteracion nos permite abandonar una iteracion mientras que el Continuar Iteracion nos permite subir y comenzar el siguiente ciclo. Veamos un ejemplo.
+> Son equivalentes al break y continue de los lenguajes convencionales. El Romper Iteracion nos permite abandonar una iteración mientras que el Continuar Iteracion nos permite subir y comenzar el siguiente ciclo. Veamos un ejemplo.
 
 guacara { /* Esto es un bloque de codigo en elene */
 
@@ -294,9 +294,9 @@ Etiquetas en Bloques
 --------------------
 ***
 
-> En Elene los bloques son aquellos segmentos de codigos que se encuentran dentro de funciones, instrucciones o el programa principal, se encuentran delimitados por un abre llaves y cierra llaves. Como hemos hecho enfasis en los ejemplos anteriores, existen algunos casos especificos en los cuales algo que parece ser un bloque en realidad no lo es, esto ocurre en las llaves de declaracion de variables y las llaves mas externas de la instruccion case. No deben ser vistas como bloques. 
+> En Elene los bloques son aquellos segmentos de códigos que se encuentran dentro de funciones, instrucciones o el programa principal, se encuentran delimitados por un abre llaves y cierra llaves. Como hemos hecho énfasis en los ejemplos anteriores, existen algunos casos específicos en los cuales algo que parece ser un bloque en realidad no lo es, esto ocurre en las llaves de declaración de variables y las llaves mas externas de la instrucción case. No deben ser vistas como bloques. 
 
-> Por otro lado, elene tambien puede darle etiquetas a los bloques. La etiqueta se almacenara en la tabla de simbolos correspondiente. Esto se realiza de la siguiente manera.
+> Por otro lado, elene tambien puede darle etiquetas a los bloques. La etiqueta se almacenará en la tabla de simbolos correspondiente. Esto se realiza de la siguiente manera.
 
 guacara MAIN : {
     imprimir "Hola Mundo"
