@@ -1,0 +1,303 @@
+***
+ELENE
+=====
+***
+
+Manual de referencia
+--------------------
+
+
+> Para todo programador es habitual lidiar con algoritmos escritos en pseudocódigo. Si bien es una manera fácil y rápida de comprender un algoritmo, existen ocasiones en las cuales los lenguajes de programación complican la implementación de dichos algoritmos. Esto se debe principalmente a que la sintaxis de los lenguajes se alejan demasiado del pseudocódigo. De esto último, nace ELENE (Cuyo nombre se deriva de "LN", las primeras letras de Lenguaje Natural).
+
+> Elene es un lenguaje fuertemente tipeado, no orientado a objetos, que busca estimular la programación mediante una aproximación al lenguaje natural.
+
+***
+
+Palabras reservadas del lenguaje
+--------------------------------
+
+> Debido a que el diseño de éste lenguaje está pensado para parecerse al pseudocódigo, es natural que el mismo posea una gran cantidad de palabras reservadas. A continuación se presenta la lista de palabras reservadas.
+
+
+> `entonces o no si mientras hacer para tal que con cambio leer imprimir la funcion recibe y retorna sea estructura contiene union vacio guacara entero caracter flotante booleano string retornar con valor verdadero falso es a mayor menor igual distinto de tipo funciones variables globales arreglo por referencia defecto romper continuar iteracion`
+
+> En cuanto a los **identificadores** de variables, tipos, funciones definidas por el programador, es importante destacar que todos ellos empiezan por un caracter seguido de una combinación arbitraria de caracteres alfanuméricos, siempre que no sea una palabra reservada de la lista anterior. Nombres de variables válidos serian x, quicksort, etc.
+
+***
+
+Tipos de Datos del lenguaje
+---------------------------
+
+> A continuación se presenta una lista con los tipos de datos predefinidos por el lenguaje. El tipo string solo se utiliza en funciones como la de imprimir por pantalla.
+
+* String (Solo para impresión)
+* Números Punto Flotante
+* Números Enteros
+* Booleanos
+* Arreglos
+* Caracter
+* Vacío
+
+***
+Expresiones Aritméticas y Booleanas
+-----------------------------------
+***
+
+> Elene utiliza una notación infija para sus expresiones. 
+
+***
+Operadores:
+----------
+***
+> **Operadores Aritméticos:**
+
+> * +
+> * -
+> * \*
+> * /
+
+> **Operadores Booleanos:**
+
+> * mayor que
+> * menor que
+> * mayor o igual que
+> * menor o igual que
+> * y
+> * o
+> * igual
+> * distinto
+> * no
+
+***
+Precedencia de los operadores
+-----------------------------
+***
+
+> Dentro de la gramática se encuentran separadas las expresiones binarias de las expresiones unarias. A continuación se presenta una lista para los operadores binarios y otra para los unarios ordenados segun su precedencia, siendo el primer conjunto de una lista de operadores aquel de menor precedencia. Asimismo, se especifican la asociatividad de los mismos.
+
+> **Operadores Binarios:**
+
+> * (Izquierda) O (Disyunción)
+> * (Izquierda) Y (Conjunción)
+> * (Izquierda) igual distinto a
+> * (No Asociativo) mayor menor que
+> * (Izquierda) + -
+> * (Izquierda) * /
+
+> **Operadores Unarios:**
+
+> * (Izquierda) Menos (Unario)  Negación
+
+**Ejemplos de expresiones válidas:**
+
+* 10+16*2 igual a 42
+* verdadero y falso
+* 3+2 menor o igual que 37 y 10 mayor que 3
+
+***
+Estructura básica de un programa en Elene
+-----------------------------------------
+***
+> En Elene los programas se encuentran dividos en tres áreas. La primera es para la declaración de variables globales, la segunda es para la declaración de funciones y la última es el programa principal. La estructura quedaría de la siguiente manera.
+
+    variables globales {
+        /* Declaración de Variables Globales */
+        /* Este segmento de código se puede omitir */
+    }
+    
+    funciones {
+        /* Declaración de Funciones */
+        /* Este segmento de código se puede omitir */
+    }
+
+    guacara {
+        /* Programa Principal o Main */
+        /* Este segmento de código es obligatorio */
+    }
+
+***
+Declaración de Variables
+------------------------
+***
+> Las declaraciones de variables globales y locales se declaran de igual forma. La diferencia está en el lugar donde se declaren. Una variable declarada en el área de variables globales será global, todas las otras declaraciones en bloques o funciones serán locales dentro del alcance en donde fueron declaradas. Ejemplos de declaraciones:
+
+    variables globales {
+        sea Alto de tipo entero con valor 2;
+        sea Area de tipo flotante;
+        sea Anchos de tipo arreglo de tipo entero de 0 a 10
+        /* Note que la última no lleva punto y coma */
+    }
+***
+Declaración de Unions
+------------------------
+***
+> La declaracion de los unions se realiza de la siguiente manera:
+
+    sea Ejemplo de tipo union que contiene {
+        A de tipo entero;
+        B de tipo booleano;
+        C de tipo caracter
+    }
+
+***
+Declaración de Estructuras
+------------------------
+***
+> La declaracion de los estructuras es casi análoga a la declaración de un union, se realiza de la siguiente manera:
+
+    sea Vector de tipo estructura que contiene {
+        X de tipo entero;
+        Y de tipo entero
+    }
+***
+Declaración de Funciones
+------------------------
+***
+> En Elene una función puede declararse de dos maneras, dependiendo de la necesidad del programador. Se puede declarar una función que reciba argumentos y retorne un valor (declaración típica de una función), y se puede declarar una función que no recibe argumentos y retorna un valor. Nótese que la primera contiene a la segunda si hacemos que la función reciba vacío. A continuación un ejemplo de una declaración de función.
+
+    sea la funcion AreaTriangulo que recibe flotante Base, flotante Altura
+    y retorna flotante hacer {
+        variables {
+            sea Area de tipo flotante con valor Base*Altura/2 
+        }
+        retornar Area
+    }
+
+> También se pueden pasar argumentos **por valor** o **por referencia**. 
+
+    sea la funcion CambiarClave que recibe entero por referencia X, entero Y
+    y retorna vacio {
+        imprimir "X es por referencia";
+        imprimir "Y es por valor"
+    }
+
+***
+Instrucciones del lenguaje
+--------------------------
+
+> Elene cuenta con instrucciones para asignación, selección, iteración, impresión y lectura. Estudiaremos cada una de ellas por separados y veremos un par de ejemplos para aclarar su uso.
+
+***
+Instrucción 'imprimir'
+------------------------
+***
+
+> Recibe como argumento una expresión y la imprime en pantalla. Aprovechemos la oportunidad de mostrar el uso de la función imprimir en un HelloWorld escrito en Elene. Recuerde que Elene no puede manipular o almacenar Strings en variables pero si los puede usar para imprimir por pantalla.
+
+`guacara {
+    imprimir "Hola Mundo!"
+}` 
+
+> También pueden imprimirse en pantalla expresiones aritméticas o booleanas. Ej: imprimir 3\*7\*2
+
+***
+Instrucción 'leer'
+--------------------
+***
+> Recibe como argumento un identificador y lee por cónsola un valor para dicho identificador.
+
+`guacara {
+    variables {
+        sea X de tipo entero
+    }   
+    leer X
+}`
+
+***
+Instrucción 'Asignación'
+--------------------------
+***
+
+> La asignación se lleva a cabo con el símbolo '='. Del lado derecho se encuentra una expresión y del lado izquierdo se encuentra la variable en donde se almacenará el valor de dicha expresión.
+
+guacara {
+    variables {
+        sea Contador de tipo entero con valor 1
+    }
+    Contador = Contador + 1;
+    imprimir Contador
+}
+
+***
+Instrucción Condicional
+-------------------------
+***
+
+> La instrucción condicional implementa la típica selección if-then-else. Se recibe una expresión booleana con la cual se realiza la selección inicial, seguidamente pueden haber más expresiones booelanas (else if) y finalmente puede haber una cláusula else en caso de que ninguna de las condiciones anteriores se haya cumplido. Se pueden escribir condicionales que tengan if, if-else, if-elsif-else, if-elsif. 
+
+si 2*10+22 igual a 31+11 entonces {
+    imprimir "La respuesta es 42"
+} o si Satan igual a 666 entonces {
+    imprimir "Salvese quien pueda"
+} si no entonces {
+    imprimir "No hay nada que hacer"
+}
+
+***
+Iteraciones
+-------------
+***
+
+> *Instrucción 'Para': Es el equivalente al for en los lenguajes de programación comunes. 
+`para X = 10 tal que X > 0 con cambio X = X - 1 hacer { imprimir X }`
+
+> *Instrucción 'Mientras' : Es el equivalente al while en los lenguajes de programación comunes.
+`mientras X > 0 hacer { imprimir X; X = X - 1 }`
+
+
+***
+Instrucción Case
+------------------
+***
+
+> La instrucción case funciona como el switch del lenguaje C. Primero se especifica la variable la cual se quiere verificar y luego se realiza una lista de casos. Es obligatorio la especificación de un caso obligatorio, es decir, si no se logra hacer match de la variable con la lista de casos especificados, se ejecutara el bloque definido por defecto. Veamos un ejemplo.
+
+sea X igual a { /* Estas llaves NO corresponden a un bloque */
+
+    3 entonces hacer { /* Estas llaves si corresponden a un bloque */
+        imprimir "3"
+    }
+    4+7 entonces hacer {
+        imprimir "4+7"
+    }
+    por defecto hacer {
+        imprimir "Defecto"
+    }
+}
+
+***
+Instrucción "Romper Iteracion" y "Continuar Iteracion"
+------------------
+***
+
+> Son equivalentes al break y continue de los lenguajes convencionales. El Romper Iteracion nos permite abandonar una iteración mientras que el Continuar Iteracion nos permite subir y comenzar el siguiente ciclo. Veamos un ejemplo.
+
+guacara { /* Esto es un bloque de codigo en elene */
+
+    variables { /* Pero estas llaves NO corresponden a un bloque de elene */
+        sea x de tipo entero con valor 10
+    }
+
+    mientras verdadero hacer { /* Estas si corresponden a un bloque */
+        si x menor que 0 entonces {
+            romper iteracion
+        } si no entonces {
+            x = x - 1;
+            continuar iteracion
+        };
+        imprimir "Esta linea nunca se ejecutara"   
+    }
+}
+
+***
+Etiquetas en Bloques
+--------------------
+***
+
+> En Elene los bloques son aquellos segmentos de códigos que se encuentran dentro de funciones, instrucciones o el programa principal, se encuentran delimitados por un abre llaves y cierra llaves. Como hemos hecho énfasis en los ejemplos anteriores, existen algunos casos específicos en los cuales algo que parece ser un bloque en realidad no lo es, esto ocurre en las llaves de declaración de variables y las llaves mas externas de la instrucción case. No deben ser vistas como bloques. 
+
+> Por otro lado, elene tambien puede darle etiquetas a los bloques. La etiqueta se almacenará en la tabla de simbolos correspondiente. Esto se realiza de la siguiente manera.
+
+guacara MAIN : {
+    imprimir "Hola Mundo"
+}
