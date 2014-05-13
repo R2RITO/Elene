@@ -48,6 +48,8 @@
     double col;
     double linea;
     elene_LISTFUN* lstf;
+    elene_TIPO* tiposBase [7];
+    elene_TIPO_ESTRUCTURA* test;
 }
 
 %define api.token.prefix {TOK_}
@@ -170,7 +172,16 @@
 %start inicio;
 
 
-inicio : { currentLevel = new elene_TABLA(); 
+inicio : { 
+
+           tiposBase[0] = new elene_TIPO_BOOLEANO;
+           tiposBase[1] = new elene_TIPO_FLOTANTE;
+           tiposBase[2] = new elene_TIPO_CARACTER;
+           tiposBase[3] = new elene_TIPO_STRING;
+           tiposBase[4] = new elene_TIPO_ENTERO;
+           tiposBase[5] = new elene_TIPO_VACIO;
+
+           currentLevel = new elene_TABLA(); 
            currentLevel -> insertar("Read",new elene_TIPO_SIMPLE("Funcion"),1,1,4);
            currentLevel = enterScope(currentLevel);
            tablaGlobal = currentLevel;
@@ -226,18 +237,24 @@ decContenido    : ID DE TIPO tipo
                   }
                 ;
 
-tipo : BOOLEANO { $$ = new elene_TIPO_SIMPLE("Booleano"); }
-     | ENTERO   { $$ = new elene_TIPO_SIMPLE("Entero"); }
-     | FLOTANTE { $$ = new elene_TIPO_SIMPLE("Flotante"); }
-     | CARACTER { $$ = new elene_TIPO_SIMPLE("Caracter"); }
-     | STRING   { $$ = new elene_TIPO_SIMPLE("String");}
-     | VACIO    { $$ = new elene_TIPO_SIMPLE("Vacio");}
+tipo : BOOLEANO { $$ = tiposBase[0]; }
+     | ENTERO   { $$ = tiposBase[4]; }
+     | FLOTANTE { $$ = tiposBase[1]; }
+     | CARACTER { $$ = tiposBase[2]; }
+     | STRING   { $$ = tiposBase[3]; }
+     | VACIO    { $$ = tiposBase[5]; }
      | ID       
        { if (!(*currentLevel).local_lookup($1)) {
             driver.error_tipo_indef(@1,$1);
-            $$ = new elene_TIPO_SIMPLE("Indefinido");
+            $$ = new elene_TIPO_TYPE_ERROR;
          } else {
-            $$ = new elene_TIPO_DEFINIDO(new elene_ID($1)); 
+            if ( test = dynamic_cast<elene_TIPO_ESTRUCTURA *>((*(*currentLevel).local_lookup($1)).tipo)) {
+                $$ = (*(*currentLevel).local_lookup($1)).tipo;
+                test = 0;
+            } else {
+                driver.error_tipo_no_estructura(@1,$1);
+                $$ = new elene_TIPO_TYPE_ERROR;
+            } 
          }
        }
      | ARREGLO DE tipo DE expr A expr { $$ = new elene_TIPO_ARREGLO($3,$5,$7); }
@@ -268,29 +285,31 @@ listaFunciones : decFuncion { $$ = new elene_LISTFUN($1,0); }
                ;
 
 decFuncion : SEA LA FUNCION ID QUE RECIBE  
-             { if (!(*currentLevel).local_lookup($4)) { 
-                   currentLevel -> 
-                   insertar($4,new elene_TIPO_SIMPLE("Funcion"),@4.begin.line,@4.begin.column,0); 
-               } else { 
-                   driver.error_fun_redec(@4,$4);
-               }; 
+            {  
                currentLevel = enterScope(currentLevel); 
             } 
             listArg Y RETORNA tipo HACER bloque 
             { 
+                
                 $$ = new elene_DECFUNCION(new elene_ID($4),$8,$11,$13); 
-                currentLevel = exitScope(currentLevel);     
-            }
-           | SEA LA FUNCION ID QUE RETORNA
-             { if (!(*currentLevel).local_lookup($4)) { 
+                currentLevel = exitScope(currentLevel);
+                if (!(*currentLevel).local_lookup($4)) { 
                    currentLevel -> 
-                   insertar($4,new elene_TIPO_SIMPLE("Funcion"),@4.begin.line,@4.begin.column,0); 
-               } else { 
+                   insertar($4,new elene_TIPO_FUNCION($4,$11,$8),@4.begin.line,@4.begin.column,0); 
+                } else { 
                    driver.error_fun_redec(@4,$4);
-               }; 
-             }
-             tipo HACER bloque
-             { $$ = new elene_DECFUNCION(new elene_ID($4),0,$8,$10); }
+                };
+            }
+           | SEA LA FUNCION ID QUE RETORNA tipo HACER bloque
+            { 
+                if (!(*currentLevel).local_lookup($4)) { 
+                   currentLevel -> 
+                   insertar($4,new elene_TIPO_FUNCION($4,$7,0),@4.begin.line,@4.begin.column,0); 
+                } else { 
+                   driver.error_fun_redec(@4,$4);
+                }; 
+                $$ = new elene_DECFUNCION(new elene_ID($4),0,$7,$9); 
+            }
            ;
 
 listArg : tipo ID  

@@ -6,7 +6,7 @@
 
 class elene_TABLA_VALOR {
 
-protected:
+public:
 
     elene_TIPO* tipo;
     int lin;
