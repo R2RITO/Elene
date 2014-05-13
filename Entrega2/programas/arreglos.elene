@@ -1,0 +1,23 @@
+variables globales {
+    sea array de tipo arreglo de entero de 0+1 a 11-1
+}
+
+funciones {
+
+    sea la funcion incrementar que retorna vacio hacer {
+
+        variables {
+            sea i de tipo entero
+        }        
+
+        para i = 1 tal que 1 menor o igual que 10 con cambio i = i + 1 hacer {
+            imprimir array[i]
+        }
+
+    }
+
+}
+
+guacara {
+    incrementar()
+}

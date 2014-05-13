@@ -1,0 +1,74 @@
+variables globales {
+
+    sea vector de tipo estructura que contiene {
+        X de tipo entero;
+        Y de tipo entero
+    };
+
+    sea implementado de tipo entero con valor 1
+
+}
+
+
+funciones { 
+
+    sea la funcion imprimirMenu que retorna vacio hacer {
+        imprimir "** Calculo de areas y volumenes **\n";
+        imprimir " 1 - Calcular Areas \n";
+        imprimir " 2 - Calcular Volumenes \n";
+        imprimir " 0 - Salir del programa \n";
+        imprimir "Seleccione una opcion: "
+    }
+
+    sea la funcion calcularAreas que retorna vacio hacer {
+        imprimir "Falta implementar"
+    }
+
+    sea la funcion calcularVolumenes que retorna vacio hacer {
+        imprimir "Falta implementar"
+    }
+
+    sea la funcion crearVector que retorna vector hacer {
+        si (implementado igual a 1) entonces {
+            imprimir "Ya esta implementado"
+        } si no entonces {
+            imprimir "Falta por implementar"
+        }
+    }
+
+}
+
+guacara {
+
+    variables {
+        sea opcion de tipo entero con valor -1
+    }
+
+
+    mientras (opcion distinto a 0) hacer {
+
+        imprimirMenu();
+        leer opcion;
+
+        sea opcion igual a {
+
+            1 entonces hacer {
+                calcularAreas()
+            }
+
+            2 entonces hacer {
+                calcularVolumenes()
+            }
+
+            0 entonces hacer {
+                retornar 1
+            }
+
+            por defecto hacer {
+                imprimir "Opcion Invalida - Intente de nuevo \n"
+            }
+
+        }
+    }
+
+}
