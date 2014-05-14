@@ -16,6 +16,23 @@ public:
 	std::string ident;
 };
 
+/*****************************************************************/
+/******* TIPOS ***************************************************/
+/*****************************************************************/
+
+class elene_TIPO : public printable {
+
+protected:
+    /* Metodo para imprimir a ser sobreescrito por los hijos */
+    virtual std::ostream& stream_write(std::ostream& os) const = 0; 
+
+public:
+    /* Sobrecarga del operador << */
+    friend std::ostream& operator<< (std::ostream& stream,const elene_TIPO& obj){
+        return obj.stream_write(stream); 
+    }
+};
+
 /***************************************************************/
 /****** EXPRESIONES ********************************************/
 /***************************************************************/
@@ -27,6 +44,7 @@ protected:
     virtual std::ostream& stream_write(std::ostream& os) const = 0; 
 
 public:
+	elene_TIPO* tipo;
     /* Sobrecarga del operador << */
     friend std::ostream& operator<< (std::ostream& stream,const elene_EXPR& obj){
         return obj.stream_write(stream); 
@@ -842,6 +860,7 @@ protected:
     }
 
 public:
+	elene_TIPO* tipo;
     /* Declaracion de constructor */
     elene_LISTAEXPR() {};
     elene_LISTAEXPR(elene_EXPR* e, elene_LISTAEXPR* r): expr(e), resto(r) {};
@@ -1181,6 +1200,7 @@ protected:
     virtual std::ostream& stream_write(std::ostream& os) const = 0; 
 
 public:
+	elene_TIPO* tipo;
     /* Sobrecarga del operador << */
     friend std::ostream& operator<< (std::ostream& stream,const elene_INST& obj){
         return obj.stream_write(stream); 
@@ -1206,6 +1226,7 @@ protected:
     virtual std::ostream& stream_write(std::ostream& os) const = 0; 
 
 public:
+	elene_TIPO* tipo;
     /* Sobrecarga del operador << */
     friend std::ostream& operator<< (std::ostream& stream,const elene_LISTAINST& obj){
         return obj.stream_write(stream); 
@@ -1296,22 +1317,7 @@ public:
     }
 };
 
-/*****************************************************************/
-/******* TIPOS ***************************************************/
-/*****************************************************************/
 
-class elene_TIPO : public printable {
-
-protected:
-    /* Metodo para imprimir a ser sobreescrito por los hijos */
-    virtual std::ostream& stream_write(std::ostream& os) const = 0; 
-
-public:
-    /* Sobrecarga del operador << */
-    friend std::ostream& operator<< (std::ostream& stream,const elene_TIPO& obj){
-        return obj.stream_write(stream); 
-    }
-};
 
 /* Clase para manejar tipos de datos simples (Todos menos los arreglos) */
 class elene_TIPO_ENTERO : public elene_TIPO {
@@ -1320,9 +1326,7 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-
         return (os << ident << "Entero" << "\n");
-
     }
 
 public:
@@ -1545,7 +1549,6 @@ class elene_DECLARACION : public printable {
 protected:
 
     elene_ID* ID; 
-    elene_TIPO* tipo;
     elene_EXPR* expr;
     virtual std::ostream& stream_write(std::ostream& os) const {
         (*ID).ident = ident+"    ";
@@ -1562,7 +1565,7 @@ protected:
     } 
 
 public:
-
+	elene_TIPO* tipo;
     /* Declaracion de constructor */
     elene_DECLARACION(elene_ID* ID, elene_TIPO* tipo, elene_EXPR* expr) {
         this -> ID = ID;
@@ -1628,6 +1631,7 @@ protected:
     } 
 
 public:
+	elene_TIPO* tipo;
     /* Declaracion de constructor */
     elene_LISTAVAR(elene_DECLARACION* dec, elene_LISTAVAR* resto) {
         this -> dec = dec;
@@ -1808,6 +1812,7 @@ protected:
     }
 
 public:
+	elene_TIPO* tipo;
     /* Declaracion de constructor */
     elene_BLOQUE() {};
     elene_BLOQUE(elene_ID* et, elene_LISTAVAR* var, elene_LISTAINST* inst): etiqueta(et), listaVariables(var), listaInstruccion(inst) {};
@@ -2289,6 +2294,7 @@ protected:
     }
 
 public:
+	elene_TIPO* tipo;
     /* Declaracion de constructor */
     elene_CASO() {};
     elene_CASO(elene_EXPR* e, elene_BLOQUE* b): expr(e), bloque(b) {};
@@ -2340,6 +2346,7 @@ protected:
     }
 
 public:
+	elene_TIPO* tipo;
     /* Declaracion de constructor */
     elene_LISTACASE() {};
     elene_LISTACASE(elene_CASO* c, elene_LISTACASE* l): caso(c), resto(l) {};
@@ -2436,7 +2443,6 @@ class elene_LISTARG : public printable {
 
 protected:
 
-    elene_TIPO* tipo;
     elene_ID* id;
     elene_LISTARG* resto;
     std::string ref;
@@ -2460,6 +2466,7 @@ protected:
     }
 
 public:
+	elene_TIPO* tipo;
     /* Declaracion de constructor */
     elene_LISTARG() {};
     elene_LISTARG(elene_TIPO* t, elene_ID* i, std::string mod, elene_LISTARG* r): 
@@ -2529,7 +2536,7 @@ protected:
     }
 
 public:
-
+	elene_TIPO* tipo;
     /* Declaracion de constructor */
     elene_DECFUNCION() {};
 
@@ -2601,6 +2608,7 @@ protected:
     }
 
 public:
+	elene_TIPO* tipo;
     /* Declaracion de constructor */
     elene_LISTFUN() {};
     elene_LISTFUN(elene_DECFUNCION* f, elene_LISTFUN* l): fun(f), resto(l) {};
@@ -2661,6 +2669,7 @@ protected:
 
 public:
 
+	elene_TIPO* tipo;
     /* Constructor */
     elene_FUNCIONES(elene_LISTFUN* lf, elene_BLOQUE* prog): lstfun(lf), programa(prog) {}
 
@@ -2722,6 +2731,7 @@ protected:
 
 public:
 
+	elene_TIPO* tipo;
     /* Constructor */
     elene_VARGLOBAL(elene_FUNCIONES* func, elene_LISTAVAR* lv): 
         funciones(func), listaVar(lv) {}

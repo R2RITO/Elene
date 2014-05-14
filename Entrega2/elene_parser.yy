@@ -289,8 +289,7 @@ decFuncion : SEA LA FUNCION ID QUE RECIBE
                currentLevel = enterScope(currentLevel); 
             } 
             listArg Y RETORNA tipo HACER bloque 
-            { 
-                
+            {
                 $$ = new elene_DECFUNCION(new elene_ID($4),$8,$11,$13); 
                 currentLevel = exitScope(currentLevel);
                 if (!(*currentLevel).local_lookup($4)) { 
