@@ -434,7 +434,7 @@ instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2));
             | expr { $$ = new elene_INSTEXPR($1); }
             | ROMPER ITERACION { $$ = new elene_INSTROMPER(); }
             | CONTINUAR ITERACION { $$ = new elene_INSTCONTINUAR(); }
-            | instruccionCase { $$ = new elene_INSTROMPER(); }
+            | instruccionCase { $$ = $1; }
             ;
 
 instruccionCase : SEA ID IGUAL A LBRACKET casosCase POR DEFECTO HACER bloque RBRACKET
