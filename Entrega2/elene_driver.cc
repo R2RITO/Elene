@@ -80,6 +80,14 @@ void elene_driver::error_indef(const yy::location& l, const std::string& m) {
         << std::endl;
 }
 
+void elene_driver::error_tipo_no_estructura(const yy::location& l, const std::string& m) {
+    std::cerr 
+        << "- ERROR - " << "Linea: " << l.begin.line
+        << ", Columna: " << l.begin.column
+		<< ". '" << m << "' no tiene un tipo que corresponda a una estructura."
+        << std::endl;
+}
+
 void elene_driver::error (const std::string& m) {
     std::cerr << m << std::endl;
 }

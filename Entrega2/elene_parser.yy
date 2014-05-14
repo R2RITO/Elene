@@ -182,7 +182,7 @@ inicio : {
            tiposBase[5] = new elene_TIPO_VACIO;
 
            currentLevel = new elene_TABLA(); 
-           currentLevel -> insertar("Read",new elene_TIPO_SIMPLE("Funcion"),1,1,4);
+           currentLevel -> insertar("Read",tiposBase[2],1,1,4);
            currentLevel = enterScope(currentLevel);
            tablaGlobal = currentLevel;
          } 
@@ -295,7 +295,7 @@ decFuncion : SEA LA FUNCION ID QUE RECIBE
                 currentLevel = exitScope(currentLevel);
                 if (!(*currentLevel).local_lookup($4)) { 
                    currentLevel -> 
-                   insertar($4,new elene_TIPO_FUNCION($4,$11,$8),@4.begin.line,@4.begin.column,0); 
+                   insertar($4,new elene_TIPO_FUNCION(new elene_ID($4),$11,$8),@4.begin.line,@4.begin.column,0); 
                 } else { 
                    driver.error_fun_redec(@4,$4);
                 };
@@ -304,7 +304,7 @@ decFuncion : SEA LA FUNCION ID QUE RECIBE
             { 
                 if (!(*currentLevel).local_lookup($4)) { 
                    currentLevel -> 
-                   insertar($4,new elene_TIPO_FUNCION($4,$7,0),@4.begin.line,@4.begin.column,0); 
+                   insertar($4,new elene_TIPO_FUNCION(new elene_ID($4),$7,0),@4.begin.line,@4.begin.column,0); 
                 } else { 
                    driver.error_fun_redec(@4,$4);
                 }; 
@@ -370,7 +370,7 @@ bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,0,$2); }
          { $$ = new elene_BLOQUE(new elene_ID($1),0,$4); 
            if (!(*tablaGlobal).local_lookup($1)) {
                tablaGlobal ->
-               insertar($1,new elene_TIPO_SIMPLE("Etiqueta"),@1.begin.line,@1.begin.column,0);
+               insertar($1,new elene_TIPO_CARACTER(),@1.begin.line,@1.begin.column,0);
            } else {
                driver.error_etiq_redec(@1,$1);
            }
@@ -379,7 +379,7 @@ bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,0,$2); }
          { 
              if (!(*tablaGlobal).local_lookup($1)) {
                  tablaGlobal ->
-                 insertar($1,new elene_TIPO_SIMPLE("Etiqueta"),@1.begin.line,@1.begin.column,0);
+                 insertar($1,new elene_TIPO_CARACTER(),@1.begin.line,@1.begin.column,0);
              } else {
                  driver.error_etiq_redec(@1,$1);
             }

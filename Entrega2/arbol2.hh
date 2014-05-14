@@ -1311,72 +1311,170 @@ public:
 };
 
 /* Clase para manejar tipos de datos simples (Todos menos los arreglos) */
-class elene_TIPO_SIMPLE : public elene_TIPO {
+class elene_TIPO_ENTERO : public elene_TIPO {
 
 protected:
 
-    std::string tipo;
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << tipo);
+        return (os << "Entero");
     }
 
 public:
     /* Declaracion de constructor */
-    elene_TIPO_SIMPLE() {};
-    elene_TIPO_SIMPLE(std::string t): tipo(t) {};
+    elene_TIPO_ENTERO() {};
     
     /* Declaracion de destructor */
-    virtual ~elene_TIPO_SIMPLE () {
-        tipo.clear();
-    }
+    virtual ~elene_TIPO_ENTERO () { }
     
     /* Metodo para copiar */
-    elene_TIPO_SIMPLE(const elene_TIPO_SIMPLE &other) { 
-        tipo = other.tipo;
-    }
+    elene_TIPO_ENTERO(const elene_TIPO_ENTERO &other) { }
 
-    elene_TIPO_SIMPLE &operator = (const elene_TIPO_SIMPLE &other) {
-        if (&other != this) {
-            tipo.clear();
-            tipo = other.tipo;
-        }
-    }
+    elene_TIPO_ENTERO &operator = (const elene_TIPO_ENTERO &other) { }
 
 };
 
-/* Clase para manejar tipos definidos por el usuario*/
-class elene_TIPO_DEFINIDO : public elene_TIPO {
+/* Clase para manejar tipos de datos simples (Todos menos los arreglos) */
+class elene_TIPO_BOOLEANO : public elene_TIPO {
 
 protected:
 
-    elene_ID* id;
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << *id << "\n");
+        return (os << "Booleano");
     }
 
 public:
     /* Declaracion de constructor */
-    elene_TIPO_DEFINIDO() {};
-    elene_TIPO_DEFINIDO(elene_ID* t): id(t) {};
+    elene_TIPO_BOOLEANO() {};
     
     /* Declaracion de destructor */
-    virtual ~elene_TIPO_DEFINIDO () {
-        delete id;
-    }
+    virtual ~elene_TIPO_BOOLEANO () { }
     
     /* Metodo para copiar */
-    elene_TIPO_DEFINIDO(const elene_TIPO_DEFINIDO &other) { 
-        id = other.id;
+    elene_TIPO_BOOLEANO(const elene_TIPO_BOOLEANO &other) { }
+
+    elene_TIPO_BOOLEANO &operator = (const elene_TIPO_BOOLEANO &other) { }
+
+};
+
+/* Clase para manejar tipos de datos simples (Todos menos los arreglos) */
+class elene_TIPO_FLOTANTE : public elene_TIPO {
+
+protected:
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Flotante");
     }
 
-    elene_TIPO_DEFINIDO &operator = (const elene_TIPO_DEFINIDO &other) {
-        if (&other != this) {
-            delete id;
-            id = other.id;
-        }
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_FLOTANTE() {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_FLOTANTE () { }
+    
+    /* Metodo para copiar */
+    elene_TIPO_FLOTANTE(const elene_TIPO_FLOTANTE &other) { }
+
+    elene_TIPO_FLOTANTE &operator = (const elene_TIPO_FLOTANTE &other) { }
+
+};
+
+/* Clase para manejar tipos de datos simples (Todos menos los arreglos) */
+class elene_TIPO_CARACTER : public elene_TIPO {
+
+protected:
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Caracter");
     }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_CARACTER() {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_CARACTER () { }
+    
+    /* Metodo para copiar */
+    elene_TIPO_CARACTER(const elene_TIPO_CARACTER &other) { }
+
+    elene_TIPO_CARACTER &operator = (const elene_TIPO_CARACTER &other) { }
+
+};
+
+/* Clase para manejar tipos de datos simples (Todos menos los arreglos) */
+class elene_TIPO_STRING : public elene_TIPO {
+
+protected:
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "String");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_STRING() {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_STRING () { }
+    
+    /* Metodo para copiar */
+    elene_TIPO_STRING(const elene_TIPO_STRING &other) { }
+
+    elene_TIPO_STRING &operator = (const elene_TIPO_STRING &other) { }
+
+};
+
+/* Clase para manejar tipos de datos simples (Todos menos los arreglos) */
+class elene_TIPO_VACIO : public elene_TIPO {
+
+protected:
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Vacio");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_VACIO() {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_VACIO () { }
+    
+    /* Metodo para copiar */
+    elene_TIPO_VACIO(const elene_TIPO_VACIO &other) { }
+
+    elene_TIPO_VACIO &operator = (const elene_TIPO_VACIO &other) { }
+
+};
+
+/* Clase para manejar tipos de datos simples (Todos menos los arreglos) */
+class elene_TIPO_TYPE_ERROR : public elene_TIPO {
+
+protected:
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Type Error");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_TYPE_ERROR() {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_TYPE_ERROR () { }
+    
+    /* Metodo para copiar */
+    elene_TIPO_TYPE_ERROR(const elene_TIPO_TYPE_ERROR &other) { }
+
+    elene_TIPO_TYPE_ERROR &operator = (const elene_TIPO_TYPE_ERROR &other) { }
 
 };
 
@@ -1433,7 +1531,6 @@ public:
         }
     }
 };
-
 
 /*****************************************************************/
 /******* DECLARACION *********************************************/
@@ -1630,7 +1727,46 @@ public:
 
 };
 
+/* Clase para manejar tipos definidos por el usuario*/
+class elene_TIPO_DEFINIDO : public elene_TIPO {
 
+protected:
+
+    elene_ID* id;
+    elene_TIPO* tipo;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << *id);
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_DEFINIDO() {};
+    elene_TIPO_DEFINIDO(elene_ID* t, elene_TIPO* tp): id(t), tipo(tp) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_DEFINIDO () {
+        delete id;
+        delete tipo;
+    }
+    
+    /* Metodo para copiar */
+    elene_TIPO_DEFINIDO(const elene_TIPO_DEFINIDO &other) { 
+        id = other.id;
+        tipo = other.tipo;
+    }
+
+    elene_TIPO_DEFINIDO &operator = (const elene_TIPO_DEFINIDO &other) {
+        if (&other != this) {
+            delete id;
+            id = other.id;
+            delete tipo;
+            tipo = other.tipo;
+        }
+    }
+
+};
 
 /* Clase para la lista de variables con declaraciones */
 class elene_BLOQUE : public printable {
@@ -2609,6 +2745,51 @@ public:
     }
 
 
+};
+
+/* Clase para manejar tipos de funciones*/
+class elene_TIPO_FUNCION : public elene_TIPO {
+
+protected:
+
+    elene_ID* id;
+    elene_TIPO* tipo;
+    elene_LISTARG* param;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << *id);
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_FUNCION() {};
+    elene_TIPO_FUNCION(elene_ID* t, elene_TIPO* tp, elene_LISTARG* p): id(t), tipo(tp), param(p) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_FUNCION () {
+        delete id;
+        delete tipo;
+        delete param;
+    }
+    
+    /* Metodo para copiar */
+    elene_TIPO_FUNCION(const elene_TIPO_FUNCION &other) { 
+        id = other.id;
+        tipo = other.tipo;
+        param = other.param;
+    }
+
+    elene_TIPO_FUNCION &operator = (const elene_TIPO_FUNCION &other) {
+        if (&other != this) {
+            delete id;
+            id = other.id;
+            delete tipo;
+            tipo = other.tipo;
+            delete param;
+            param = other.param;
+        }
+    }
 
 };
 
