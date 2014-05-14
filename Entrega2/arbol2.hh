@@ -69,11 +69,11 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr_izq).ident = ident + "  ";
-		(*expr_der).ident = ident + "  ";             
+		(*expr_izq).ident = ident + "    ";
+		(*expr_der).ident = ident + "    ";             
         return (os << ident << "Conjuncion: {\n" 
-                   << ident << "Expr Izq:\n" << (*expr_izq)
-                   << ident << "Expr Der:\n" << (*expr_der))
+                   << ident+"  " << "Expr Izq:\n" << (*expr_izq)
+                   << ident+"  " << "Expr Der:\n" << (*expr_der))
 				   << ident << "}\n";
     }
 
@@ -115,11 +115,11 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr_izq).ident = ident + "  ";
-		(*expr_der).ident = ident + "  ";             
+		(*expr_izq).ident = ident + "    ";
+		(*expr_der).ident = ident + "    ";             
         return (os << ident << "Disyuncion: {\n" 
-                   << ident << "Expr Izq:\n" << (*expr_izq)
-                   << ident << "Expr Der:\n" << (*expr_der))
+                   << ident+"  " << "Expr Izq:\n" << (*expr_izq)
+                   << ident+"  " << "Expr Der:\n" << (*expr_der))
 				   << ident << "}\n";
     }
 
@@ -160,11 +160,11 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr_izq).ident = ident + "  ";
-		(*expr_der).ident = ident + "  ";             
+		(*expr_izq).ident = ident + "    ";
+		(*expr_der).ident = ident + "    ";             
         return (os << ident << "Adicion: {\n" 
-                   << ident << "Expr Izq:\n" << (*expr_izq)
-                   << ident << "Expr Der:\n" << (*expr_der))
+                   << ident+"  " << "Expr Izq:\n" << (*expr_izq)
+                   << ident+"  " << "Expr Der:\n" << (*expr_der))
 				   << ident << "}\n";
     }
 
@@ -205,11 +205,11 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr_izq).ident = ident + "  ";
-		(*expr_der).ident = ident + "  ";             
+		(*expr_izq).ident = ident + "    ";
+		(*expr_der).ident = ident + "    ";             
         return (os << ident << "Sustraccion: {\n" 
-                   << ident << "Expr Izq:\n" << (*expr_izq)
-                   << ident << "Expr Der:\n" << (*expr_der))
+                   << ident+"  " << "Expr Izq:\n" << (*expr_izq)
+                   << ident+"  " << "Expr Der:\n" << (*expr_der))
 				   << ident << "}\n";
     }
 
@@ -251,11 +251,11 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr_izq).ident = ident + "  ";
-		(*expr_der).ident = ident + "  ";             
+		(*expr_izq).ident = ident + "    ";
+		(*expr_der).ident = ident + "    ";             
         return (os << ident << "Multiplicacion: {\n" 
-                   << ident << "Expr Izq:\n" << (*expr_izq)
-                   << ident << "Expr Der:\n" << (*expr_der))
+                   << ident+"  " << "Expr Izq:\n" << (*expr_izq)
+                   << ident+"  " << "Expr Der:\n" << (*expr_der))
 				   << ident << "}\n";
     }
 public:
@@ -296,11 +296,11 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr_izq).ident = ident + "  ";
-		(*expr_der).ident = ident + "  ";             
+		(*expr_izq).ident = ident + "    ";
+		(*expr_der).ident = ident + "    ";             
         return (os << ident << "Division: {\n" 
-                   << ident << "Expr Izq:\n" << (*expr_izq)
-                   << ident << "Expr Der:\n" << (*expr_der))
+                   << ident+"  " << "Expr Izq:\n" << (*expr_izq)
+                   << ident+"  " << "Expr Der:\n" << (*expr_der))
 				   << ident << "}\n";
     }
 
@@ -341,11 +341,11 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr_izq).ident = ident + "  ";
-		(*expr_der).ident = ident + "  ";             
-        return (os << ident << "Mayor Que: {\n" 
-                   << ident << "Expr Izq:\n" << (*expr_izq)
-                   << ident << "Expr Der:\n" << (*expr_der))
+		(*expr_izq).ident = ident + "    ";
+		(*expr_der).ident = ident + "    ";             
+        return (os << ident << "Mayor que: {\n" 
+                   << ident+"  " << "Expr Izq:\n" << (*expr_izq)
+                   << ident+"  " << "Expr Der:\n" << (*expr_der))
 				   << ident << "}\n";
     }
 
@@ -387,11 +387,11 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr_izq).ident = ident + "  ";
-		(*expr_der).ident = ident + "  ";             
-        return (os << ident << "Menor Que: {\n" 
-                   << ident << "Expr Izq:\n" << (*expr_izq)
-                   << ident << "Expr Der:\n" << (*expr_der))
+		(*expr_izq).ident = ident + "    ";
+		(*expr_der).ident = ident + "    ";             
+        return (os << ident << "Menor que: {\n" 
+                   << ident+"  " << "Expr Izq:\n" << (*expr_izq)
+                   << ident+"  " << "Expr Der:\n" << (*expr_der))
 				   << ident << "}\n";
     }
 
@@ -432,11 +432,11 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr_izq).ident = ident + "  ";
-		(*expr_der).ident = ident + "  ";             
+		(*expr_izq).ident = ident + "    ";
+		(*expr_der).ident = ident + "    ";             
         return (os << ident << "Menor o igual: {\n" 
-                   << ident << "Expr Izq:\n" << (*expr_izq)
-                   << ident << "Expr Der:\n" << (*expr_der))
+                   << ident+"  " << "Expr Izq:\n" << (*expr_izq)
+                   << ident+"  " << "Expr Der:\n" << (*expr_der))
 				   << ident << "}\n";
     }
 
@@ -478,14 +478,13 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr_izq).ident = ident + "  ";
-		(*expr_der).ident = ident + "  ";             
+		(*expr_izq).ident = ident + "    ";
+		(*expr_der).ident = ident + "    ";             
         return (os << ident << "Mayor o igual: {\n" 
-                   << ident << "Expr Izq:\n" << (*expr_izq)
-                   << ident << "Expr Der:\n" << (*expr_der))
+                   << ident+"  " << "Expr Izq:\n" << (*expr_izq)
+                   << ident+"  " << "Expr Der:\n" << (*expr_der))
 				   << ident << "}\n";
     }
-
 public:
 
     /* Constructor */
@@ -524,11 +523,11 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr_izq).ident = ident + "  ";
-		(*expr_der).ident = ident + "  ";             
+		(*expr_izq).ident = ident + "    ";
+		(*expr_der).ident = ident + "    ";             
         return (os << ident << "Distinto: {\n" 
-                   << ident << "Expr Izq:\n" << (*expr_izq)
-                   << ident << "Expr Der:\n" << (*expr_der))
+                   << ident+"  " << "Expr Izq:\n" << (*expr_izq)
+                   << ident+"  " << "Expr Der:\n" << (*expr_der))
 				   << ident << "}\n";
     }
 
@@ -569,11 +568,11 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr_izq).ident = ident + "  ";
-		(*expr_der).ident = ident + "  ";             
+		(*expr_izq).ident = ident + "    ";
+		(*expr_der).ident = ident + "    ";             
         return (os << ident << "Igual: {\n" 
-                   << ident << "Expr Izq:\n" << (*expr_izq)
-                   << ident << "Expr Der:\n" << (*expr_der))
+                   << ident+"  " << "Expr Izq:\n" << (*expr_izq)
+                   << ident+"  " << "Expr Der:\n" << (*expr_der))
 				   << ident << "}\n";
     }
 
@@ -614,11 +613,11 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr_izq).ident = ident + "  ";
-		(*expr_der).ident = ident + "  ";             
+		(*expr_izq).ident = ident + "    ";
+		(*expr_der).ident = ident + "    ";             
         return (os << ident << "Acceso a estructura: {\n" 
-                   << ident << "Expr Izq:\n" << (*expr_izq)
-                   << ident << "Expr Der:\n" << (*expr_der))
+                   << ident+"  " << "Expr Izq:\n" << (*expr_izq)
+                   << ident+"  " << "Expr Der:\n" << (*expr_der))
 				   << ident << "}\n";
     }
 
@@ -685,9 +684,9 @@ protected:
 
 	/* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr).ident = ident + "  ";         
+		(*expr).ident = ident + "    ";         
         return (os << ident << "Menos Unario: {\n" 
-                   << ident << "Expr:\n" << (*expr)
+                   << ident+"  " << "Expr:\n" << (*expr)
 				   << ident << "}\n");
     }
 
@@ -726,9 +725,9 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr).ident = ident + "  ";         
+		(*expr).ident = ident + "    ";         
         return (os << ident << "Negacion: {\n" 
-                   << ident << "Expr:\n" << (*expr)
+                   << ident+"  " << "Expr:\n" << (*expr)
 				   << ident << "}\n");
     }
 
@@ -788,7 +787,7 @@ protected:
     std::string nombre;
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << (nombre) << "\n");
+        return (os << ident << (nombre) << "\n");
     }
 
 public:
@@ -834,8 +833,10 @@ protected:
 			(*resto).ident = ident;
             os << (*resto);
         }
+        std::cout << expr;
+		(*expr).ident = ident+"  ";
         os << ident << "Arg: {\n" 
-		   << ident << (*expr) << "}\n";
+		   << (*expr) << ident << "}\n";
         return os;
 
     }
@@ -884,12 +885,12 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		          
+		(*nombre).ident = ident+"    ";
         os << ident << "Llamada a funcion: {\n" 
-           << ident << "Nombre: " << (*nombre);
+           << ident+"  " << "Nombre: \n" << (*nombre);
 		if (args) {
-			(*args).ident = ident + "  ";
-        	os << ident << "Argumentos:\n" << (*args);
+			(*args).ident = ident + "    ";
+        	os << ident+"  " << "Argumentos:\n" << (*args);
 		}
 		os << ident << "}\n";
 		return os;
@@ -937,10 +938,12 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr).ident = ident + "  ";
+		(*expr).ident = ident + "    ";
+		(*arrayID).ident = ident+"    ";
         return (os << ident << "Acceso a arreglo: {\n"
-                   << ident << "ID del Arreglo:" << (*arrayID)
-                   << ident << "Expresion del acceso:\n" << (*expr)) << "}\n";
+                   << ident+"  " << "ID del Arreglo:\n" << (*arrayID)
+                   << ident+"  " << "Expresion del acceso:\n" << (*expr)) 
+				   << ident << "}\n";
     }
 
 public:
@@ -985,7 +988,7 @@ protected:
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
         return (os << ident << "Constante Booleana: {\n" 
-                   << ident << "Valor:" << (valor)
+                   << ident+"  " << "Valor:" << (valor)
 				   << "\n" << ident << "}\n");
     }
 
@@ -1022,7 +1025,7 @@ protected:
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
         return (os << ident << "Constante Entero: {\n" 
-                   << ident << "Valor:" << (valor)
+                   << ident+"  " << "Valor:" << (valor)
 				   << "\n" << ident << "}\n");
     }
 
@@ -1060,7 +1063,7 @@ protected:
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
         return (os << ident << "Constante Real: {\n" 
-                   << ident << "Valor:" << (valor)
+                   << ident+"  " << "Valor:" << (valor)
 				   << "\n" << ident << "}\n");
     }
 
@@ -1097,7 +1100,7 @@ protected:
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
         return (os << ident << "Constante Caracter: {\n" 
-                   << ident << "Valor:" << (valor)
+                   << ident+"  " << "Valor:" << (valor)
 				   << "\n" << ident << "}\n");
     }
 
@@ -1136,7 +1139,7 @@ protected:
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
         return (os << ident << "Constante String: {\n" 
-                   << ident << "Valor:" << (valor)
+                   << ident+"  " << "Valor:" << (valor)
 				   << "\n" << ident << "}\n");
     }
 
@@ -1318,7 +1321,7 @@ protected:
     std::string tipo;
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << tipo);
+        return (os << ident << tipo << "\n");
     }
 
 public:
@@ -1352,8 +1355,9 @@ protected:
 
     elene_ID* id;
     /* Metodo para imprimir */
-    virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << *id << "\n");
+    virtual std::ostream& stream_write(std::ostream& os) const {
+		(*id).ident = "";           
+        return (os << ident << *id << "\n");
     }
 
 public:
@@ -1394,7 +1398,7 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << "Arreglo\n"); 
+        return (os << ident << "Arreglo\n"); 
                   /* << "  Tipo: " << (*tipo)
                    << "\n"
                    << "  Limite Izquierdo: " << (*indIzq)
@@ -1446,12 +1450,14 @@ protected:
     elene_TIPO* tipo;
     elene_EXPR* expr;
     virtual std::ostream& stream_write(std::ostream& os) const {
+        (*ID).ident = ident+"    ";
+        (*tipo).ident = ident+"    ";
         os << ident << "Declaracion: {\n" 
-           << ident << "Variable: " << *ID
-           << ident << "Tipo:" << *tipo;
+           << ident+"  " << "Variable: \n" << *ID
+           << ident+"  " << "Tipo: \n" << *tipo;
         if (expr != 0) {
-			(*expr).ident = ident+"  ";
-            os << ident << "Expresion:\n " << *expr;
+			(*expr).ident = ident+"    ";
+            os << ident+"  " << "Expresion:\n " << *expr;
         }
 		os << ident << "}\n";
         return os;
@@ -1515,9 +1521,10 @@ protected:
     elene_LISTAVAR* resto;
     virtual std::ostream& stream_write(std::ostream& os) const {
 		if (resto != 0) {
-			(*resto).ident = ident+"  ";
+			(*resto).ident = ident;
             os << *resto;
         }
+		(*dec).ident = ident+"  ";
         os << *dec;
         return os;
     } 
@@ -1566,7 +1573,7 @@ protected:
     elene_LISTAVAR* contenido; 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << "Union\n");
+        return (os << ident << "Union\n");
                    /*<< "Contenido: " << *contenido);*/
     }
 
@@ -1602,7 +1609,7 @@ protected:
     elene_LISTAVAR* contenido; 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
-        return (os << "Estructura\n");
+        return (os << ident << "Estructura\n");
                    /*<< "Contenido: " << *contenido);*/
     }
 
@@ -1645,20 +1652,20 @@ protected:
     virtual std::ostream& stream_write(std::ostream& os) const {
 		os << ident << "Bloque : {\n";
         if (etiqueta != 0) {
-			(*etiqueta).ident = ident+"  ";
-            os << ident << "Etiqueta del bloque: " 
+			(*etiqueta).ident = ident+"    ";
+            os << ident+"  " << "Etiqueta del bloque: \n" 
 			   << (*etiqueta);
         }
         if (listaVariables != 0) {
-			(*listaVariables).ident = ident+"  ";			
-            os << ident << "Lista de Declaraciones: {\n" 
+			(*listaVariables).ident = ident+"    ";			
+            os << ident+"  " << "Lista de Declaraciones: {\n" 
 			   << (*listaVariables) 
-			   << ident << "}\n" ;   
+			   << ident+"  " << "}\n" ;   
         }
-		(*listaInstruccion).ident = ident+"  ";
-        os << ident << "Lista de Instrucciones: {\n" 
+		(*listaInstruccion).ident = ident+"    ";
+        os << ident+"  " << "Lista de Instrucciones: {\n" 
 		   << (*listaInstruccion)
-		   << ident << "}\n";
+		   << ident+"  " << "}\n";
 		os << ident << "}\n";
         return os;
     }
@@ -1709,9 +1716,9 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*id).ident = ident + "  ";          
+		(*id).ident = ident + "    ";          
         return (os << ident << "Instruccion Leer: { \n" 
-                   << ident << "ID:" << (*id)
+                   << ident+"  " << "ID: \n" << (*id)
 				   << ident << "}\n");
     }
 
@@ -1748,9 +1755,9 @@ protected:
 
 	/* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr).ident = ident + "  ";          
+		(*expr).ident = ident + "    ";          
         return (os << ident << "Instruccion Escribir: { \n" 
-                   << ident << "Expr:\n" << (*expr)
+                   << ident+"  " << "Expr:\n" << (*expr)
 				   << ident << "}\n");
     }
 
@@ -1786,9 +1793,9 @@ protected:
 
 	/* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr).ident = ident + "  ";          
+		(*expr).ident = ident + "    ";          
         return (os << ident << "Instruccion Retornar: { \n" 
-                   << ident << "Expr:\n" << (*expr)
+                   << ident+"  " << "Expr:\n" << (*expr)
 				   << ident << "}\n");
     }
 
@@ -1826,15 +1833,15 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const { 
-		(*condicion).ident = ident+"  ";
-		(*bloque).ident = ident;             
+		(*condicion).ident = ident+"    ";
+		(*bloque).ident = ident+"  ";             
         os << ident << "Instruccion Condicional: {\n" 
-           << ident << "Condicion:\n" << (*condicion)
+           << ident+"  " << "Condicion:\n" << (*condicion)
            << (*bloque);
  
         if (sig != 0) {
 			(*sig).ident = ident;
-            os << "  Else/Else if:\n" << (*sig);
+            os << ident+"  " << "Else/Else if:\n" << (*sig);
         }
     	os << ident << "}\n";
         return os;
@@ -1883,11 +1890,11 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*ladoDer).ident = ident+"  ";
-		(*id).ident = ident+"  ";          
+		(*ladoDer).ident = ident+"    ";
+		(*id).ident = ident+"    ";          
         return (os << ident << "Instruccion Asignacion: {\n" 
-                   << ident << "Variable:" << (*id)
-                   << ident << "Expresion izquierda:\n" << (*ladoDer)
+                   << ident+"  " << "Variable:\n" << (*id)
+                   << ident+"  " << "Expresion izquierda:\n" << (*ladoDer)
 				   << ident << "}\n");
     }
 
@@ -1930,10 +1937,10 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*condicion).ident = ident+"  ";
-		(*bloque).ident = ident;        
+		(*condicion).ident = ident+"    ";
+		(*bloque).ident = ident+"  ";        
         return (os << ident << "Instruccion Mientras: {\n" 
-                   << ident << "Condicion:\n" << (*condicion)
+                   << ident+"  " << "Condicion:\n" << (*condicion)
                    << (*bloque) << ident << "}\n");
     }
 
@@ -1978,14 +1985,14 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*asignacion).ident = ident+"  ";      
-		(*condicion).ident = ident+"  ";
-		(*cambio).ident = ident+"  ";
-		(*bloque).ident = ident;
+		(*asignacion).ident = ident+"    ";      
+		(*condicion).ident = ident+"    ";
+		(*cambio).ident = ident+"    ";
+		(*bloque).ident = ident+"  ";
         return (os << ident << "Instruccion Para: {\n" 
-                   << ident << "Asignacion:\n" << (*asignacion)
-                   << ident << "Condicion:\n" << (*condicion)
-                   << ident << "Cambio:\n" << (*cambio)
+                   << ident+"  " << "Asignacion:\n" << (*asignacion)
+                   << ident+"  " << "Condicion:\n" << (*condicion)
+                   << ident+"  " << "Cambio:\n" << (*cambio)
                    << (*bloque) << ident << "}\n");
     }
 
@@ -2137,10 +2144,10 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*expr).ident = ident+"  ";
-		(*bloque).ident = ident;
-        return (os << "Caso: {\n"
-                   << "Expresion: " << (*expr)
+		(*expr).ident = ident+"    ";
+		(*bloque).ident = ident+"  ";
+        return (os << ident << "Caso: {\n"
+                   << ident+"  " << "Expresion: \n" << (*expr)
                    << (*bloque) << ident << "}\n");
     }
 
@@ -2240,13 +2247,13 @@ protected:
 
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {
-		(*casos).ident = ident+"  ";              
-		(*defecto).ident = ident+"  ";
+		(*casos).ident = ident+"    ";              
+		(*defecto).ident = ident+"    ";
         return (os << ident << "Instruccion Case: {\n" 
-                   << ident << "Variable: " << (*var)
-                   << ident << "Casos: {\n" << (*casos)
-				   << ident << "}\n"
-                   << ident << "Caso por Defecto: \n" << (*defecto)
+                   << ident+"  " << "Variable: " << (*var)
+                   << ident+"  " << "Casos: {\n" << (*casos)
+				   << ident+"  " << "}\n"
+                   << ident+"  " << "Caso por Defecto: \n" << (*defecto)
 				   << ident << "}\n");
     }
 
@@ -2303,10 +2310,12 @@ protected:
 			(*resto).ident = ident;
             os << *resto;
         }
+		(*tipo).ident = ident+"    ";
+		(*id).ident = ident+"    ";
         os << ident << "Argumento: {\n" 
-           << ident << "Tipo: " << (*tipo)
-           << ident << "ID: " << (*id)
-           << ident << "Modo: " << ref
+           << ident+"  " << "Tipo: \n" << (*tipo)
+           << ident+"  " << "ID: \n" << (*id)
+           << ident+"  " << "Modo: " << ref
 		   << ident << "}\n";
 
         return os;
@@ -2365,17 +2374,18 @@ protected:
  
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
+		(*nombre).ident = ident+"    ";
         os << ident << "Declaracion de Funcion: {\n" 
-           << ident << "Nombre: " << (*nombre);
+           << ident+"  " << "Nombre: \n" << (*nombre);
         if (parametros != 0) {
-			(*parametros).ident = ident+"  ";
-            os << ident << "Parametros:\n" << (*parametros);
+			(*parametros).ident = ident+"    ";
+            os << ident+"  " << "Parametros:\n" << (*parametros);
         }
         if (retorno != 0) {
-			(*retorno).ident = ident+"  ";
-            os << ident << "Tipo de Retorno: " << (*retorno);
+			(*retorno).ident = ident+"    ";
+            os << ident+"  " << "Tipo de Retorno: \n" << (*retorno);
         }
-		(*bloque).ident = ident;
+		(*bloque).ident = ident+"  ";
         os << (*bloque);
 		os << ident << "}\n";
         return os;
