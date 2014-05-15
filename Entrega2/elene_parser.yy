@@ -19,8 +19,8 @@
     #include <string>
     #include <iostream>
     #include <ostream>
-    #include "arbol2.hh"
     #include <cmath>
+    #include "verificacion_tipos.hh"
     class elene_driver;
 }
 
@@ -50,6 +50,7 @@
     elene_LISTFUN* lstf;
     elene_TIPO* tiposBase [7];
     elene_TIPO_ESTRUCTURA* test;
+    elene_TIPO_FUNCION* testFuncion;
 }
 
 %define api.token.prefix {TOK_}
@@ -180,6 +181,7 @@ inicio : {
            tiposBase[3] = new elene_TIPO_STRING;
            tiposBase[4] = new elene_TIPO_ENTERO;
            tiposBase[5] = new elene_TIPO_VACIO;
+           tiposBase[6] = new elene_TIPO_TYPE_ERROR;
 
            currentLevel = new elene_TABLA(); 
            currentLevel -> insertar("Read",tiposBase[2],1,1,4);
@@ -246,14 +248,14 @@ tipo : BOOLEANO { $$ = tiposBase[0]; }
      | ID       
        { if (!(*currentLevel).local_lookup($1)) {
             driver.error_tipo_indef(@1,$1);
-            $$ = new elene_TIPO_TYPE_ERROR;
+            $$ = tiposBase[6];
          } else {
             if ( test = dynamic_cast<elene_TIPO_ESTRUCTURA *>((*(*currentLevel).local_lookup($1)).tipo)) {
                 $$ = (*(*currentLevel).local_lookup($1)).tipo;
                 test = 0;
             } else {
                 driver.error_tipo_no_estructura(@1,$1);
-                $$ = new elene_TIPO_TYPE_ERROR;
+                $$ = tiposBase[6];
             } 
          }
        }
@@ -486,25 +488,43 @@ exprUnaria : MINUS expr %prec NEG  { $$ = new elene_MENOSUNARIO($2); }
            | NO expr %prec NEGBOOL { $$ = new elene_NEGACION($2);  }
            ;
 
-terminal : VERDADERO        { $$ = new elene_BOOLEANO($1);  }     
-         | FALSO            { $$ = new elene_BOOLEANO($1); }
-         | NUMENTERO        { $$ = new elene_ENTERO($1); }
-         | NUMFLOTANTE      { $$ = new elene_REAL($1); }
-         | CONSTCARACTER    { $$ = new elene_CARACTER($1); }
+terminal : VERDADERO        { $$ = new elene_BOOLEANO($1); (*$$).tipo = tiposBase[0];  }     
+         | FALSO            { $$ = new elene_BOOLEANO($1); (*$$).tipo = tiposBase[0]; }
+         | NUMENTERO        { $$ = new elene_ENTERO($1); (*$$).tipo = tiposBase[4];}
+         | NUMFLOTANTE      { $$ = new elene_REAL($1); (*$$).tipo = tiposBase[1];}
+         | CONSTCARACTER    { $$ = new elene_CARACTER($1); (*$$).tipo = tiposBase[2];}
          | ID               { $$ = new elene_ID($1); 
-                              if (!(*currentLevel).lookup($1)) { 
-                                  driver.error_indef(@1,$1);
-                              };   
+
+                                if (!(*currentLevel).lookup($1)) { 
+                                    driver.error_indef(@1,$1);
+                                    (*$$).tipo = tiposBase[6];
+                                } else {
+                                    (*$$).tipo = (*(*currentLevel).lookup($1)).tipo;
+                                }                           
                             }
          | ID LPAREN listaExpr RPAREN 
            { $$ = new elene_EXPRFUNC(new elene_ID($1),$3); 
-             if (!(*currentLevel).lookup($1)) { 
-                 driver.error_indef(@1,$1);
-             }; 
-           }
-         | STRING           { $$ = new elene_STRING($1); }
-         ;
+                if (!(*currentLevel).lookup($1)) { 
+                    (*$$).tipo = tiposBase[6];
+                    driver.error_indef(@1,$1);
+                } else if (testFuncion = dynamic_cast<elene_TIPO_FUNCION *>((*(*currentLevel).local_lookup($1)).tipo)) {
+                                    
+                    if (chequearArgumentos($3,(*testFuncion).param) ) {
+                        (*$$).tipo = (*(*currentLevel).lookup($1)).tipo;
+                    } else {
+                        (*$$).tipo = tiposBase[6];
+                        driver.error_parametros(@1,$1);
+                    }
 
+                    testFuncion = 0;
+
+                } else {
+                    driver.error_no_funcion(@1,$1);
+                    (*$$).tipo = tiposBase[6];
+                }; 
+           }
+         | STRING           { $$ = new elene_STRING($1); (*$$).tipo = tiposBase[3]; }
+         ;
 %%
 
 void yy::elene_parser::error (const location_type& l, const std::string& m) {

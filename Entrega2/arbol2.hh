@@ -842,9 +842,6 @@ class elene_LISTAEXPR : public printable {
 
 protected:
 
-    elene_EXPR* expr;
-    elene_LISTAEXPR* resto;
-
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {    
 		if (resto != 0) {
@@ -860,6 +857,9 @@ protected:
     }
 
 public:
+
+    elene_EXPR* expr;
+    elene_LISTAEXPR* resto;
 	elene_TIPO* tipo;
     /* Declaracion de constructor */
     elene_LISTAEXPR() {};
@@ -2441,7 +2441,7 @@ public:
 /* Argumento al estilo int X, primera regla de gramatica */
 class elene_LISTARG : public printable {
 
-protected:
+public:
 
     elene_ID* id;
     elene_LISTARG* resto;
@@ -2773,16 +2773,17 @@ class elene_TIPO_FUNCION : public elene_TIPO {
 
 protected:
 
-    elene_ID* id;
-    elene_TIPO* tipo;
-    elene_LISTARG* param;
-
     /* Metodo para imprimir */
     virtual std::ostream& stream_write(std::ostream& os) const {              
         return (os << *id);
     }
 
 public:
+
+    elene_ID* id;
+    elene_TIPO* tipo;
+    elene_LISTARG* param;
+
     /* Declaracion de constructor */
     elene_TIPO_FUNCION() {};
     elene_TIPO_FUNCION(elene_ID* t, elene_TIPO* tp, elene_LISTARG* p): id(t), tipo(tp), param(p) {};
