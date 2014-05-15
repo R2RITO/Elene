@@ -192,7 +192,7 @@ inicio : {
          { 
            std::cout << "\n\nImprimiendo tabla\n\n"; 
            std::cout << *currentLevel; 
-		   std::cout << *$2;
+		   //std::cout << *$2;
          }
 
 varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
@@ -290,10 +290,8 @@ decFuncion : SEA LA FUNCION ID QUE RECIBE
             {  
                currentLevel = enterScope(currentLevel); 
             } 
-            listArg Y RETORNA tipo HACER bloque 
+            listArg Y RETORNA tipo HACER
             {
-                $$ = new elene_DECFUNCION(new elene_ID($4),$8,$11,$13); 
-                currentLevel = exitScope(currentLevel);
                 if (!(*currentLevel).local_lookup($4)) { 
                    currentLevel -> 
                    insertar($4,new elene_TIPO_FUNCION(new elene_ID($4),$11,$8),@4.begin.line,@4.begin.column,0); 
@@ -301,15 +299,24 @@ decFuncion : SEA LA FUNCION ID QUE RECIBE
                    driver.error_fun_redec(@4,$4);
                 };
             }
-           | SEA LA FUNCION ID QUE RETORNA tipo HACER bloque
-            { 
+            bloque 
+            {
+                $$ = new elene_DECFUNCION(new elene_ID($4),$8,$11,$14); 
+                currentLevel = exitScope(currentLevel);
+                
+            }
+           | SEA LA FUNCION ID QUE RETORNA tipo HACER
+            {
                 if (!(*currentLevel).local_lookup($4)) { 
                    currentLevel -> 
                    insertar($4,new elene_TIPO_FUNCION(new elene_ID($4),$7,0),@4.begin.line,@4.begin.column,0); 
                 } else { 
                    driver.error_fun_redec(@4,$4);
                 }; 
-                $$ = new elene_DECFUNCION(new elene_ID($4),0,$7,$9); 
+            }
+            bloque
+            { 
+                $$ = new elene_DECFUNCION(new elene_ID($4),0,$7,$10); 
             }
            ;
 
