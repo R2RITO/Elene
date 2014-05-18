@@ -246,12 +246,12 @@ tipo : BOOLEANO { $$ = tiposBase[0]; }
      | STRING   { $$ = tiposBase[3]; }
      | VACIO    { $$ = tiposBase[5]; }
      | ID       
-       { if (!(*currentLevel).local_lookup($1)) {
+       { if (!(*currentLevel).lookup($1)) {
             driver.error_tipo_indef(@1,$1);
             $$ = tiposBase[6];
          } else {
-            if ( test = dynamic_cast<elene_TIPO_ESTRUCTURA *>((*(*currentLevel).local_lookup($1)).tipo)) {
-                $$ = (*(*currentLevel).local_lookup($1)).tipo;
+            if ( test = dynamic_cast<elene_TIPO_ESTRUCTURA *>((*(*currentLevel).lookup($1)).tipo)) {
+                $$ = (*(*currentLevel).lookup($1)).tipo;
                 test = 0;
             } else {
                 driver.error_tipo_no_estructura(@1,$1);
@@ -290,20 +290,22 @@ decFuncion : SEA LA FUNCION ID QUE RECIBE
             {  
                currentLevel = enterScope(currentLevel); 
             } 
-            listArg Y RETORNA tipo HACER
+            listArg
+            {
+                currentLevel = exitScope(currentLevel);
+            }
+            Y RETORNA tipo HACER
             {
                 if (!(*currentLevel).local_lookup($4)) { 
                    currentLevel -> 
-                   insertar($4,new elene_TIPO_FUNCION(new elene_ID($4),$11,$8),@4.begin.line,@4.begin.column,0); 
+                   insertar($4,new elene_TIPO_FUNCION(new elene_ID($4),$12,$8),@4.begin.line,@4.begin.column,0); 
                 } else { 
                    driver.error_fun_redec(@4,$4);
                 };
             }
             bloque 
             {
-                $$ = new elene_DECFUNCION(new elene_ID($4),$8,$11,$14); 
-                currentLevel = exitScope(currentLevel);
-                
+                $$ = new elene_DECFUNCION(new elene_ID($4),$8,$12,$15);                 
             }
            | SEA LA FUNCION ID QUE RETORNA tipo HACER
             {
@@ -473,7 +475,7 @@ expr : LPAREN expr RPAREN  { $$ = $2; }
      | ID LCORCHET expr RCORCHET { $$ = new elene_ACCARREG(new elene_ID($1),$3); }
      | exprBinaria         { $$ = $1; }
      | exprUnaria          { $$ = $1; }
-     | terminal            { $$ = $1; }
+     | terminal            { $$ = $1; (*$$).tipo = (*$1).tipo;}
      ;
 
 exprBinaria : expr Y expr { $$ = new elene_CONJUNCION($1,$3); }
@@ -514,15 +516,17 @@ terminal : VERDADERO        { $$ = new elene_BOOLEANO($1); (*$$).tipo = tiposBas
                 if (!(*currentLevel).lookup($1)) { 
                     (*$$).tipo = tiposBase[6];
                     driver.error_indef(@1,$1);
-                } else if (testFuncion = dynamic_cast<elene_TIPO_FUNCION *>((*(*currentLevel).local_lookup($1)).tipo)) {
-                                    
+                } else if (testFuncion = dynamic_cast<elene_TIPO_FUNCION *>((*(*currentLevel).lookup($1)).tipo)) {
+                                                      
                     if (chequearArgumentos($3,(*testFuncion).param) ) {
+                        std::cout << "Asigno tipo bueno\n";
                         (*$$).tipo = (*(*currentLevel).lookup($1)).tipo;
                     } else {
+                        std::cout << "Asigno tipo malo\n";
                         (*$$).tipo = tiposBase[6];
                         driver.error_parametros(@1,$1);
                     }
-
+                    
                     testFuncion = 0;
 
                 } else {
