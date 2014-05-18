@@ -104,6 +104,13 @@ void elene_driver::error_no_funcion(const yy::location& l, const std::string& m)
         << std::endl;
 }
 
+void elene_driver::error_tipo_expr(const yy::location& l, const std::string& m) {
+	std::cerr
+		<< "- ERROR - " << "Linea: " << l.begin.line
+		<< ", Columna: " << l.begin.column
+		<< ". Error de tipo: " << m << std::endl;
+}
+
 void elene_driver::error (const std::string& m) {
     std::cerr << m << std::endl;
 }

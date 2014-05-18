@@ -16,6 +16,7 @@
 
 
 %code requires {
+	#include <sstream>
     #include <string>
     #include <iostream>
     #include <ostream>
@@ -471,30 +472,209 @@ listaExpr: listaExpr COMMA expr { $$ = new elene_LISTAEXPR($3,$1);}
          ;         
 
 
-expr : LPAREN expr RPAREN  { $$ = $2; }
-     | ID LCORCHET expr RCORCHET { $$ = new elene_ACCARREG(new elene_ID($1),$3); }
-     | exprBinaria         { $$ = $1; }
-     | exprUnaria          { $$ = $1; }
-     | terminal            { $$ = $1; (*$$).tipo = (*$1).tipo;}
+expr : LPAREN expr RPAREN  { $$ = $2; (*$$).tipo = (*$2).tipo; }
+     | ID LCORCHET expr RCORCHET 
+	 { $$ = new elene_ACCARREG(new elene_ID($1),$3); 
+	   if (true) { //( ((*$1).tipo != tiposBase[6]) ) { 
+		    (*$$).tipo = tiposBase[5]; // AQUI VA EL TIPO DE ELEMENTOS DEL ARREGLO
+	   } else {
+			(*$$).tipo = tiposBase[6];
+	   }
+	 }
+     | exprBinaria         { $$ = $1; (*$$).tipo = (*$1).tipo; }
+     | exprUnaria          { $$ = $1; (*$$).tipo = (*$1).tipo; }
+     | terminal            { $$ = $1; (*$$).tipo = (*$1).tipo; }
      ;
 
-exprBinaria : expr Y expr { $$ = new elene_CONJUNCION($1,$3); }
-            | expr O expr { $$ = new elene_DISYUNCION($1,$3); }
-            | expr PLUS expr { $$ = new elene_ADICION($1,$3); }
-            | expr MINUS expr { $$ = new elene_SUSTRACCION($1,$3); }
-            | expr TIMES expr { $$ = new elene_MULTIPLICACION($1,$3); }
-            | expr SLASH expr { $$ = new elene_DIVISION($1,$3); }
-            | expr MAYOR QUE expr { $$ = new elene_MAYOR($1,$4); } 
-            | expr MENOR QUE expr { $$ = new elene_MENOR($1,$4); }
-            | expr MAYOR O IGUAL QUE expr { $$ = new elene_MAYORIGUAL($1,$6); }
-            | expr MENOR O IGUAL QUE expr { $$ = new elene_MENORIGUAL($1,$6); }
-            | expr DISTINTO A expr        { $$ = new elene_DISTINTO($1,$4); }
-            | expr IGUAL A expr           { $$ = new elene_IGUAL($1,$4); }
-            | expr PERIOD expr            { $$ = new elene_ACCESO($1,$3); }
+exprBinaria : expr Y expr 
+			{ $$ = new elene_CONJUNCION($1,$3);
+			  /* Inicio Codigo para verificacion de tipos */
+			  if ( ((*$1).tipo == (*$3).tipo) && ((*$1).tipo == tiposBase[0])) {
+				(*$$).tipo = tiposBase[0];
+			  } else {
+			  	(*$$).tipo = tiposBase[6];
+				std::stringstream ss;
+				ss << "Conjuncion de " << (*(*$1).tipo) << " con " << (*(*$3).tipo);
+				driver.error_tipo_expr(@2,ss.str());
+			  }
+			  /* Fin codigo para verificacion de tipos */
+			}
+            | expr O expr 
+			{ $$ = new elene_DISYUNCION($1,$3); 
+			  /* Inicio Codigo para verificacion de tipos */
+			  if ( ((*$1).tipo == (*$3).tipo) && ((*$1).tipo == tiposBase[0])) {
+				(*$$).tipo = tiposBase[0];
+			  } else {
+			  	(*$$).tipo = tiposBase[6];
+				std::stringstream ss;
+				ss << "Disyuncion de " << (*(*$1).tipo)<< " con " << (*(*$3).tipo);
+				driver.error_tipo_expr(@2,ss.str());
+			  }
+			  /* Fin codigo para verificacion de tipos */
+			}
+            | expr PLUS expr 
+			{ $$ = new elene_ADICION($1,$3); 
+			  /* Inicio Codigo para verificacion de tipos */
+			  if ( ((*$1).tipo == (*$3).tipo) && ( ((*$1).tipo == tiposBase[1]) || (*$1).tipo == tiposBase[4])) {
+				(*$$).tipo = (*$1).tipo;
+			  } else {
+			  	(*$$).tipo = tiposBase[6];
+				std::stringstream ss;
+				ss << "Adicion de " << (*(*$1).tipo) << " con " << (*(*$3).tipo);
+				driver.error_tipo_expr(@2,ss.str());
+			  }
+			  /* Fin codigo para verificacion de tipos */
+			}
+            | expr MINUS expr 
+			{ $$ = new elene_SUSTRACCION($1,$3);
+			  /* Inicio Codigo para verificacion de tipos */
+			  if ( ((*$1).tipo == (*$3).tipo) && ( ((*$1).tipo == tiposBase[1]) || (*$1).tipo == tiposBase[4])) {
+				(*$$).tipo = (*$1).tipo;
+			  } else {
+			  	(*$$).tipo = tiposBase[6];
+				std::stringstream ss;
+				ss << "Sustraccion de " << (*(*$1).tipo) << " con " << (*(*$3).tipo);
+				driver.error_tipo_expr(@2,ss.str());
+			  }
+			  /* Fin codigo para verificacion de tipos */ 
+			}
+            | expr TIMES expr 
+			{ $$ = new elene_MULTIPLICACION($1,$3); 
+			  /* Inicio Codigo para verificacion de tipos */
+			  if ( ((*$1).tipo == (*$3).tipo) && ( ((*$1).tipo == tiposBase[1]) || (*$1).tipo == tiposBase[4])) {
+				(*$$).tipo = (*$1).tipo;
+			  } else {
+			  	(*$$).tipo = tiposBase[6];
+				std::stringstream ss;
+				ss << "Multiplicacion de " << (*(*$1).tipo) << " con " << (*(*$3).tipo);
+				driver.error_tipo_expr(@2,ss.str());
+			  }
+			  /* Fin codigo para verificacion de tipos */
+			}
+            | expr SLASH expr 
+			{ $$ = new elene_DIVISION($1,$3); 
+			  /* Inicio Codigo para verificacion de tipos */
+			  if ( ((*$1).tipo == (*$3).tipo) && ( ((*$1).tipo == tiposBase[1]) || (*$1).tipo == tiposBase[4])) {
+				(*$$).tipo = (*$1).tipo;
+			  } else {
+			  	(*$$).tipo = tiposBase[6];
+				std::stringstream ss;
+				ss << "Division de " << (*(*$1).tipo) << " con " << (*(*$3).tipo);
+				driver.error_tipo_expr(@2,ss.str());
+			  }
+			  /* Fin codigo para verificacion de tipos */
+			}
+            | expr MAYOR QUE expr 
+			{ $$ = new elene_MAYOR($1,$4); 
+			  /* Inicio Codigo para verificacion de tipos */
+			  if ( ((*$1).tipo == (*$4).tipo) && ( ((*$1).tipo == tiposBase[1]) || (*$1).tipo == tiposBase[4])) {
+				(*$$).tipo = tiposBase[0]; // Es booleano
+			  } else {
+			  	(*$$).tipo = tiposBase[6];
+				std::stringstream ss;
+				ss << "Relacion 'mayor que' de " << (*(*$1).tipo) << " con " << (*(*$4).tipo);
+				driver.error_tipo_expr(@2,ss.str());
+			  }
+			  /* Fin codigo para verificacion de tipos */
+			} 
+            | expr MENOR QUE expr 
+			{ $$ = new elene_MENOR($1,$4); 
+			  /* Inicio Codigo para verificacion de tipos */
+			  if ( ((*$1).tipo == (*$4).tipo) && ( ((*$1).tipo == tiposBase[1]) || (*$1).tipo == tiposBase[4])) {
+				(*$$).tipo = tiposBase[0]; // Es booleano
+			  } else {
+			  	(*$$).tipo = tiposBase[6];
+				std::stringstream ss;
+				ss << "Relacion 'menor que' de " << (*(*$1).tipo) << " con " << (*(*$4).tipo);
+				driver.error_tipo_expr(@2,ss.str());
+			  }
+			  /* Fin codigo para verificacion de tipos */
+			}
+            | expr MAYOR O IGUAL QUE expr 
+			{ $$ = new elene_MAYORIGUAL($1,$6); 
+			  /* Inicio Codigo para verificacion de tipos */
+			  if ( ((*$1).tipo == (*$6).tipo) && ( ((*$1).tipo == tiposBase[1]) || (*$1).tipo == tiposBase[4])) {
+				(*$$).tipo = tiposBase[0]; // Es booleano
+			  } else {
+			  	(*$$).tipo = tiposBase[6];
+				std::stringstream ss;
+				ss << "Relacion 'mayor o igual' de " << (*(*$1).tipo) << " con " << (*(*$6).tipo);
+				driver.error_tipo_expr(@2,ss.str());
+			  }
+			  /* Fin codigo para verificacion de tipos */
+			}
+            | expr MENOR O IGUAL QUE expr 
+			{ $$ = new elene_MENORIGUAL($1,$6); 
+			  /* Inicio Codigo para verificacion de tipos */
+			  if ( ((*$1).tipo == (*$6).tipo) && ( ((*$1).tipo == tiposBase[1]) || (*$1).tipo == tiposBase[4])) {
+				(*$$).tipo = tiposBase[0]; // Es booleano
+			  } else {
+			  	(*$$).tipo = tiposBase[6];
+				std::stringstream ss;
+				ss << "Relacion 'menor o igual' de " << (*(*$1).tipo) << " con " << (*(*$6).tipo);
+				driver.error_tipo_expr(@2,ss.str());
+			  }
+			  /* Fin codigo para verificacion de tipos */
+			}
+            | expr DISTINTO A expr        
+			{ $$ = new elene_DISTINTO($1,$4); 
+			  /* Inicio Codigo para verificacion de tipos */
+			  if ( ((*$1).tipo == (*$4).tipo) && ( ((*$1).tipo != tiposBase[5]) && (*$1).tipo != tiposBase[6])) { /* OJO!! ESOS DISTINTOS (Estr)*/
+				(*$$).tipo = tiposBase[0]; // Es booleano
+			  } else {
+			  	(*$$).tipo = tiposBase[6];
+				std::stringstream ss;
+				ss << "Relacion 'distinto' compara " << (*(*$1).tipo) << " con " << (*(*$4).tipo);
+				driver.error_tipo_expr(@2,ss.str());
+			  }
+			  /* Fin codigo para verificacion de tipos */
+			}
+            | expr IGUAL A expr           
+			{ $$ = new elene_IGUAL($1,$4); 
+			  /* Inicio Codigo para verificacion de tipos */
+			  if ( ((*$1).tipo == (*$4).tipo) && ( ((*$1).tipo != tiposBase[5]) && (*$1).tipo != tiposBase[6])) { /* OJO!! ESOS DISTINTOS (Estr)*/
+				(*$$).tipo = tiposBase[0]; // Es booleano
+			  } else {
+			  	(*$$).tipo = tiposBase[6];
+				std::stringstream ss;
+				ss << "Relacion 'igual' compara " << (*(*$1).tipo)<< " con " << (*(*$4).tipo);
+				driver.error_tipo_expr(@2,ss.str());
+			  }
+			  /* Fin codigo para verificacion de tipos */
+			}
+            | ID PERIOD ID            
+			{ $$ = new elene_ACCESO(new elene_ID($1), new elene_ID($3));
+				//if (!(*currentLevel).lookup($1)) {  
+				//Falta este tipo
+			}
             ;
 
-exprUnaria : MINUS expr %prec NEG  { $$ = new elene_MENOSUNARIO($2); }
-           | NO expr %prec NEGBOOL { $$ = new elene_NEGACION($2);  }
+exprUnaria : MINUS expr %prec NEG  
+		   { $$ = new elene_MENOSUNARIO($2);
+			  /* Inicio Codigo para verificacion de tipos */
+			  if ( ((*$2).tipo == tiposBase[1]) || ((*$2).tipo == tiposBase[4]) ) {
+				(*$$).tipo = (*$2).tipo;
+			  } else {
+			  	(*$$).tipo = tiposBase[6];
+				std::stringstream ss;
+				ss << "Menos unario aplicado sobre " << (*(*$2).tipo) ;
+				driver.error_tipo_expr(@2,ss.str());
+			  }
+			  /* Fin codigo para verificacion de tipos */
+		   }
+           | NO expr %prec NEGBOOL 
+		   { $$ = new elene_NEGACION($2);
+			  /* Inicio Codigo para verificacion de tipos */
+			  if ( (*$2).tipo == tiposBase[0]) {
+				(*$$).tipo = (*$2).tipo;
+			  } else {
+			  	(*$$).tipo = tiposBase[6];
+				std::stringstream ss;
+				ss << "Negacion aplicada sobre " << (*(*$2).tipo) ;
+				driver.error_tipo_expr(@2,ss.str());
+			  }
+			  /* Fin codigo para verificacion de tipos */  
+		   }
            ;
 
 terminal : VERDADERO        { $$ = new elene_BOOLEANO($1); (*$$).tipo = tiposBase[0];  }     
@@ -503,7 +683,6 @@ terminal : VERDADERO        { $$ = new elene_BOOLEANO($1); (*$$).tipo = tiposBas
          | NUMFLOTANTE      { $$ = new elene_REAL($1); (*$$).tipo = tiposBase[1];}
          | CONSTCARACTER    { $$ = new elene_CARACTER($1); (*$$).tipo = tiposBase[2];}
          | ID               { $$ = new elene_ID($1); 
-
                                 if (!(*currentLevel).lookup($1)) { 
                                     driver.error_indef(@1,$1);
                                     (*$$).tipo = tiposBase[6];
