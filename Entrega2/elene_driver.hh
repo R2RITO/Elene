@@ -48,5 +48,8 @@ class elene_driver {
     void error_parametros(const yy::location& l, const std::string& m);
     void error_no_funcion(const yy::location& l, const std::string& m);
 	void error_tipo_expr(const yy::location& l, const std::string& m);
+	void error_tipo_attr_no_dec(const yy::location& l, const std::string& m);
+	void error_tipo_no_estr(const yy::location& l, const std::string& m);
 };
+
 #endif // ! ELENE_DRIVER_HH

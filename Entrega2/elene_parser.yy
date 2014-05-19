@@ -52,6 +52,7 @@
     elene_TIPO* tiposBase [7];
     elene_TIPO_ESTRUCTURA* test;
     elene_TIPO_FUNCION* testFuncion;
+	elene_TIPO* tipoAux;
 }
 
 %define api.token.prefix {TOK_}
@@ -619,7 +620,7 @@ exprBinaria : expr Y expr
             | expr DISTINTO A expr        
 			{ $$ = new elene_DISTINTO($1,$4); 
 			  /* Inicio Codigo para verificacion de tipos */
-			  if ( ((*$1).tipo == (*$4).tipo) && ( ((*$1).tipo != tiposBase[5]) && (*$1).tipo != tiposBase[6])) { /* OJO!! ESOS DISTINTOS (Estr)*/
+			  if ( ((*$1).tipo == (*$4).tipo) && ( ((*$1).tipo != tiposBase[5]) && (*$1).tipo != tiposBase[6])) { /*OJO!! ESOS DISTINTOS (Estr)*/
 				(*$$).tipo = tiposBase[0]; // Es booleano
 			  } else {
 			  	(*$$).tipo = tiposBase[6];
@@ -632,7 +633,7 @@ exprBinaria : expr Y expr
             | expr IGUAL A expr           
 			{ $$ = new elene_IGUAL($1,$4); 
 			  /* Inicio Codigo para verificacion de tipos */
-			  if ( ((*$1).tipo == (*$4).tipo) && ( ((*$1).tipo != tiposBase[5]) && (*$1).tipo != tiposBase[6])) { /* OJO!! ESOS DISTINTOS (Estr)*/
+			  if ( ((*$1).tipo == (*$4).tipo) && ( ((*$1).tipo != tiposBase[5]) && (*$1).tipo != tiposBase[6])) { /*OJO!! ESOS DISTINTOS (Estr)*/
 				(*$$).tipo = tiposBase[0]; // Es booleano
 			  } else {
 			  	(*$$).tipo = tiposBase[6];
@@ -642,10 +643,22 @@ exprBinaria : expr Y expr
 			  }
 			  /* Fin codigo para verificacion de tipos */
 			}
-            | ID PERIOD ID            
-			{ $$ = new elene_ACCESO(new elene_ID($1), new elene_ID($3));
-				//if (!(*currentLevel).lookup($1)) {  
-				//Falta este tipo
+            | expr PERIOD ID            
+			{ $$ = new elene_ACCESO($1, new elene_ID($3));
+			  test = dynamic_cast<elene_TIPO_ESTRUCTURA *> ((*$1).tipo);
+				if (test) {
+					tipoAux = (*test).lookup_attr($3);
+					if (tipoAux) {
+						std::cout << "\n***ENTRE EN LA GUARDIA MAGICA: " << $3 << (*tipoAux);
+						(*$$).tipo = tipoAux;
+					} else {
+						(*$$).tipo = tiposBase[6];
+						driver.error_tipo_attr_no_dec(@3,$3);
+					}
+				} else {
+					(*$$).tipo = tiposBase[6];
+					driver.error_tipo_no_estr(@1,"");
+				}
 			}
             ;
 
@@ -698,7 +711,7 @@ terminal : VERDADERO        { $$ = new elene_BOOLEANO($1); (*$$).tipo = tiposBas
                 } else if (testFuncion = dynamic_cast<elene_TIPO_FUNCION *>((*(*currentLevel).lookup($1)).tipo)) {
                                                       
                     if (chequearArgumentos($3,(*testFuncion).param) ) {
-                        std::cout << "Asigno tipo bueno\n";
+                        std::cout << "Asigno tipo bueno: \n" << (*(*(*currentLevel).lookup($1)).tipo);
                         (*$$).tipo = (*(*currentLevel).lookup($1)).tipo;
                     } else {
                         std::cout << "Asigno tipo malo\n";

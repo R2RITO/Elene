@@ -111,6 +111,20 @@ void elene_driver::error_tipo_expr(const yy::location& l, const std::string& m) 
 		<< ". Error de tipo: " << m << std::endl;
 }
 
+void elene_driver::error_tipo_attr_no_dec(const yy::location& l, const std::string& m) {
+	std::cerr
+		<< "- ERROR - " << "Linea: " << l.begin.line
+		<< ", Columna: " << l.begin.column
+		<< ". Atributo '" << m << "' no declarado en la estructura" << std::endl;
+}
+
+void elene_driver::error_tipo_no_estr(const yy::location& l, const std::string& m) {
+	std::cerr
+		<< "- ERROR - " << "Linea: " << l.begin.line
+		<< ", Columna: " << l.begin.column
+		<< ". Se intento acceder a un elemento que no es una estructura" << std::endl;
+}
+
 void elene_driver::error (const std::string& m) {
     std::cerr << m << std::endl;
 }

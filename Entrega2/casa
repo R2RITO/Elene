@@ -1,0 +1,19 @@
+variables globales {
+
+	sea habitacion de tipo estructura que contiene {
+		numero de tipo entero
+	};
+
+	sea casa de tipo estructura que contiene {
+		hab de tipo habitacion
+	};
+	sea X de tipo entero;
+	sea C de tipo casa
+}
+
+
+guacara {
+
+	X = C.hab.numero + 3
+
+}

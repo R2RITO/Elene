@@ -823,6 +823,11 @@ public:
         nombre.clear();
     }
 
+	bool equals(std::string name) {
+
+		return (name.compare(nombre) == 0);
+	}
+
     elene_ID &operator = (const elene_ID &other) {
 
         if (&other != this) {
@@ -1598,6 +1603,14 @@ public:
         }
     }
 
+	elene_TIPO* lookup_attr(std::string name) {
+		if ((*ID).equals(name)) {
+			return tipo;
+		} else {
+			return 0;
+		}
+	}
+
     /*<< Operator overload*/
     friend std::ostream& operator<< (std::ostream& stream,const elene_DECLARACION& obj) { 
         return obj.stream_write(stream); 
@@ -1663,6 +1676,18 @@ public:
     friend std::ostream& operator<< (std::ostream& stream,const elene_LISTAVAR& obj) { 
         return obj.stream_write(stream); 
     }
+
+	elene_TIPO* lookup_attr(std::string name) {
+		elene_TIPO* res = (*dec).lookup_attr(name);
+		if (res != 0) {
+			return res;
+		} else {
+			if (resto == 0) {
+				return 0;
+			}
+			return (*resto).lookup_attr(name);
+		}
+	}
 
 };
 
@@ -1736,6 +1761,10 @@ public:
             contenido = other.contenido;
         }
     }
+
+	elene_TIPO* lookup_attr(std::string name) {
+		return (*contenido).lookup_attr(name);
+	}
 
 };
 
