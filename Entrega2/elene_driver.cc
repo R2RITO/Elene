@@ -167,6 +167,7 @@ void elene_driver::error_tipo_asignacion(const yy::location& l, const std::strin
 		<< ". " << m << std::endl;
 }
 
+
 void elene_driver::error (const std::string& m) {
     std::cerr << m << std::endl;
 }

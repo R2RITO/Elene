@@ -64,7 +64,7 @@ guacara {
             sea Y de tipo entero con valor 17
         }
         imprimir "Aqui es";
-        X = X + verdadero;
+        X = X + 3;
         imprimir "Aqui fue";
         X = X * X
 

@@ -365,21 +365,30 @@ listArg : tipo ID
                   driver.error_param_redec(@4,$4); 
               }; 
           }
-        | listArg COMMA error { yyerrok; yyclearin; }
-        | error COMMA tipo POR REFERENCIA ID { yyerrok; yyclearin; }
-        | error COMMA tipo ID { yyerrok; yyclearin; }
+        | listArg COMMA error { yyerrok; yyclearin; /* FALTA TIPO !! */ }
+        | error COMMA tipo POR REFERENCIA ID { yyerrok; yyclearin; /* FALTA TIPO !! */ }
+        | error COMMA tipo ID { yyerrok; yyclearin; /* FALTA TIPO !! */ }
         ;
 
 
-programa  : GUACARA bloque { $$ = $2; currentLevel = exitScope(currentLevel); }
+programa  : GUACARA bloque { $$ = $2; currentLevel = exitScope(currentLevel); (*$$).tipo = (*$2).tipo; /* TIPO */ }
           ;
 
-bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,0,$2); }
+bloque : LBRACKET listaInstruccion RBRACKET 
+       { $$ = new elene_BLOQUE(0,0,$2); 
+        /* Inicio Codigo para verificacion de tipos */
+        (*$$).tipo = (*$2).tipo; 
+        /* Fin Codigo para verificacion de tipos */
+       }
        | LBRACKET VARIABLES LBRACKET 
          { currentLevel = enterScope(currentLevel); } 
          listaVariables RBRACKET listaInstruccion RBRACKET 
          { $$ = new elene_BLOQUE(0,$5,$7); 
-           currentLevel = exitScope(currentLevel); }
+           currentLevel = exitScope(currentLevel);
+           /* Inicio Codigo para verificacion de tipos */
+           (*$$).tipo = (*$7).tipo;
+           /* Fin Codigo para verificacion de tipos */
+         }
        | ID COLON LBRACKET listaInstruccion RBRACKET 
          { $$ = new elene_BLOQUE(new elene_ID($1),0,$4); 
            if (!(*tablaGlobal).local_lookup($1)) {
@@ -388,6 +397,9 @@ bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,0,$2); }
            } else {
                driver.error_etiq_redec(@1,$1);
            }
+           /* Inicio Codigo para verificacion de tipos */
+           (*$$).tipo = (*$4).tipo;
+           /* Fin Codigo para verificacion de tipos */
          }
        | ID COLON LBRACKET VARIABLES LBRACKET
          { 
@@ -397,32 +409,92 @@ bloque : LBRACKET listaInstruccion RBRACKET { $$ = new elene_BLOQUE(0,0,$2); }
              } else {
                  driver.error_etiq_redec(@1,$1);
             }
-
             currentLevel = enterScope(currentLevel);
          }
 
          listaVariables RBRACKET listaInstruccion RBRACKET
          
          { $$ = new elene_BLOQUE(new elene_ID($1),$7,$9);  
-           currentLevel = exitScope(currentLevel); }
+           currentLevel = exitScope(currentLevel);
+           /* Inicio Codigo para verificacion de tipos */ 
+           (*$$).tipo = (*$9).tipo;
+           /* Fin Codigo para verificacion de tipos */
+         }
        | error COLON LBRACKET VARIABLES LBRACKET listaVariables RBRACKET 
-         listaInstruccion RBRACKET { yyerrok; }
-       | error COLON LBRACKET listaInstruccion RBRACKET { yyerrok; }
+         listaInstruccion RBRACKET { yyerrok; /* FALTA TIPO !! */ }
+       | error COLON LBRACKET listaInstruccion RBRACKET { yyerrok; /* FALTA TIPO !! */ }
        ;
 
-listaInstruccion : instruccion { $$ = new elene_LISTAUNIT($1); }
+listaInstruccion : instruccion 
+                 { $$ = new elene_LISTAUNIT($1); 
+                   /* Inicio Codigo para verificacion de tipos */
+                   (*$$).tipo = (*$1).tipo;
+                   /* Fin Codigo para verificacion de tipos */
+                 }
                  | listaInstruccion SEMICOLON instruccion 
-                   { $$ = new elene_LISTAMULT($3,$1); }
-                 | listaInstruccion SEMICOLON error { yyerrok; }
-                 | error instruccion { yyerrok; }
+                 { $$ = new elene_LISTAMULT($3,$1);
+                   /* Inicio Codigo para verificacion de tipos */
+                   if ((*$1).tipo != tiposBase[6] && (*$3).tipo != tiposBase[6]) {
+                       (*$$).tipo = tiposBase[5];
+                   } else {
+                       (*$$).tipo = tiposBase[6];   
+                       // IMPRIMIR MENSAJE ??
+                   }
+                   /* Fin Codigo para verificacion de tipos */
+                 }
+                 | listaInstruccion SEMICOLON error { yyerrok; /* FALTA TIPO !! */ }
+                 | error instruccion { yyerrok; /* FALTA TIPO !! */ }
                  ;
 
-elseif      : else { $$ = $1; }
-            | O SI expr ENTONCES bloque { $$ = new elene_INSTCOND($3,$5,0); }
-            | O SI expr ENTONCES bloque elseif { $$ = new elene_INSTCOND($3,$5,$6); }
+elseif      : else 
+            { $$ = $1; 
+              /* Inicio Codigo para verificacion de tipos */
+              (*$$).tipo = (*$1).tipo; 
+              /* Fin Codigo para verificacion de tipos */
+            }
+            | O SI expr ENTONCES bloque 
+            { $$ = new elene_INSTCOND($3,$5,0); 
+              /* Inicio Codigo para verificacion de tipos */
+              if ((*$3).tipo == tiposBase[0] && (*$5).tipo != tiposBase[6]) {
+                (*$$).tipo = tiposBase[5];
+              } else {
+                (*$$).tipo = tiposBase[6];
+                /* Verificacion de expr booleana */
+                if ((*$3).tipo != tiposBase[0]) {
+                    std::stringstream ss;
+				    ss << "Se esperaba una expresion booleana, pero se encontro: " 
+                       << (*(*$3).tipo);
+                    driver.error(@3, ss.str());
+                }
+              }
+              /* Fin Codigo para verificacion de tipos */
+            }
+            | O SI expr ENTONCES bloque elseif 
+            { $$ = new elene_INSTCOND($3,$5,$6); 
+              /* Inicio Codigo para verificacion de tipos */
+              if ((*$3).tipo == tiposBase[0] && (*$5).tipo != tiposBase[6]
+                 && (*$6).tipo != tiposBase[6] ) {
+                (*$$).tipo = tiposBase[5];
+              } else {
+                (*$$).tipo = tiposBase[6];
+                /* Verificacion de expr booleana */
+                if ((*$3).tipo != tiposBase[0]) {
+                    std::stringstream ss;
+				    ss << "Se esperaba una expresion booleana, pero se encontro: " 
+                       << (*(*$3).tipo);
+                    driver.error(@3, ss.str());
+                }
+              }
+              /* Fin Codigo para verificacion de tipos */
+            }
             ;
 
-else        : SI NO ENTONCES bloque { $$ = new elene_INSTCOND(new elene_BOOLEANO(1),$4,0); }
+else        : SI NO ENTONCES bloque 
+            { $$ = new elene_INSTCOND(new elene_BOOLEANO(1),$4,0); 
+              /* Inicio Codigo para verificacion de tipos */
+              (*$$).tipo = (*$4).tipo;
+              /* Fin Codigo para verificacion de tipos */
+            }
             ;
 
 asignacion  : ID BECOMES expr 
@@ -489,21 +561,35 @@ instruccion : LEER ID
             | SI expr ENTONCES bloque 
             { $$ = new elene_INSTCOND($2, $4, 0);  
               /* Inicio Codigo para verificacion de tipos */
-              if ((*$2).tipo != tiposBase[6] && (*$4).tipo == tiposBase[5]) {
+              if ((*$2).tipo == tiposBase[0] && (*$4).tipo == tiposBase[5]) {
                 (*$$).tipo = tiposBase[5];
               } else {
                 (*$$).tipo = tiposBase[6];
+                /* Verificacion de expr booleana */
+                if ((*$2).tipo != tiposBase[0]) {
+                    std::stringstream ss;
+				    ss << "Se esperaba una expresion booleana, pero se encontro: " 
+                       << (*(*$2).tipo);
+                    driver.error(@2, ss.str());
+                }
               }
               /* Fin Codigo para verificacion de tipos */
             }
             | SI expr ENTONCES bloque elseif 
             { $$ = new elene_INSTCOND($2,$4,$5); 
               /* Inicio Codigo para verificacion de tipos */
-              if ((*$2).tipo != tiposBase[6] && (*$4).tipo == tiposBase[5] && 
+              if ((*$2).tipo == tiposBase[0] && (*$4).tipo == tiposBase[5] && 
                   (*$5).tipo == tiposBase[5] ) {
                 (*$$).tipo = tiposBase[5];
               } else {
                 (*$$).tipo = tiposBase[6];
+                /* Verificacion de expr booleana */
+                if ((*$2).tipo != tiposBase[0]) {
+                    std::stringstream ss;
+				    ss << "Se esperaba una expresion booleana, pero se encontro: " 
+                       << (*(*$2).tipo);
+                    driver.error(@2, ss.str());
+                }
               }
               /* Fin Codigo para verificacion de tipos */
             }
@@ -512,10 +598,17 @@ instruccion : LEER ID
             | MIENTRAS expr HACER bloque 
             { $$ = new elene_INSTMIENTRAS($2,$4); 
               /* Inicio Codigo para verificacion de tipos */
-              if ((*$2).tipo != tiposBase[6] && (*$4).tipo == tiposBase[5]) {
+              if ((*$2).tipo == tiposBase[0] && (*$4).tipo == tiposBase[5]) {
                 (*$$).tipo = tiposBase[5];
               } else {
                 (*$$).tipo = tiposBase[6];
+                /* Verificacion de expr booleana */
+                if ((*$2).tipo != tiposBase[0]) {
+                    std::stringstream ss;
+				    ss << "Se esperaba una expresion booleana, pero se encontro: " 
+                       << (*(*$2).tipo);
+                    driver.error(@2, ss.str());
+                }
                 // IMPRIMIR MENSAJE ??
               }
               /* Fin Codigo para verificacion de tipos */
@@ -523,11 +616,18 @@ instruccion : LEER ID
             | PARA asignacion TAL QUE expr CON CAMBIO asignacion HACER bloque 
             { $$ = new elene_INSTPARA($2,$5,$8,$10); 
               /* Inicio Codigo para verificacion de tipos */
-              if ((*$2).tipo == tiposBase[5] && (*$5).tipo != tiposBase[6] &&
+              if ((*$2).tipo == tiposBase[5] && (*$5).tipo == tiposBase[0] &&
                   (*$8).tipo == tiposBase[5] && (*$10).tipo == tiposBase[5] ) {
                   (*$$).tipo = tiposBase[5];
               } else {
                   (*$$).tipo = tiposBase[6];
+                  /* Verificacion de expr booleana */
+                  if ((*$5).tipo != tiposBase[0]) {
+                    std::stringstream ss;
+				    ss << "Se esperaba una expresion booleana, pero se encontro: " 
+                       << (*(*$5).tipo);
+                    driver.error(@5, ss.str());
+                  }
                   // IMPRIMIR MENSAJE ??
               }
               /* Fin Codigo para verificacion de tipos */
