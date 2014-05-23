@@ -1,0 +1,86 @@
+variables globales {
+    sea e de tipo entero;
+    sea f de tipo flotante;
+    sea c de tipo caracter;
+    sea b de tipo booleano;
+    sea ea de tipo arreglo de entero de 0 a 10;
+    sea fa de tipo arreglo de flotante de 0 a 10;
+    sea ca de tipo arreglo de caracter de 0 a 10;
+    sea ba de tipo arreglo de booleano de 0 a 10;
+    sea casa de tipo estructura que contiene {
+        numpisos de tipo entero;
+        numpuertas de tipo entero
+    };
+    sea casita de tipo casa
+}
+
+funciones {
+
+    sea la funcion prueba que recibe entero x, entero z y retorna entero hacer {
+        retornar prueba(e+e+3, 3*e-7)
+    }
+
+}
+
+guacara {
+
+    /* Probando expresiones aritmeticas */
+    e = prueba(3*51, e);
+    e = 3+verdadero;
+    e = 'c'/4;
+    e = 3.5;
+
+    /* Probando expresiones booleanas */
+    b = 3;
+    b = - 3.5;
+    b = - ('c'+3) ;
+    b = no (verdadero y 5);
+    b = falso o 'z';
+
+    si 3 entonces {
+        imprimir "Hola"
+    } o si 'c' entonces {
+        imprimir "Como"
+    } o si "Chao" entonces {
+        imprimir "WTF"
+    } o si 3.4 entonces {
+        imprimir "Malo tambien"
+    } o si verdadero entonces {
+        imprimir "Este esta bien :)"    
+    } si no entonces {
+        e = ea[0];
+        e = fa[0];
+        e = ca[0];
+        e = ba[0]
+    };
+
+    sea e igual a {
+        3 entonces hacer {
+            imprimir "3"
+        }
+        por defecto hacer {
+            imprimir "Defecto"
+        }
+    };
+
+    sea e igual a {
+        3.0 entonces hacer {
+            imprimir "3"
+        }
+        por defecto hacer {
+            imprimir "Defecto"
+        }
+    };
+
+    mientras 3+5 hacer {
+        imprimir "Malo"
+    };
+
+    mientras 3+5 menor que 10 hacer {
+        imprimir "Bueno"
+    };
+
+    e = casita.numpisos;
+    e = casita.numventanas   
+
+}
