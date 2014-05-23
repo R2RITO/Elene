@@ -49,6 +49,11 @@ public:
     friend std::ostream& operator<< (std::ostream& stream,const elene_EXPR& obj){
         return obj.stream_write(stream); 
     }
+
+    bool verificar_tipos_case(elene_TIPO* t) {
+        return (tipo == t);
+    }
+
 };
 
 
@@ -1499,7 +1504,7 @@ class elene_TIPO_ARREGLO : public elene_TIPO {
 
 protected:
 
-    elene_TIPO* tipo;
+    
     elene_EXPR* indIzq;
     elene_EXPR* indDer;
     
@@ -1515,6 +1520,7 @@ protected:
     }
 
 public:
+    elene_TIPO* tipo;
     /* Declaracion de constructor */
     elene_TIPO_ARREGLO() {};
     elene_TIPO_ARREGLO(elene_TIPO* t, elene_EXPR* izq, elene_EXPR* der): 
@@ -2348,6 +2354,11 @@ public:
             bloque = other.bloque;
         }
     }
+
+    bool verificar_tipos(elene_TIPO* tipo) {
+        return (*expr).verificar_tipos_case(tipo);
+    }
+
     /*<< Operator overload*/
     friend std::ostream& operator<< (std::ostream& stream,const elene_CASO& obj) {
         return obj.stream_write(stream);
@@ -2398,6 +2409,18 @@ public:
             delete resto;
             caso = other.caso;
             resto = other.resto;
+        }
+    }
+
+    bool verificar_tipos(elene_TIPO* tipo) {
+        if ((*caso).verificar_tipos(tipo)) {
+            if (resto) {        
+                return (*resto).verificar_tipos(tipo);
+            } else {
+                return true;
+            }
+        } else {
+            return false;
         }
     }
 

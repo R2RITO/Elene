@@ -52,6 +52,8 @@
     elene_TIPO* tiposBase [7];
     elene_TIPO_ESTRUCTURA* test;
     elene_TIPO_FUNCION* testFuncion;
+    elene_TIPO_ARREGLO* testArreglo;
+    elene_TABLA_VALOR* tablaVal;
 	elene_TIPO* tipoAux;
 }
 
@@ -423,64 +425,262 @@ elseif      : else { $$ = $1; }
 else        : SI NO ENTONCES bloque { $$ = new elene_INSTCOND(new elene_BOOLEANO(1),$4,0); }
             ;
 
-asignacion  : ID BECOMES expr { $$ = new elene_INSTASIG(new elene_ID($1), $3); 
-                                if (!(*currentLevel).lookup($1)) { 
-                                    driver.error_indef(@1,$1);
-                                };  
-                              }
+asignacion  : ID BECOMES expr 
+            { $$ = new elene_INSTASIG(new elene_ID($1), $3); 
+              /* Inicio Codigo para verificacion de tipos */
+              tablaVal = (*currentLevel).lookup($1);
+              if (tablaVal) {
+                // Esta en la tabla de simbolos
+                if ((*tablaVal).tipo == (*$3).tipo && (*$3).tipo != tiposBase[6]) {
+                    // Los tipos concuerdan
+                    (*$$).tipo = tiposBase[5];
+                } else {
+                    // Los tipos no concuerdan, error.
+                    (*$$).tipo = tiposBase[6];
+                    std::stringstream ss;
+				    ss << "Se esperaba: " << (*(*tablaVal).tipo) 
+                       << ", pero se encontro: " << (*(*$3).tipo);
+                    driver.error_tipo_asignacion(@3, ss.str());
+                }
+              } else { 
+                 // No estaba declarada
+                 (*$$).tipo = tiposBase[6];
+                 driver.error_indef(@1,$1);
+              };  
+              /* Fin Codigo para verificacion de tipos */
+            }
+            | ID LCORCHET expr RCORCHET BECOMES expr 
+            { 
+               // FALTA !! 
+            }
             ;
 
-instruccion : LEER ID { $$ = new elene_INSTLEER(new elene_ID($2)); 
-                        if (!(*currentLevel).lookup($2)) { 
-                            driver.error_indef(@2,$2);
-                        };  
-                      } 
-            | IMPRIMIR expr { $$ = new elene_INSTESCR($2); }
-            | RETORNAR expr { $$ = new elene_INSTRETORNAR($2); }
-            | SI expr ENTONCES bloque { $$ = new elene_INSTCOND($2, $4, 0);  }
-            | SI expr ENTONCES bloque elseif { $$ = new elene_INSTCOND($2,$4,$5); }
-            | asignacion { $$ = $1; }
-            | MIENTRAS expr HACER bloque { $$ = new elene_INSTMIENTRAS($2,$4); }
+instruccion : LEER ID 
+            { $$ = new elene_INSTLEER(new elene_ID($2)); 
+            /* Inicio Codigo para verificacion de tipos */
+              if (!(*currentLevel).lookup($2)) { 
+                  driver.error_indef(@2,$2);
+                  (*$$).tipo = tiposBase[6];
+              } else {
+                  (*$$).tipo = tiposBase[5];
+              }
+            /* Fin Codigo para verificacion de tipos */
+            } 
+            | IMPRIMIR expr 
+            { $$ = new elene_INSTESCR($2);
+              /* Inicio Codigo para verificacion de tipos */
+              if ((*$2).tipo != tiposBase[6]) {
+                (*$$).tipo = tiposBase[5];
+              } else {
+                (*$$).tipo = tiposBase[6];
+              }
+              /* Fin Codigo para verificacion de tipos */
+            }
+            | RETORNAR expr 
+            { $$ = new elene_INSTRETORNAR($2); 
+              /* Inicio Codigo para verificacion de tipos */
+              if ((*$2).tipo != tiposBase[6]) {
+                (*$$).tipo = tiposBase[5];
+              } else {
+                (*$$).tipo = tiposBase[6];
+              }
+              /* Fin Codigo para verificacion de tipos */
+            }
+            | SI expr ENTONCES bloque 
+            { $$ = new elene_INSTCOND($2, $4, 0);  
+              /* Inicio Codigo para verificacion de tipos */
+              if ((*$2).tipo != tiposBase[6] && (*$4).tipo == tiposBase[5]) {
+                (*$$).tipo = tiposBase[5];
+              } else {
+                (*$$).tipo = tiposBase[6];
+              }
+              /* Fin Codigo para verificacion de tipos */
+            }
+            | SI expr ENTONCES bloque elseif 
+            { $$ = new elene_INSTCOND($2,$4,$5); 
+              /* Inicio Codigo para verificacion de tipos */
+              if ((*$2).tipo != tiposBase[6] && (*$4).tipo == tiposBase[5] && 
+                  (*$5).tipo == tiposBase[5] ) {
+                (*$$).tipo = tiposBase[5];
+              } else {
+                (*$$).tipo = tiposBase[6];
+              }
+              /* Fin Codigo para verificacion de tipos */
+            }
+            | asignacion 
+            { $$ = $1; (*$$).tipo = (*$1).tipo; }
+            | MIENTRAS expr HACER bloque 
+            { $$ = new elene_INSTMIENTRAS($2,$4); 
+              /* Inicio Codigo para verificacion de tipos */
+              if ((*$2).tipo != tiposBase[6] && (*$4).tipo == tiposBase[5]) {
+                (*$$).tipo = tiposBase[5];
+              } else {
+                (*$$).tipo = tiposBase[6];
+                // IMPRIMIR MENSAJE ??
+              }
+              /* Fin Codigo para verificacion de tipos */
+            }
             | PARA asignacion TAL QUE expr CON CAMBIO asignacion HACER bloque 
-              { $$ = new elene_INSTPARA($2,$5,$8,$10); } 
-            | expr { $$ = new elene_INSTEXPR($1); }
-            | ROMPER ITERACION { $$ = new elene_INSTROMPER(); }
-            | CONTINUAR ITERACION { $$ = new elene_INSTCONTINUAR(); }
-            | instruccionCase { $$ = $1; }
+            { $$ = new elene_INSTPARA($2,$5,$8,$10); 
+              /* Inicio Codigo para verificacion de tipos */
+              if ((*$2).tipo == tiposBase[5] && (*$5).tipo != tiposBase[6] &&
+                  (*$8).tipo == tiposBase[5] && (*$10).tipo == tiposBase[5] ) {
+                  (*$$).tipo = tiposBase[5];
+              } else {
+                  (*$$).tipo = tiposBase[6];
+                  // IMPRIMIR MENSAJE ??
+              }
+              /* Fin Codigo para verificacion de tipos */
+            } 
+            | expr 
+            { $$ = new elene_INSTEXPR($1);
+              /* Inicio Codigo para verificacion de tipos */
+              if ((*$1).tipo != tiposBase[6]) {
+                (*$$).tipo = tiposBase[5];
+              } else {
+                (*$$).tipo = tiposBase[6];
+              }
+              /* Fin Codigo para verificacion de tipos */
+            }
+            | ROMPER ITERACION { $$ = new elene_INSTROMPER(); (*$$).tipo = tiposBase[5]; }
+            | CONTINUAR ITERACION { $$ = new elene_INSTCONTINUAR(); (*$$).tipo = tiposBase[5]; }
+            | instruccionCase { $$ = $1; (*$$).tipo = (*$1).tipo; }
             ;
 
 instruccionCase : SEA ID IGUAL A LBRACKET casosCase POR DEFECTO HACER bloque RBRACKET
-                  { $$ = new elene_INSTCASE(new elene_ID($2),$6,$10); }
+                  { $$ = new elene_INSTCASE(new elene_ID($2),$6,$10);
+                    /* Inicio Codigo para verificacion de tipos */
+                    tablaVal = (*currentLevel).lookup($2);
+                    if (tablaVal) {
+                        // Verificamos que el tipo de ID concuerde con los casos
+                        if ((*$6).verificar_tipos((*tablaVal).tipo)) {
+                            if ((*$6).tipo == tiposBase[5] && (*$10).tipo == tiposBase[5]) {
+                                (*$$).tipo = tiposBase[5];
+                            } else {
+                                (*$$).tipo = tiposBase[6];
+                                // IMPRIMIR MENSAJE ??
+                            }
+                        } else {
+                            (*$$).tipo = tiposBase[6];
+                            driver.error_tipo_case_var_expr(@2,$2);
+                        }
+                    } else {
+                        (*$$).tipo = tiposBase[6];
+                        driver.error_tipo_case_var_undec(@2,$2);
+                    }
+                    /* Fin Codigo para verificacion de tipos */
+                  }
                 | SEA error IGUAL A LBRACKET casosCase POR DEFECTO HACER bloque RBRACKET
-                  { yyerrok; }
+                  { yyerrok;  /* FALTA TIPOS Asignamos error y ya?*/ }
                 | SEA ID IGUAL A LBRACKET error POR DEFECTO HACER bloque RBRACKET
-                  { yyerrok; }
+                  { yyerrok;  /* FALTA TIPOS */ }
                 | SEA error IGUAL A LBRACKET error POR DEFECTO HACER bloque RBRACKET
-                  { yyerrok; }
+                  { yyerrok;  /* FALTA TIPOS */}
                 ;
 
-casosCase : caso {  $$ = new elene_LISTACASE($1,0); }
-          | casosCase caso { $$ = new elene_LISTACASE($2,$1); }
+casosCase : caso 
+          {  $$ = new elene_LISTACASE($1,0); 
+             /* Inicio Codigo para verificacion de tipos */
+             (*$$).tipo = (*$1).tipo;
+             /* Fin Codigo para verificacion de tipos */
+          }
+          | casosCase caso 
+          { $$ = new elene_LISTACASE($2,$1); 
+            /* Inicio Codigo para verificacion de tipos */
+            if ((*$1).tipo == tiposBase[5] && (*$2).tipo == tiposBase[5]) {
+                (*$$).tipo = tiposBase[5];
+            } else {
+                (*$$).tipo = tiposBase[6];
+                // IMPRIMIR MENSAJE ??
+            }
+            /* Fin Codigo para verificacion de tipos */
+          }
           ;
 
-caso : expr ENTONCES HACER bloque { $$ = new elene_CASO($1,$4); }
+caso : expr ENTONCES HACER bloque 
+       { $$ = new elene_CASO($1,$4); 
+         /* Inicio Codigo para verificacion de tipos */
+         if ((*$1).tipo != tiposBase[6] && (*$4).tipo != tiposBase[6]) {
+            (*$$).tipo = tiposBase[5];
+         } else {
+            (*$$).tipo = tiposBase[6];
+            // IMPRIMIR MENSAJE ?? 
+         }
+         /* Fin Codigo para verificacion de tipos */
+       }
 
-listaExpr: listaExpr COMMA expr { $$ = new elene_LISTAEXPR($3,$1);}
-         | expr { $$ = new elene_LISTAEXPR($1, 0); }
-         | { $$ = new elene_LISTAEXPR(0,0); }
-         | listaExpr COMMA error { yyerrok; yyclearin; }
-         | error expr            { yyerrok; yyclearin; }
+listaExpr: listaExpr COMMA expr 
+         { $$ = new elene_LISTAEXPR($3,$1);
+           /* Inicio Codigo para verificacion de tipos */
+           if ((*$1).tipo != tiposBase[6] && (*$3).tipo != tiposBase[6]) {
+               // Si no hay problema es vacio
+               (*$$).tipo = tiposBase[5];   
+           } else {
+               // Si uno es error, es error.
+               (*$$).tipo = tiposBase[6];   
+               if ((*$3).tipo == tiposBase[6]) {
+                   driver.error_tipo_listaexpr_expr(@3,"");
+               }
+           }
+           /* Fin Codigo para verificacion de tipos */
+         }
+         | expr 
+         { $$ = new elene_LISTAEXPR($1, 0);
+           /* Inicio Codigo para verificacion de tipos */ 
+           if ((*$1).tipo != tiposBase[6]) {
+               // Si no tiene errores, es vacio
+               (*$$).tipo = tiposBase[5]; 
+           } else {
+               // Si si tiene, es error
+               (*$$).tipo = tiposBase[6]; 
+               driver.error_tipo_listaexpr_expr(@1,"");
+           }
+           /* Fin Codigo para verificacion de tipos */
+         }
+         | 
+         { $$ = new elene_LISTAEXPR(0,0); 
+           // El tipo es vacio
+           (*$$).tipo = tiposBase[5]; 
+         } 
+         | listaExpr COMMA error 
+         { // El tipo es el mismo que el de la lista
+           (*$$).tipo = (*$1).tipo; 
+           yyerrok; yyclearin; 
+         } 
+         | error expr            
+         { yyerrok; yyclearin; 
+           /* Inicio Codigo para verificacion de tipos */
+           if ((*$2).tipo != tiposBase[6]) {
+               // Si la expr no tiene error, es vacio
+               (*$$).tipo = tiposBase[5];
+           } else {
+               // En caso contrario, error.
+               (*$$).tipo = tiposBase[6]; 
+           }
+           /* Fin Codigo para verificacion de tipos */
+         }
          ;         
 
 
 expr : LPAREN expr RPAREN  { $$ = $2; (*$$).tipo = (*$2).tipo; }
      | ID LCORCHET expr RCORCHET 
-	 { $$ = new elene_ACCARREG(new elene_ID($1),$3); 
-	   if (true) { //( ((*$1).tipo != tiposBase[6]) ) { 
-		    (*$$).tipo = tiposBase[5]; // AQUI VA EL TIPO DE ELEMENTOS DEL ARREGLO
+	 { $$ = new elene_ACCARREG(new elene_ID($1),$3);
+       /* Inicio Codigo para verificacion de tipos */
+       tablaVal = (*currentLevel).lookup($1);
+	   if (tablaVal) {
+            testArreglo = dynamic_cast<elene_TIPO_ARREGLO *> ((*tablaVal).tipo);
+            if (testArreglo) {
+                (*$$).tipo = (*testArreglo).tipo;
+            } else {
+		        (*$$).tipo = tiposBase[6];
+                driver.error_tipo_no_es_array(@1,$1);
+            }
+            testArreglo = 0;
 	   } else {
 			(*$$).tipo = tiposBase[6];
+			driver.error_tipo_array_undec(@1,$1);
 	   }
+       /* Fin Codigo para verificacion de tipos */
 	 }
      | exprBinaria         { $$ = $1; (*$$).tipo = (*$1).tipo; }
      | exprUnaria          { $$ = $1; (*$$).tipo = (*$1).tipo; }
@@ -645,11 +845,11 @@ exprBinaria : expr Y expr
 			}
             | expr PERIOD ID            
 			{ $$ = new elene_ACCESO($1, new elene_ID($3));
+              /* Inicio Codigo para verificacion de tipos */
 			  test = dynamic_cast<elene_TIPO_ESTRUCTURA *> ((*$1).tipo);
 				if (test) {
 					tipoAux = (*test).lookup_attr($3);
 					if (tipoAux) {
-						std::cout << "\n***ENTRE EN LA GUARDIA MAGICA: " << $3 << (*tipoAux);
 						(*$$).tipo = tipoAux;
 					} else {
 						(*$$).tipo = tiposBase[6];
@@ -659,6 +859,8 @@ exprBinaria : expr Y expr
 					(*$$).tipo = tiposBase[6];
 					driver.error_tipo_no_estr(@1,"");
 				}
+                test = 0;
+              /* Fin Codigo para verificacion de tipos */
 			}
             ;
 

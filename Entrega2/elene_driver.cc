@@ -125,6 +125,48 @@ void elene_driver::error_tipo_no_estr(const yy::location& l, const std::string& 
 		<< ". Se intento acceder a un elemento que no es una estructura" << std::endl;
 }
 
+void elene_driver::error_tipo_array_undec(const yy::location& l, const std::string& m) {
+	std::cerr
+		<< "- ERROR - " << "Linea: " << l.begin.line
+		<< ", Columna: " << l.begin.column
+		<< ". Arreglo " << m << " no ha sido declarado. " << std::endl;
+}
+
+void elene_driver::error_tipo_no_es_array(const yy::location& l, const std::string& m) {
+	std::cerr
+		<< "- ERROR - " << "Linea: " << l.begin.line
+		<< ", Columna: " << l.begin.column
+		<< ". Variable " << m << " no es de tipo arreglo. " << std::endl;
+}
+
+void elene_driver::error_tipo_listaexpr_expr(const yy::location& l, const std::string& m) {
+	std::cerr
+		<< "- ERROR - " << "Linea: " << l.begin.line
+		<< ", Columna: " << l.begin.column
+		<< ". Expresion con error de tipos. " << std::endl;
+}
+
+void elene_driver::error_tipo_case_var_undec(const yy::location& l, const std::string& m) {
+	std::cerr
+		<< "- ERROR - " << "Linea: " << l.begin.line
+		<< ", Columna: " << l.begin.column
+		<< ". Variable " << m << " no ha sido declarada. " << std::endl;
+}
+
+void elene_driver::error_tipo_case_var_expr(const yy::location& l, const std::string& m) {
+	std::cerr
+		<< "- ERROR - " << "Linea: " << l.begin.line
+		<< ", Columna: " << l.begin.column
+		<< ". Tipo de la variable " << m << " no concuerda con el tipo de la expresion de uno de los casos. " << std::endl;
+}
+
+void elene_driver::error_tipo_asignacion(const yy::location& l, const std::string& m) {
+	std::cerr
+		<< "- ERROR - " << "Linea: " << l.begin.line
+		<< ", Columna: " << l.begin.column
+		<< ". " << m << std::endl;
+}
+
 void elene_driver::error (const std::string& m) {
     std::cerr << m << std::endl;
 }

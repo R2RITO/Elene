@@ -8,12 +8,28 @@ variables globales {
 		hab de tipo habitacion
 	};
 	sea X de tipo entero;
-	sea C de tipo casa
+	sea C de tipo casa;
+    sea arra de tipo arreglo de entero de 0 a 5;
+    sea meh de tipo entero
 }
 
 
 guacara {
 
-	X = C.hab.numero + 3
+	X = C.hab.numero + 3;
+    meh = arra[4];
+
+    sea meh igual a {
+
+        3 entonces hacer {
+            imprimir "3"
+        }
+        7 entonces hacer {
+            imprimir "4+7"
+        }
+        por defecto hacer {
+            imprimir "Defecto"
+        }
+    }
 
 }

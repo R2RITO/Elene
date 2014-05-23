@@ -50,6 +50,12 @@ class elene_driver {
 	void error_tipo_expr(const yy::location& l, const std::string& m);
 	void error_tipo_attr_no_dec(const yy::location& l, const std::string& m);
 	void error_tipo_no_estr(const yy::location& l, const std::string& m);
+	void error_tipo_array_undec(const yy::location& l, const std::string& m);
+    void error_tipo_no_es_array(const yy::location& l, const std::string& m);
+    void error_tipo_listaexpr_expr(const yy::location& l, const std::string& m);
+    void error_tipo_case_var_undec(const yy::location& l, const std::string& m);
+    void error_tipo_case_var_expr(const yy::location& l, const std::string& m);
+    void error_tipo_asignacion(const yy::location& l, const std::string& m);
 };
 
 #endif // ! ELENE_DRIVER_HH

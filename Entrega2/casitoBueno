@@ -11,7 +11,7 @@ variables globales {
     };
 	sea casa de tipo estructura que contiene {
 		numero de tipo entero
-	}
+	};
     sea estructurita de tipo estructura que contiene {
         A de tipo entero;
         cosita de tipo caracter
