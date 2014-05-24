@@ -858,7 +858,7 @@ protected:
 			(*resto).ident = ident;
             os << (*resto);
         }
-        std::cout << expr;
+
 		(*expr).ident = ident+"  ";
         os << ident << "Arg: {\n" 
 		   << (*expr) << ident << "}\n";
@@ -2103,6 +2103,112 @@ public:
     }
 };
 
+
+/* Clase para la asignacion en arreglos */
+class elene_INSTASIG_ARREGLO : public elene_INSTASIG {
+
+protected:
+
+    elene_ID* id;
+    elene_EXPR* ladoDer;
+    elene_EXPR* exprAcceso;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {
+        (*exprAcceso).ident = ident+"    ";
+		(*ladoDer).ident = ident+"    ";
+		(*id).ident = ident+"    ";          
+        return (os << ident << "Instruccion Asignacion a arreglo: {\n" 
+                   << ident+"  " << "Variable:\n" << (*id)
+                   << ident+"  " << "Expresion Acceso:\n" << (*exprAcceso)
+                   << ident+"  " << "Expresion:\n" << (*ladoDer)
+				   << ident << "}\n");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_INSTASIG_ARREGLO() {};
+    elene_INSTASIG_ARREGLO(elene_ID* variable, elene_EXPR* ea, elene_EXPR* rvalue): 
+        id(variable), exprAcceso(ea), ladoDer(rvalue) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_INSTASIG_ARREGLO () {
+        delete id;
+        delete exprAcceso;
+        delete ladoDer;    
+    }
+
+    /* Metodo para copiar */
+    elene_INSTASIG_ARREGLO(const elene_INSTASIG_ARREGLO &other) {
+        id = other.id;
+        exprAcceso = other.exprAcceso;
+        ladoDer = other.ladoDer;
+    }
+
+    elene_INSTASIG_ARREGLO &operator = (const elene_INSTASIG_ARREGLO &other) {
+        if (&other != this) {
+            delete id;
+            delete exprAcceso;
+            delete ladoDer;
+            id = other.id;
+            exprAcceso = other.exprAcceso;
+            ladoDer = other.ladoDer;
+        }
+    }
+};
+
+/* Clase para la asignacion en estructuras*/
+class elene_INSTASIG_ESTRUCTURA : public elene_INSTASIG {
+
+protected:
+
+    elene_ID* id;
+    elene_EXPR* ladoDer;
+    elene_EXPR* estructura;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {
+        (*estructura).ident = ident+"    ";
+		(*ladoDer).ident = ident+"    ";
+		(*id).ident = ident+"    ";          
+        return (os << ident << "Instruccion Asignacion a Estructura: {\n" 
+                   << ident+"  " << "Estructura:\n" << (*estructura)
+                   << ident+"  " << "Campo:\n" << (*id)
+                   << ident+"  " << "Expresion:\n" << (*ladoDer)
+				   << ident << "}\n");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_INSTASIG_ESTRUCTURA() {};
+    elene_INSTASIG_ESTRUCTURA(elene_ID* variable, elene_EXPR* e, elene_EXPR* rvalue): 
+        id(variable), estructura(e), ladoDer(rvalue) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_INSTASIG_ESTRUCTURA () {
+        delete id;
+        delete estructura;
+        delete ladoDer;    
+    }
+
+    /* Metodo para copiar */
+    elene_INSTASIG_ESTRUCTURA(const elene_INSTASIG_ESTRUCTURA &other) {
+        id = other.id;
+        estructura = other.estructura;
+        ladoDer = other.ladoDer;
+    }
+
+    elene_INSTASIG_ESTRUCTURA &operator = (const elene_INSTASIG_ESTRUCTURA &other) {
+        if (&other != this) {
+            delete id;
+            delete estructura;
+            delete ladoDer;
+            id = other.id;
+            estructura = other.estructura;
+            ladoDer = other.ladoDer;
+        }
+    }
+};
 
 /* Clase para la iteracion indeterminada */
 class elene_INSTMIENTRAS : public elene_INST {

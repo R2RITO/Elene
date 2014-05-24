@@ -523,7 +523,59 @@ asignacion  : ID BECOMES expr
             }
             | ID LCORCHET expr RCORCHET BECOMES expr 
             { 
-               // FALTA !! 
+               $$ = new elene_INSTASIG_ARREGLO(new elene_ID($1), $3, $6);
+               /* Inicio Codigo para verificacion de tipos */
+               tablaVal = (*currentLevel).lookup($1);
+               if (tablaVal) {
+                    testArreglo = dynamic_cast<elene_TIPO_ARREGLO *> ((*tablaVal).tipo);
+                    if (testArreglo) {
+                        if ((*$3).tipo != tiposBase[6] && (*$6).tipo != tiposBase[6]) {
+                            // Es una asignacion correcta!
+                            (*$$).tipo = tiposBase[5];
+                        } else {
+                            // Las expresiones tienen errores
+                            (*$$).tipo = tiposBase[6];
+                        } 
+                    } else {
+                        // No es un arreglo
+		                (*$$).tipo = tiposBase[6];
+                        driver.error_tipo_no_es_array(@1,$1);
+                    }
+                    testArreglo = 0;
+               } else { 
+                 // No estaba declarada
+                 (*$$).tipo = tiposBase[6];
+                 driver.error_indef(@1,$1);
+               };  
+               /* Fin Codigo para verificacion de tipos */
+            }
+            | expr PERIOD ID BECOMES expr
+            {
+              $$ = new elene_INSTASIG_ESTRUCTURA(new elene_ID($3), $1, $5);
+              /* Inicio Codigo para verificacion de tipos */
+			  test = dynamic_cast<elene_TIPO_ESTRUCTURA *> ((*$1).tipo);
+				if (test) {
+					tipoAux = (*test).lookup_attr($3);
+					if (tipoAux) {
+                        if (tipoAux == (*$5).tipo) {
+                            (*$$).tipo = tiposBase[5];
+                        } else {
+                            std::stringstream ss;
+				            ss << "Se esperaba: " << (*tipoAux) 
+                            << " pero se encontro: " << (*(*$5).tipo);
+                            (*$$).tipo = tiposBase[6];
+                            driver.error(@4,ss.str());
+                        }
+					} else {
+						(*$$).tipo = tiposBase[6];
+						driver.error_tipo_attr_no_dec(@3,$3);
+					}
+				} else {
+					(*$$).tipo = tiposBase[6];
+					driver.error_tipo_no_estr(@1,"");
+				}
+                test = 0;
+              /* Fin Codigo para verificacion de tipos */
             }
             ;
 

@@ -11,7 +11,15 @@ variables globales {
         numpisos de tipo entero;
         numpuertas de tipo entero
     };
-    sea casita de tipo casa
+    sea casita de tipo casa;
+    sea A1 de tipo estructura que contiene {
+        ent de tipo entero
+    };
+    sea A2 de tipo estructura que contiene {
+        flo de tipo flotante;
+        varA1 de tipo A1
+    }
+    sea pba de tipo A2
 }
 
 funciones {
@@ -81,6 +89,9 @@ guacara {
     };
 
     e = casita.numpisos;
-    e = casita.numventanas   
+    e = casita.numventanas;
+    ea[4] = 4;
+    casa.numpisos = 4;
+    pba.varA1.ent = 10.5
 
 }
