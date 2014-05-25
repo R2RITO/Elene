@@ -49,7 +49,7 @@
     double col;
     double linea;
     elene_LISTFUN* lstf;
-    elene_TIPO* tiposBase [7];
+    elene_TIPO* tiposBase [8];
     elene_TIPO_ESTRUCTURA* test;
     elene_TIPO_FUNCION* testFuncion;
     elene_TIPO_ARREGLO* testArreglo;
@@ -193,6 +193,7 @@ inicio : {
            tiposBase[4] = new elene_TIPO_ENTERO;
            tiposBase[5] = new elene_TIPO_VACIO;
            tiposBase[6] = new elene_TIPO_TYPE_ERROR;
+           tiposBase[7] = new elene_TIPO_ETIQUETA;
 
            currentLevel = new elene_TABLA(); 
            currentLevel -> insertar("Read",tiposBase[2],1,1,4);
@@ -460,7 +461,7 @@ bloque : LBRACKET listaInstruccion RBRACKET
          { $$ = new elene_BLOQUE(new elene_ID($1),0,$4); 
            if (!(*tablaGlobal).local_lookup($1)) {
                tablaGlobal ->
-               insertar($1,new elene_TIPO_CARACTER(),@1.begin.line,@1.begin.column,0);
+               insertar($1,tiposBase[7],@1.begin.line,@1.begin.column,0);
            } else {
                driver.error_etiq_redec(@1,$1);
            }
@@ -472,7 +473,7 @@ bloque : LBRACKET listaInstruccion RBRACKET
          { 
              if (!(*tablaGlobal).local_lookup($1)) {
                  tablaGlobal ->
-                 insertar($1,new elene_TIPO_CARACTER(),@1.begin.line,@1.begin.column,0);
+                 insertar($1,tiposBase[7],@1.begin.line,@1.begin.column,0);
              } else {
                  driver.error_etiq_redec(@1,$1);
             }
@@ -1221,7 +1222,13 @@ terminal : VERDADERO        { $$ = new elene_BOOLEANO($1); (*$$).tipo = tiposBas
                     (*$$).tipo = tiposBase[6];
                 }; 
            }
-         | STRING           { $$ = new elene_STRING($1); (*$$).tipo = tiposBase[3]; }
+         | STRING           { $$ = new elene_STRING($1); (*$$).tipo = tiposBase[3]; 
+                              align = alinear(($1.length())-2);
+                              std::stringstream cols;
+                              cols << @1.begin.line << "_" << @1.begin.column;
+                              std::string nmb = $1 + "_" + cols.str();
+                              tablaGlobal -> insertar(nmb,(*$$).tipo,@1.begin.line,@1.begin.column,align); 
+                            }
          ;
 %%
 

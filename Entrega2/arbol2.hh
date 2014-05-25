@@ -1517,6 +1517,30 @@ public:
 };
 
 /* Clase para manejar tipos de datos simples (Todos menos los arreglos) */
+class elene_TIPO_ETIQUETA : public elene_TIPO {
+
+protected:
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {              
+        return (os << "Etiqueta");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_TIPO_ETIQUETA() {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_TIPO_ETIQUETA () { }
+    
+    /* Metodo para copiar */
+    elene_TIPO_ETIQUETA(const elene_TIPO_ETIQUETA &other) { }
+
+    elene_TIPO_ETIQUETA &operator = (const elene_TIPO_ETIQUETA &other) { }
+
+};
+
+/* Clase para manejar tipos de datos simples (Todos menos los arreglos) */
 class elene_TIPO_VACIO : public elene_TIPO {
 
 protected:
