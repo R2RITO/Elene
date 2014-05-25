@@ -301,3 +301,14 @@ Etiquetas en Bloques
 guacara MAIN : {
     imprimir "Hola Mundo"
 }
+
+***
+Verificacion de tipos
+--------------------
+***
+
+> La verificación de tipos en Elene es una verificación por nombre. Es decir, las mismas se realizan comparando apuntadores a los nodos respectivos. De allí, los apuntadores a los tipo base (como entero, booleano, caracter) son guardados en una estructura auxiliar para ser reutilizados cada vez que es necesario. Asimismo, los tipos definidos por el usuario son reutilizados pues se busca los mismos en la tabla de simbolos.
+
+> Las verificaciones están centradas fundamententalmente en las expresiones y terminales, pero las mismas se van subiendo hasta el final del árbol abstracto. 
+
+> Adjunto al código fuente podrá encontrar varios programas escritos en Elene que demuestran la verificacion de tipos.

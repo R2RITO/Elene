@@ -1,0 +1,91 @@
+variables globales {
+
+    sea i de tipo entero con valor verdadero;
+
+    
+    sea par de tipo estructura que contiene {
+        X de tipo entero;
+        Y de tipo entero
+    };
+
+    sea vector de tipo estructura que contiene {
+        ori de tipo par;
+        fin de tipo par
+    };
+
+    sea shape de tipo estructura que contiene {
+        lines de tipo arreglo de vector de 0 a 50;
+        name de tipo arreglo de caracter de 0 a 30
+    };
+
+    sea layer de tipo estructura que contiene {
+        shapes de tipo arreglo de shape de 0 a 50
+    }
+
+}
+
+funciones {
+
+    sea la funcion printHola que retorna vacio hacer {
+        imprimir "Hola!"
+    }
+
+
+    sea la funcion retorna42 que retorna entero hacer {
+        retornar 42+'c'
+    }
+
+
+    sea la funcion suma que recibe entero X, entero Y y retorna entero hacer {
+        variables { 
+            sea res de tipo entero
+        }
+        res = X+Y;
+        retornar res y verdadero
+    }
+
+    sea la funcion equiv42 que recibe entero X, entero Y y retorna booleano hacer {
+        retornar (suma(X,Y+verdadero) igual a retorna42())
+    }
+
+}
+
+guacara {
+
+    variables {
+        sea i de tipo entero con valor 20;
+        sea j de tipo entero con valor 22;
+        sea resBool de tipo booleano
+    }
+
+    resBool = falso o (equiv42(i,j) y verdadero) y (3 menor que 5) o 3.4;
+   
+    si (resBool+3) entonces {
+        imprimir resBool
+    } si no entonces {
+        leer i;
+        leer j
+    };
+    
+    /* Hagamos un cuadrado */
+    layer.shapes[0].lines[0].ori.X = 0;
+    layer.shapes[0].lines[0].ori.Y = 0;
+    layer.shapes[0].lines[0].fin.X = 0.1;
+    layer.shapes[0].lines[0].fin.Y = 4;
+
+    layer.shapes[0].lines[1].ori.X = 0;
+    layer.shapes[0].lines[1].ori.Y = 0;
+    layer.shapes[0].lines[1].fin.X = 4;
+    layer.shapes[0].lines[1].fin.Y = 0;
+    
+    layer.shapes[0].lines[2].ori.X = 4;
+    layer.shapes[0].lines[2].ori.Y = '0';
+    layer.shapes[0].lines[2].fin.X = 4;
+    layer.shapes[0].lines[2].fin.Y = 4;
+
+    layer.shapes[0].lines[3].ori.X = 0;
+    layer.shapes[0].lines[3].ori.Y = verdadero;
+    layer.shapes[0].lines[3].fin.X = 4;
+    layer.shapes[0].lines[3].fin.Y = 4
+
+}
