@@ -61,6 +61,7 @@
     int despBloque;
     int despl;
     int align;
+    int detect;
 }
 
 %define api.token.prefix {TOK_}
@@ -256,7 +257,11 @@ bloqueContenido :
 decContenido    : ID DE TIPO tipo 
                   { $$ = new elene_DECLARACION(new elene_ID($1),$4,0);
                     if (!(*currentLevel).local_lookup($1)) {
-                        currentLevel -> insertar($1,$4,@1.begin.line,@1.begin.column,despl);
+                        if (detect < 0) {
+                            currentLevel -> insertar($1,$4,@1.begin.line,@1.begin.column,0);
+                        } else {
+                            currentLevel -> insertar($1,$4,@1.begin.line,@1.begin.column,despl);                
+                        }
                         align = alinear((*$4).tam);
                         despl = despl + align;
                         despStruct = despStruct + align;
@@ -271,7 +276,6 @@ tipo : BOOLEANO { $$ = tiposBase[0]; }
      | ENTERO   { $$ = tiposBase[4]; }
      | FLOTANTE { $$ = tiposBase[1]; }
      | CARACTER { $$ = tiposBase[2]; }
-     | STRING   { $$ = tiposBase[3]; }
      | VACIO    { $$ = tiposBase[5]; }
      | ID       
        { if (!(*currentLevel).lookup($1)) {
@@ -303,6 +307,7 @@ tipo : BOOLEANO { $$ = tiposBase[0]; }
          despUnion = 0;
          despStruct = 0;
          despl = 0;
+         detect = -1;
        }
        bloqueContenido 
        { currentLevel = exitScope(currentLevel); }
@@ -316,6 +321,7 @@ tipo : BOOLEANO { $$ = tiposBase[0]; }
          despStruct = 0;
          despUnion = 0;
          despl = 0;
+         detect = 1;
        }
        bloqueContenido 
        { currentLevel = exitScope(currentLevel); }
@@ -339,27 +345,26 @@ listaFunciones : { despl = 0; } decFuncion { $$ = new elene_LISTFUN($2,0); }
 
 decFuncion : SEA LA FUNCION ID QUE RECIBE  
             {  
-               currentLevel = enterScope(currentLevel); 
+                currentLevel = enterScope(currentLevel); 
             } 
-            listArg
+            listArg Y RETORNA tipo HACER
             {
-                currentLevel = exitScope(currentLevel);
-            }
-            Y RETORNA tipo HACER
-            {
-                if (!(*currentLevel).local_lookup($4)) { 
-                   currentLevel -> 
-                   insertar($4,new elene_TIPO_FUNCION(new elene_ID($4),$12,$8),@4.begin.line,@4.begin.column,0); 
-                } else { 
-                   driver.error_fun_redec(@4,$4);
-                };
                 despl = despBloque;
                 despBloque = 0;
             }
             bloque 
             {
-                despBloque = despl;
-                $$ = new elene_DECFUNCION(new elene_ID($4),$8,$12,$15);                 
+                currentLevel = exitScope(currentLevel);
+                if (!(*currentLevel).local_lookup($4)) { 
+                   currentLevel -> 
+                   insertar($4,new elene_TIPO_FUNCION(new elene_ID($4),$11,$8),@4.begin.line,@4.begin.column,0); 
+                } else { 
+                   driver.error_fun_redec(@4,$4);
+                };
+            }
+            {
+                despBloque = despl;               
+                $$ = new elene_DECFUNCION(new elene_ID($4),$8,$11,$14);                 
             }
            | SEA LA FUNCION ID QUE RETORNA tipo HACER
             {
@@ -565,7 +570,8 @@ asignacion  : ID BECOMES expr
               tablaVal = (*currentLevel).lookup($1);
               if (tablaVal) {
                 // Esta en la tabla de simbolos
-                if ((*tablaVal).tipo == (*$3).tipo && (*$3).tipo != tiposBase[6]) {
+                if ((*tablaVal).tipo == (*$3).tipo && (*$3).tipo != tiposBase[6]
+                    && (*$3).tipo != tiposBase[3]) {
                     // Los tipos concuerdan
                     (*$$).tipo = tiposBase[5];
                 } else {
@@ -591,7 +597,9 @@ asignacion  : ID BECOMES expr
                if (tablaVal) {
                     testArreglo = dynamic_cast<elene_TIPO_ARREGLO *> ((*tablaVal).tipo);
                     if (testArreglo) {
-                        if ((*$3).tipo != tiposBase[6] && (*$6).tipo != tiposBase[6]) {
+                        if ((*$3).tipo != tiposBase[6] && (*$6).tipo != tiposBase[6]
+                            && (*testArreglo).tipo == (*$6).tipo
+                            && (*$6).tipo != tiposBase[3]) {
                             // Es una asignacion correcta!
                             (*$$).tipo = tiposBase[5];
                         } else {
@@ -628,6 +636,41 @@ asignacion  : ID BECOMES expr
                             (*$$).tipo = tiposBase[6];
                             driver.error(@4,ss.str());
                         }
+					} else {
+						(*$$).tipo = tiposBase[6];
+						driver.error_tipo_attr_no_dec(@3,$3);
+					}
+				} else {
+					(*$$).tipo = tiposBase[6];
+					driver.error_tipo_no_estr(@1,"");
+				}
+                test = 0;
+              /* Fin Codigo para verificacion de tipos */
+            }
+            | expr PERIOD ID LCORCHET expr RCORCHET BECOMES expr 
+            { 
+              $$ = new elene_INSTASIG_ESTR_ARRE(new elene_ID($3),$1,$5,$8);
+              /* Inicio Codigo para verificacion de tipos */
+			  test = dynamic_cast<elene_TIPO_ESTRUCTURA *> ((*$1).tipo);
+				if (test) {
+					tipoAux = (*test).lookup_attr($3);
+					if (tipoAux) {
+                        testArreglo = dynamic_cast<elene_TIPO_ARREGLO *> (tipoAux);
+                        if (testArreglo) {
+                            if ((*testArreglo).tipo == (*$8).tipo && (*$8).tipo != tiposBase[6]) {
+                                (*$$).tipo = tiposBase[5];
+                            } else {
+                                (*$$).tipo = tiposBase[6];
+                                std::stringstream ss;
+                                ss << "Se esperaba: " << (*(*testArreglo).tipo) 
+                                   << " pero se encontro: " << (*(*$8).tipo);
+                                driver.error(@7,ss.str());
+                            }
+                        } else { 
+                            (*$$).tipo = tiposBase[6];
+                            driver.error_tipo_no_es_array(@1,"");
+                        }
+                        testArreglo = 0;
 					} else {
 						(*$$).tipo = tiposBase[6];
 						driver.error_tipo_attr_no_dec(@3,$3);
@@ -896,6 +939,34 @@ expr : LPAREN expr RPAREN  { $$ = $2; (*$$).tipo = (*$2).tipo; }
 	   }
        /* Fin Codigo para verificacion de tipos */
 	 }
+     | expr PERIOD ID LCORCHET expr RCORCHET 
+     { 
+        $$ = new elene_ACCARREG_ESTR($1,new elene_ID($3), $5);
+        /* Inicio Codigo para verificacion de tipos */
+		test = dynamic_cast<elene_TIPO_ESTRUCTURA *> ((*$1).tipo);
+		if (test) {
+		    tipoAux = (*test).lookup_attr($3);
+			if (tipoAux) {
+                testArreglo = dynamic_cast<elene_TIPO_ARREGLO *> (tipoAux);
+                if (testArreglo) {
+				    (*$$).tipo = (*testArreglo).tipo;
+                } else {
+                    (*$$).tipo = tiposBase[6];
+                    driver.error_tipo_no_es_array(@1,"");
+                }
+                testArreglo = 0;
+			} else {
+				(*$$).tipo = tiposBase[6];
+				driver.error_tipo_attr_no_dec(@3,$3);
+			}
+		    } else {
+			(*$$).tipo = tiposBase[6];
+			driver.error_tipo_no_estr(@1,"");
+	    }
+        test = 0;
+        /* Fin Codigo para verificacion de tipos */
+        
+     }
      | exprBinaria         { $$ = $1; (*$$).tipo = (*$1).tipo; }
      | exprUnaria          { $$ = $1; (*$$).tipo = (*$1).tipo; }
      | terminal            { $$ = $1; (*$$).tipo = (*$1).tipo; }
@@ -1034,12 +1105,17 @@ exprBinaria : expr Y expr
             | expr DISTINTO A expr        
 			{ $$ = new elene_DISTINTO($1,$4); 
 			  /* Inicio Codigo para verificacion de tipos */
-			  if ( ((*$1).tipo == (*$4).tipo) && ( ((*$1).tipo != tiposBase[5]) && (*$1).tipo != tiposBase[6])) { /*OJO!! ESOS DISTINTOS (Estr)*/
+			  if ( ((*$1).tipo == (*$4).tipo) && 
+                   ( ((*$1).tipo == tiposBase[0]) || 
+                     ((*$1).tipo == tiposBase[1]) || 
+                     ((*$1).tipo == tiposBase[2]) || 
+                     ((*$1).tipo == tiposBase[4]) ) ) {
 				(*$$).tipo = tiposBase[0]; // Es booleano
 			  } else {
 			  	(*$$).tipo = tiposBase[6];
 				std::stringstream ss;
-				ss << "Relacion 'distinto' compara " << (*(*$1).tipo) << " con " << (*(*$4).tipo);
+				ss << "Relacion 'distinto' compara " << (*(*$1).tipo) 
+                   << " con " << (*(*$4).tipo);
 				driver.error_tipo_expr(@2,ss.str());
 			  }
 			  /* Fin codigo para verificacion de tipos */
@@ -1047,12 +1123,17 @@ exprBinaria : expr Y expr
             | expr IGUAL A expr           
 			{ $$ = new elene_IGUAL($1,$4); 
 			  /* Inicio Codigo para verificacion de tipos */
-			  if ( ((*$1).tipo == (*$4).tipo) && ( ((*$1).tipo != tiposBase[5]) && (*$1).tipo != tiposBase[6])) { /*OJO!! ESOS DISTINTOS (Estr)*/
+			  if ( ((*$1).tipo == (*$4).tipo) && 
+                   ( ((*$1).tipo == tiposBase[0]) || 
+                     ((*$1).tipo == tiposBase[1]) || 
+                     ((*$1).tipo == tiposBase[2]) || 
+                     ((*$1).tipo == tiposBase[4]) ) ) {
 				(*$$).tipo = tiposBase[0]; // Es booleano
 			  } else {
 			  	(*$$).tipo = tiposBase[6];
 				std::stringstream ss;
-				ss << "Relacion 'igual' compara " << (*(*$1).tipo)<< " con " << (*(*$4).tipo);
+				ss << "Relacion 'igual' compara " << (*(*$1).tipo)
+                   << " con " << (*(*$4).tipo);
 				driver.error_tipo_expr(@2,ss.str());
 			  }
 			  /* Fin codigo para verificacion de tipos */
@@ -1112,7 +1193,7 @@ terminal : VERDADERO        { $$ = new elene_BOOLEANO($1); (*$$).tipo = tiposBas
          | NUMFLOTANTE      { $$ = new elene_REAL($1); (*$$).tipo = tiposBase[1];}
          | CONSTCARACTER    { $$ = new elene_CARACTER($1); (*$$).tipo = tiposBase[2];}
          | ID               { $$ = new elene_ID($1); 
-                                if (!(*currentLevel).lookup($1)) { 
+                                if (!(*currentLevel).lookup($1)) {
                                     driver.error_indef(@1,$1);
                                     (*$$).tipo = tiposBase[6];
                                 } else {
@@ -1127,7 +1208,7 @@ terminal : VERDADERO        { $$ = new elene_BOOLEANO($1); (*$$).tipo = tiposBas
                 } else if (testFuncion = dynamic_cast<elene_TIPO_FUNCION *>((*(*currentLevel).lookup($1)).tipo)) {
                                                       
                     if (chequearArgumentos($3,(*testFuncion).param) ) {
-                        (*$$).tipo = (*(*currentLevel).lookup($1)).tipo;
+                        (*$$).tipo = (*testFuncion).tipo;
                     } else {
                         (*$$).tipo = tiposBase[6];
                         driver.error_parametros(@1,$1);
