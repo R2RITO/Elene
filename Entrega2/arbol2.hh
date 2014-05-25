@@ -1008,6 +1008,64 @@ public:
         return obj.stream_write(stream); 
     }
 };
+
+class elene_ACCARREG_ESTR : public elene_EXPR {
+
+protected:
+    
+    elene_EXPR* estructura;
+    elene_ID* arrayID;
+    elene_EXPR* expr;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {
+        (*estructura).ident = ident + "    ";
+		(*expr).ident = ident + "    ";
+		(*arrayID).ident = ident+"    ";
+        return (os << ident << "Acceso a arreglo en estructura: {\n"
+                   << ident+"  " << "Estructura: \n" << (*estructura)
+                   << ident+"  " << "ID del Arreglo:\n" << (*arrayID)
+                   << ident+"  " << "Expresion del acceso:\n" << (*expr)) 
+				   << ident << "}\n";
+    }
+
+public:
+
+    /* Constructor */
+    elene_ACCARREG_ESTR(elene_EXPR* estr, elene_ID* a, elene_EXPR* e): estructura(estr), arrayID(a), expr(e) {}
+
+    /* Metodo para copiar */
+    elene_ACCARREG_ESTR(const elene_ACCARREG_ESTR &other) {
+        arrayID = other.arrayID;
+        estructura = other.estructura;
+        expr = other.expr;
+    }
+
+    /* Metodo destructor */
+    virtual ~elene_ACCARREG_ESTR() {
+        delete arrayID;
+        delete estructura;
+        delete expr;
+    }
+
+    elene_ACCARREG_ESTR &operator = (const elene_ACCARREG_ESTR &other) {
+
+        if (&other != this) {
+            delete estructura;
+            delete arrayID;
+            delete expr;
+            estructura = other.estructura;
+            arrayID = other.arrayID;
+            expr = other.expr;
+
+        }
+    }
+    /* Sobrecarga del operador << */
+    friend std::ostream& operator<< (std::ostream& stream,const elene_ACCARREG_ESTR& obj){
+        return obj.stream_write(stream); 
+    }
+};
+
 /* Clase para los terminales booleanos */
 class elene_BOOLEANO : public elene_EXPRTERMINAL { 
 
@@ -2203,6 +2261,66 @@ public:
             delete id;
             delete estructura;
             delete ladoDer;
+            id = other.id;
+            estructura = other.estructura;
+            ladoDer = other.ladoDer;
+        }
+    }
+};
+
+/* Clase para la asignacion en estructuras*/
+class elene_INSTASIG_ESTR_ARRE : public elene_INSTASIG {
+
+protected:
+
+    elene_ID* id;
+    elene_EXPR* ladoDer;
+    elene_EXPR* estructura;
+    elene_EXPR* exprAcceso;
+
+    /* Metodo para imprimir */
+    virtual std::ostream& stream_write(std::ostream& os) const {
+        (*exprAcceso).ident = ident+"    ";
+        (*estructura).ident = ident+"    ";
+		(*ladoDer).ident = ident+"    ";
+		(*id).ident = ident+"    ";          
+        return (os << ident << "Instruccion Asignacion Arreglo en Estructura: {\n" 
+                   << ident+"  " << "Estructura:\n" << (*estructura)
+                   << ident+"  " << "Arreglo:\n" << (*id)
+                   << ident+"  " << "Posicion:\n" << (*exprAcceso)
+                   << ident+"  " << "Expresion:\n" << (*ladoDer)
+				   << ident << "}\n");
+    }
+
+public:
+    /* Declaracion de constructor */
+    elene_INSTASIG_ESTR_ARRE() {};
+    elene_INSTASIG_ESTR_ARRE(elene_ID* variable, elene_EXPR* e, elene_EXPR* ac, elene_EXPR* rvalue): 
+        id(variable), estructura(e), exprAcceso(ac), ladoDer(rvalue) {};
+    
+    /* Declaracion de destructor */
+    virtual ~elene_INSTASIG_ESTR_ARRE () {
+        delete id;
+        delete estructura;
+        delete ladoDer;    
+        delete exprAcceso;
+    }
+
+    /* Metodo para copiar */
+    elene_INSTASIG_ESTR_ARRE(const elene_INSTASIG_ESTR_ARRE &other) {
+        id = other.id;
+        estructura = other.estructura;
+        ladoDer = other.ladoDer;
+        exprAcceso = other.exprAcceso;
+    }
+
+    elene_INSTASIG_ESTR_ARRE &operator = (const elene_INSTASIG_ESTR_ARRE &other) {
+        if (&other != this) {
+            delete id;
+            delete estructura;
+            delete ladoDer;
+            delete exprAcceso;
+            exprAcceso = other.exprAcceso;
             id = other.id;
             estructura = other.estructura;
             ladoDer = other.ladoDer;

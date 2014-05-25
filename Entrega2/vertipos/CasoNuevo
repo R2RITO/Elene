@@ -1,0 +1,84 @@
+variables globales {
+    
+    sea animal de tipo estructura que contiene {
+        numPatas de tipo entero;
+        numOjos de tipo entero;
+        altura de tipo flotante;
+        sexo de tipo caracter;
+        extinto de tipo booleano
+    };
+
+    sea serVivo de tipo estructura que contiene {
+        ser de tipo animal;
+        nombre de tipo arreglo de caracter de 0 a 30
+    };
+
+    sea zoologico de tipo estructura que contiene {
+        nombre de tipo arreglo de caracter de 0 a 30;
+        animales de tipo arreglo de serVivo de 0 a 30
+    }
+}
+
+funciones {
+
+    sea la funcion printHola que retorna vacio hacer {
+        imprimir "Hola!"
+    }
+    
+    sea la funcion esGato que recibe serVivo ANIMAL y retorna booleano hacer {
+        si (ANIMAL.nombre[1] igual a 'G' y 
+            ANIMAL.nombre[2] igual a 'A' y 
+            ANIMAL.nombre[3] igual a 'T' y 
+            ANIMAL.nombre[4] igual a 'O') entonces {
+            retornar verdadero
+        } si no entonces {
+            retornar falso
+        }
+    }
+
+}
+
+guacara {
+
+    variables {
+        sea gato de tipo serVivo;
+        sea zoo de tipo zoologico;
+        sea i de tipo entero
+    }
+
+    gato.nombre[1] = 'G';
+    gato.nombre[2] = 'A';
+    gato.nombre[3] = 'T';
+    gato.nombre[4] = 'O';
+    gato.ser.numPatas = 2+2;
+    gato.ser.numOjos  = (1+1)*2;
+    gato.ser.altura   = 60.0/2.0;
+    gato.ser.sexo     = 'f';
+    gato.ser.extinto  = falso y verdadero;
+    printHola;
+
+    si (esGato(gato)) entonces {
+        imprimir "ES UN GATO!!\n"
+    } si no entonces {
+        imprimir "No es un gato u.u\n"
+    };
+
+    mientras esGato(gato) hacer {
+        imprimir "WTF"
+    };
+
+    zoo.animales[3].nombre[4] = 'X';
+
+    para i = 0 tal que i menor que 30 con cambio i = i+1 hacer {
+        sea i igual a {
+            10 entonces hacer {
+                imprimir esGato(zoo.animales[i])
+            }
+            por defecto hacer {
+                imprimir "No me guta ete"
+            }
+        }
+    };
+    leer i    
+    
+}

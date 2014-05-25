@@ -19,7 +19,8 @@ variables globales {
         flo de tipo flotante;
         varA1 de tipo A1
     }
-    sea pba de tipo A2
+    sea pba de tipo A2;
+    sea str de tipo caracter
 }
 
 funciones {
@@ -92,6 +93,7 @@ guacara {
     e = casita.numventanas;
     ea[4] = 4;
     casa.numpisos = 4;
-    pba.varA1.ent = 10.5
+    pba.varA1.ent = 10.5;
+    str = " Hola "
 
 }
