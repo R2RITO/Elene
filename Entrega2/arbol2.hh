@@ -27,6 +27,7 @@ protected:
     virtual std::ostream& stream_write(std::ostream& os) const = 0; 
 
 public:
+    int tam;
     /* Sobrecarga del operador << */
     friend std::ostream& operator<< (std::ostream& stream,const elene_TIPO& obj){
         return obj.stream_write(stream); 
@@ -1341,7 +1342,9 @@ protected:
 
 public:
     /* Declaracion de constructor */
-    elene_TIPO_ENTERO() {};
+    elene_TIPO_ENTERO() {
+        tam = 4;
+    };
     
     /* Declaracion de destructor */
     virtual ~elene_TIPO_ENTERO () { }
@@ -1365,7 +1368,9 @@ protected:
 
 public:
     /* Declaracion de constructor */
-    elene_TIPO_BOOLEANO() {};
+    elene_TIPO_BOOLEANO() {
+        tam = 1;
+    };
     
     /* Declaracion de destructor */
     virtual ~elene_TIPO_BOOLEANO () { }
@@ -1389,7 +1394,9 @@ protected:
 
 public:
     /* Declaracion de constructor */
-    elene_TIPO_FLOTANTE() {};
+    elene_TIPO_FLOTANTE() {
+        tam = 1;
+    };
     
     /* Declaracion de destructor */
     virtual ~elene_TIPO_FLOTANTE () { }
@@ -1413,7 +1420,9 @@ protected:
 
 public:
     /* Declaracion de constructor */
-    elene_TIPO_CARACTER() {};
+    elene_TIPO_CARACTER() {
+        tam = 1;    
+    };
     
     /* Declaracion de destructor */
     virtual ~elene_TIPO_CARACTER () { }
@@ -1461,7 +1470,9 @@ protected:
 
 public:
     /* Declaracion de constructor */
-    elene_TIPO_VACIO() {};
+    elene_TIPO_VACIO() {
+        tam = 0;
+    };
     
     /* Declaracion de destructor */
     virtual ~elene_TIPO_VACIO () { }
@@ -1485,7 +1496,9 @@ protected:
 
 public:
     /* Declaracion de constructor */
-    elene_TIPO_TYPE_ERROR() {};
+    elene_TIPO_TYPE_ERROR() {
+        tam = 0;
+    };
     
     /* Declaracion de destructor */
     virtual ~elene_TIPO_TYPE_ERROR () { }
@@ -1505,8 +1518,8 @@ class elene_TIPO_ARREGLO : public elene_TIPO {
 protected:
 
     
-    elene_EXPR* indIzq;
-    elene_EXPR* indDer;
+    int indIzq;
+    int indDer;
     
 
     /* Metodo para imprimir */
@@ -1523,14 +1536,12 @@ public:
     elene_TIPO* tipo;
     /* Declaracion de constructor */
     elene_TIPO_ARREGLO() {};
-    elene_TIPO_ARREGLO(elene_TIPO* t, elene_EXPR* izq, elene_EXPR* der): 
+    elene_TIPO_ARREGLO(elene_TIPO* t, int izq, int der): 
         tipo(t), indIzq(izq), indDer(der) {};
     
     /* Declaracion de destructor */
     virtual ~elene_TIPO_ARREGLO () {
         delete tipo;
-        delete indIzq;
-        delete indDer;
     }
 
     /* Metodo para copiar */
@@ -1543,8 +1554,6 @@ public:
     elene_TIPO_ARREGLO &operator = (const elene_TIPO_ARREGLO &other) {
         if (&other != this) {
             delete tipo;
-            delete indIzq;
-            delete indDer;
             tipo = other.tipo;
             indIzq = other.indIzq;
             indDer = other.indDer;
@@ -1790,7 +1799,9 @@ protected:
 public:
     /* Declaracion de constructor */
     elene_TIPO_DEFINIDO() {};
-    elene_TIPO_DEFINIDO(elene_ID* t, elene_TIPO* tp): id(t), tipo(tp) {};
+    elene_TIPO_DEFINIDO(elene_ID* t, elene_TIPO* tp): id(t), tipo(tp) {
+        tam = (*tipo).tam;
+    };
     
     /* Declaracion de destructor */
     virtual ~elene_TIPO_DEFINIDO () {

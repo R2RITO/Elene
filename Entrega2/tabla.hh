@@ -17,7 +17,8 @@ public:
     virtual std::ostream& stream_write(std::ostream& os) const {              
         return (os << "Linea: " << lin
                    << " Columna: " << col
-                   << " Tipo: " << *tipo);
+                   << " Tipo: " << *tipo
+                   << " Desp: " << size);
     }
 
 public:

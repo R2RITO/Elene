@@ -55,6 +55,12 @@
     elene_TIPO_ARREGLO* testArreglo;
     elene_TABLA_VALOR* tablaVal;
 	elene_TIPO* tipoAux;
+    int despGlobal;
+    int despStruct;
+    int despUnion;
+    int despBloque;
+    int despl;
+    int align;
 }
 
 %define api.token.prefix {TOK_}
@@ -200,8 +206,17 @@ inicio : {
          }
 
 varglobal : funciones { $$ = new elene_VARGLOBAL($1,0); }
-          | VARIABLES GLOBALES LBRACKET listaVariables RBRACKET funciones 
-            { $$ = new elene_VARGLOBAL($6,$4); }
+          | VARIABLES GLOBALES LBRACKET 
+            { despGlobal = 0;
+              despBloque = 0;
+              despl = 0;
+            }
+            listaVariables
+            { despGlobal = despBloque;
+              despBloque = 0;
+            } 
+            RBRACKET funciones 
+            { $$ = new elene_VARGLOBAL($8,$5); }
           ;
 
 listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
@@ -213,8 +228,10 @@ listaVariables : decVariable { $$ = new elene_LISTAVAR($1,0); }
 
 decVariable   : SEA ID DE TIPO tipo 
                 { $$ = new elene_DECLARACION(new elene_ID($2),$5,0); 
-                  if (!(*currentLevel).local_lookup($2)) { 
-                      currentLevel -> insertar($2,$5,@2.begin.line,@2.begin.column,0);
+                  if (!(*currentLevel).local_lookup($2)) {
+                      currentLevel -> insertar($2,$5,@2.begin.line,@2.begin.column,despBloque);
+                      align = alinear((*$5).tam);
+                      despBloque = despBloque + align;
                   } else { 
                       driver.error_redec(@2, $2);
                   }; 
@@ -222,21 +239,28 @@ decVariable   : SEA ID DE TIPO tipo
               | SEA ID DE TIPO tipo CON VALOR expr 
                 { $$ = new elene_DECLARACION(new elene_ID($2), $5, $8); 
                   if (!(*currentLevel).local_lookup($2)) { 
-                      currentLevel -> insertar($2,$5,@2.begin.line,@2.begin.column,0); 
+                      currentLevel -> insertar($2,$5,@2.begin.line,@2.begin.column,despBloque);
+                      align = alinear((*$5).tam);
+                      despBloque = despBloque + align;
                   } else { 
                       driver.error_redec(@2, $2);
                   }; 
                 }
               ;
 
-bloqueContenido : decContenido { $$ = new elene_LISTAVAR($1, 0); }
+bloqueContenido : 
+                decContenido { $$ = new elene_LISTAVAR($1, 0); }
                 | bloqueContenido SEMICOLON decContenido { $$ = new elene_LISTAVAR($3,$1); }
                 ;
 
 decContenido    : ID DE TIPO tipo 
                   { $$ = new elene_DECLARACION(new elene_ID($1),$4,0);
                     if (!(*currentLevel).local_lookup($1)) {
-                        currentLevel -> insertar($1,$4,@1.begin.line,@1.begin.column,0);
+                        currentLevel -> insertar($1,$4,@1.begin.line,@1.begin.column,despl);
+                        align = alinear((*$4).tam);
+                        despl = despl + align;
+                        despStruct = despStruct + align;
+                        despUnion = std::max(despUnion,align);
                     } else {
                         driver.error_redec(@1, $1);
                     }; 
@@ -263,19 +287,42 @@ tipo : BOOLEANO { $$ = tiposBase[0]; }
             } 
          }
        }
-     | ARREGLO DE tipo DE expr A expr { $$ = new elene_TIPO_ARREGLO($3,$5,$7); }
+     | ARREGLO DE tipo DE NUMENTERO A NUMENTERO 
+       {
+           $$ = new elene_TIPO_ARREGLO($3,$5,$7); 
+           align = alinear((*$3).tam);
+           if (($7 - $5) < 0) {
+               driver.error_indices_incorrectos(@5,$5);
+               (*$$).tam = align * ($5 - $7);  
+           } else { 
+               (*$$).tam = align * ($7 - $5);            
+           }           
+       }
      | UNION QUE CONTIENE LBRACKET 
-       { currentLevel = enterScope(currentLevel); }
+       { currentLevel = enterScope(currentLevel);
+         despUnion = 0;
+         despStruct = 0;
+         despl = 0;
+       }
        bloqueContenido 
        { currentLevel = exitScope(currentLevel); }
        RBRACKET 
-       { $$ = new elene_TIPO_UNION($6); }
+       { $$ = new elene_TIPO_UNION($6);
+         (*$$).tam = despUnion;
+       }
 
      | ESTRUCTURA QUE CONTIENE LBRACKET 
-       { currentLevel = enterScope(currentLevel); }
+       { currentLevel = enterScope(currentLevel);
+         despStruct = 0;
+         despUnion = 0;
+         despl = 0;
+       }
        bloqueContenido 
        { currentLevel = exitScope(currentLevel); }
-       RBRACKET { $$ = new elene_TIPO_ESTRUCTURA($6); }
+       RBRACKET 
+       { $$ = new elene_TIPO_ESTRUCTURA($6);
+         (*$$).tam = despStruct;
+       }
      | LPAREN tipo RPAREN { $$ = $2; }
      ;
 
@@ -285,8 +332,8 @@ funciones : programa { $$ = new elene_FUNCIONES(0,$1); }
           | FUNCIONES LBRACKET listaFunciones RBRACKET error END { yyerrok; }
           ;
     
-listaFunciones : decFuncion { $$ = new elene_LISTFUN($1,0); }
-               | listaFunciones decFuncion { $$ = new elene_LISTFUN($2,$1); }
+listaFunciones : { despl = 0; } decFuncion { $$ = new elene_LISTFUN($2,0); }
+               | listaFunciones { despl = 0; } decFuncion { $$ = new elene_LISTFUN($3,$1); }
                | listaFunciones error      { $$ = new elene_LISTFUN(0,$1); yyerrok; yyclearin; }
                ;
 
@@ -306,9 +353,12 @@ decFuncion : SEA LA FUNCION ID QUE RECIBE
                 } else { 
                    driver.error_fun_redec(@4,$4);
                 };
+                despl = despBloque;
+                despBloque = 0;
             }
             bloque 
             {
+                despBloque = despl;
                 $$ = new elene_DECFUNCION(new elene_ID($4),$8,$12,$15);                 
             }
            | SEA LA FUNCION ID QUE RETORNA tipo HACER
@@ -319,9 +369,12 @@ decFuncion : SEA LA FUNCION ID QUE RECIBE
                 } else { 
                    driver.error_fun_redec(@4,$4);
                 }; 
+                despl = despBloque;
+                despBloque = 0;
             }
             bloque
-            { 
+            {
+                despBloque = despl; 
                 $$ = new elene_DECFUNCION(new elene_ID($4),0,$7,$10); 
             }
            ;
@@ -329,8 +382,10 @@ decFuncion : SEA LA FUNCION ID QUE RECIBE
 listArg : tipo ID  
             { 
                 $$ = new elene_LISTARG($1, new elene_ID($2), "Por Valor", 0); 
-                if (!(*currentLevel).local_lookup($2)) { 
-                    currentLevel -> insertar($2,$1,@2.begin.line,@2.begin.column,0);
+                if (!(*currentLevel).local_lookup($2)) {
+                    currentLevel -> insertar($2,$1,@2.begin.line,@2.begin.column,despl);
+                    align = alinear((*$1).tam);
+                    despl = despl + align;
                 } else { 
                     driver.error_param_redec(@2,$2);
                 }; 
@@ -340,7 +395,9 @@ listArg : tipo ID
                 $$ = new elene_LISTARG($1, new elene_ID($4), "Por Referencia", 0); 
                 if (!(*currentLevel).local_lookup($4)) { 
                    currentLevel -> 
-                   insertar($4,$1,@4.begin.line,@4.begin.column,0); 
+                   insertar($4,$1,@4.begin.line,@4.begin.column,despl); 
+                   align = alinear((*$1).tam);
+                   despl = despl + align;
                 } else { 
                    driver.error_param_redec(@4,$4);
                 }; 
@@ -348,9 +405,11 @@ listArg : tipo ID
         | listArg COMMA tipo POR REFERENCIA ID
           { 
               $$ = new elene_LISTARG($3, new elene_ID($6), "Por Referencia", $1); 
-              if (!(*currentLevel).local_lookup($6)) { 
-                  currentLevel 
-                  -> insertar($6,$3,@6.begin.line,@6.begin.column,0); 
+              if (!(*currentLevel).local_lookup($6)) {
+                  currentLevel -> 
+                  insertar($6,$3,@6.begin.line,@6.begin.column,despl); 
+                  align = alinear((*$3).tam);
+                  despl = despl + align; 
               } else { 
                   driver.error_param_redec(@6,$6);
               }; 
@@ -360,7 +419,9 @@ listArg : tipo ID
               $$ = new elene_LISTARG($3, new elene_ID($4), "Por Valor", $1); 
               if (!(*currentLevel).local_lookup($4)) { 
                   currentLevel -> 
-                  insertar($4,$3,@4.begin.line,@4.begin.column,0); 
+                  insertar($4,$3,@4.begin.line,@4.begin.column,despl);
+                  align = alinear((*$3).tam);
+                  despl = despl + align; 
               } else { 
                   driver.error_param_redec(@4,$4); 
               }; 
@@ -381,7 +442,8 @@ bloque : LBRACKET listaInstruccion RBRACKET
         /* Fin Codigo para verificacion de tipos */
        }
        | LBRACKET VARIABLES LBRACKET 
-         { currentLevel = enterScope(currentLevel); } 
+         { currentLevel = enterScope(currentLevel);
+         } 
          listaVariables RBRACKET listaInstruccion RBRACKET 
          { $$ = new elene_BLOQUE(0,$5,$7); 
            currentLevel = exitScope(currentLevel);
@@ -1065,10 +1127,8 @@ terminal : VERDADERO        { $$ = new elene_BOOLEANO($1); (*$$).tipo = tiposBas
                 } else if (testFuncion = dynamic_cast<elene_TIPO_FUNCION *>((*(*currentLevel).lookup($1)).tipo)) {
                                                       
                     if (chequearArgumentos($3,(*testFuncion).param) ) {
-                        std::cout << "Asigno tipo bueno: \n" << (*(*(*currentLevel).lookup($1)).tipo);
                         (*$$).tipo = (*(*currentLevel).lookup($1)).tipo;
                     } else {
-                        std::cout << "Asigno tipo malo\n";
                         (*$$).tipo = tiposBase[6];
                         driver.error_parametros(@1,$1);
                     }

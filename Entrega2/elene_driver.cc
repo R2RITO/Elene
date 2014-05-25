@@ -167,6 +167,13 @@ void elene_driver::error_tipo_asignacion(const yy::location& l, const std::strin
 		<< ". " << m << std::endl;
 }
 
+void elene_driver::error_indices_incorrectos(const yy::location& l, const int& m) {
+	std::cerr
+		<< "- ERROR - " << "Linea: " << l.begin.line
+		<< ", Columna: " << l.begin.column
+		<< ". " << "El limite izquierdo debe ser menor al derecho" << std::endl;
+}
+
 
 void elene_driver::error (const std::string& m) {
     std::cerr << m << std::endl;

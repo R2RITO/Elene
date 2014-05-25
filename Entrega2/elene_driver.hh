@@ -56,6 +56,7 @@ class elene_driver {
     void error_tipo_case_var_undec(const yy::location& l, const std::string& m);
     void error_tipo_case_var_expr(const yy::location& l, const std::string& m);
     void error_tipo_asignacion(const yy::location& l, const std::string& m);
+    void error_indices_incorrectos(const yy::location& l, const int& m);
 };
 
 #endif // ! ELENE_DRIVER_HH
