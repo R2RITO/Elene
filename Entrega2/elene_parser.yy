@@ -1227,7 +1227,8 @@ terminal : VERDADERO        { $$ = new elene_BOOLEANO($1); (*$$).tipo = tiposBas
                               std::stringstream cols;
                               cols << @1.begin.line << "_" << @1.begin.column;
                               std::string nmb = $1 + "_" + cols.str();
-                              tablaGlobal -> insertar(nmb,(*$$).tipo,@1.begin.line,@1.begin.column,align); 
+                              tablaGlobal -> insertar(nmb,(*$$).tipo,@1.begin.line,@1.begin.column,despGlobal);
+                              despGlobal = despGlobal + align; 
                             }
          ;
 %%
